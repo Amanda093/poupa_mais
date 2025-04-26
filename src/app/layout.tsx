@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Rubik, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Fonte do titulo
+const fontRubik = Rubik({
+  variable: "--font-rubik",
   subsets: ["latin"],
+  weight: ["400", "500", "700", "800"],
+  // 400 = normal, 500 = medium, 700 = bold, 800 = extrabold
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Fonte do texto
+const fontSource_Sans_3 = Rubik({
+  variable: "--font-source-sans-3",
   subsets: ["latin"],
+  weight: ["400", "500", "700", "800"],
+  // 400 = normal, 500 = medium, 700 = bold, 800 = extrabold
 });
 
 export const metadata: Metadata = {
@@ -23,11 +29,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-br">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${fontRubik.variable} ${fontSource_Sans_3.variable} antialiased`}
       >
-        {children}
+        <main>{children}</main>
       </body>
     </html>
   );
