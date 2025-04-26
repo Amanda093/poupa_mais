@@ -11,7 +11,7 @@ const fontRubik = Rubik({
 });
 
 // Fonte do texto
-const fontSource_Sans_3 = Rubik({
+const fontSource_Sans_3 = Source_Sans_3({
   variable: "--font-source-sans-3",
   subsets: ["latin"],
   weight: ["400", "500", "700", "800"],
