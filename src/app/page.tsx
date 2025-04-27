@@ -1,7 +1,11 @@
+import Image from "next/image";
+
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/ui/footer";
 import { Input } from "@/components/ui/input";
 import { Title } from "@/components/ui/title";
+
+import plus from "../../public/plus.png";
 
 export default function Home() {
   return (
@@ -11,6 +15,7 @@ export default function Home() {
           mainTitle="Controle seus gastos."
           subTitle="Planeje seu futuro."
         />
+
         <div className="flex gap-[1%]">
           <div className="flex w-[33%] flex-col gap-4">
             <div className="max-w-[400px]">
@@ -66,6 +71,7 @@ export default function Home() {
         </div>
         {/*TODO: adicionar button com icon */}
         <Button variant="outline" className="mx-auto w-fit">
+          <Image src={plus} alt="Adicionar" />
           Adicionar Despesa
         </Button>
         {/*TODO: terminar formulário */}

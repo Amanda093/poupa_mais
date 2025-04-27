@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           "bg-emerald-500 active:bg-emerald-700 text-white p-sm m-0 hover:bg-emerald-600",
         outline:
-          "border bg-background hover:bg-accent hover:text-accent-foreground",
+          "border-2 border-emerald-500 text-emerald-500 bg-background hover:bg-accent hover:text-accent-foreground ",
       },
       size: {
         default: " px-[1.65em] py-[0.35em] has-[>svg]:px-3",
