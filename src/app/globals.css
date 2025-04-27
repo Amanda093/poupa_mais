@@ -37,12 +37,24 @@ b {
 p {
   margin-bottom: 0.2em;
 }
-
 .header-shadow {
   box-shadow:
     0px 4px 15px -12px rgba(8, 22, 15, 0.05),
     0px 20px 24px -10px rgba(55, 189, 124, 0.1);
 }
+
+@utility emerald-glow {
+  -webkit-box-shadow: 0px 0px 35px 0px rgba(3, 226, 152, 0.2);
+  -moz-box-shadow: 0px 0px 35px 0px rgba(3, 226, 152, 0.2);
+  box-shadow: 0px 0px 35px 0px rgba(3, 226, 152, 0.2);
+}
+
+@utility rose-glow {
+  -webkit-box-shadow: 0px 0px 35px 0px rgba(255, 36, 83, 0.4);
+  -moz-box-shadow: 0px 0px 35px 0px rgba(255, 36, 83, 0.4);
+  box-shadow: 0px 0px 35px 0px rgba(255, 36, 83, 0.4);
+}
+
 .text-h1 {
   font-size: 2.5em;
   font-weight: 800;
@@ -72,13 +84,41 @@ p {
   line-height: 150%;
   font-weight: 600;
   color: var(--color-emerald-500);
-  transition: all 0.3s;
+  position: relative;
+  transition: color 0.2s;
   &:hover {
     color: var(--color-emerald-600);
   }
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    border-radius: 0.2em;
+    height: 0.15em;
+    bottom: 0;
+    left: 0;
+    background-color: var(--color-emerald-500);
+    transform-origin: center;
+    transition:
+      transform 0.2s,
+      babckground-color 0.2s;
+  }
+  &:hover::after {
+    background-color: var(--color-emerald-600);
+    transform: scaleX(1);
+    transform-origin: center;
+  }
 }
-.text-header-active {
-  text-decoration: underline;
+.text-header-active::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 0.15em;
+  transform: scaleX(1);
+  bottom: 0;
+  left: 0;
+  background-color: var(--color-emerald-500);
 }
 
 .container {
