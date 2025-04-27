@@ -1,3 +1,5 @@
+"use client";
+
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
@@ -23,12 +25,46 @@ export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof inputVariants> {}
 
-function Input({ className, variant, type, ...props }: InputProps) {
+function Input({ variant, type, ...props }: InputProps) {
+  const [valor, setValor] = React.useState("");
+
+  function handleMoneyChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const valorNumerico = e.target.value.replace(/\D/g, ""); // remove não números
+    const valorFloat = parseFloat(valorNumerico) / 100; // ajusta os centavos
+
+    if (isNaN(valorFloat)) {
+      setValor("");
+      return;
+    }
+
+    const valorFormatado = valorFloat.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+
+    setValor(valorFormatado);
+  }
+
+  // Se for type="money", trata diferente
+  if (type === "money") {
+    return (
+      <input
+        type="text"
+        data-slot="input"
+        value={valor}
+        onChange={handleMoneyChange}
+        className={cn(inputVariants({ variant }), props.className)}
+        {...props}
+      />
+    );
+  }
+
+  // Senão, input normal
   return (
     <input
       type={type}
       data-slot="input"
-      className={cn(inputVariants({ variant }), className)}
+      className={cn(inputVariants({ variant }), props.className)}
       {...props}
     />
   );

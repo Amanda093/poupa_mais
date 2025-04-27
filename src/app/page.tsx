@@ -1,23 +1,24 @@
+import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/ui/footer";
 import { Input } from "@/components/ui/input";
 
 export default function Home() {
   return (
     <div>
-      <div className="container mx-auto !max-w-[1270px] py-[70px]">
+      <div className="container mx-auto !max-w-[1270px] py-[60px]">
         <h1>Controle seus gastos.</h1>
         <h1 className="pb-6 text-emerald-500">Planeje seu futuro.</h1>
-        <div className="flex gap-[2.5%]">
-          <div className="flex flex-col gap-4">
+        <div className="flex gap-[1%]">
+          <div className="flex w-[33%] flex-col gap-4">
             <div className="max-w-[400px]">
               <p>Qual sua renda mensal?</p>
-              <Input type="text" placeholder="R$00,00" variant="background" />
+              <Input type="money" placeholder="R$ 0,00" variant="background" />
             </div>
             <p className="text-light">
               Esse é o total que você recebe por mês.
             </p>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex w-[33%] flex-col gap-4">
             <div className="max-w-[400px]">
               <p>Onde você mora?</p>
               {/*TODO: trocar esse input por um select ou um input com pesquisa */}
@@ -32,6 +33,45 @@ export default function Home() {
             </p>
           </div>
         </div>
+      </div>
+      <div className="form-shadow container mx-auto flex !max-w-[1300px] flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em]">
+        <div>
+          <p>Quais são suas despesas?</p>
+          <p className="text-light">
+            Adicione aqui suas despesas fixas, como aluguel, conta de luz,
+            internet ou transporte.
+          </p>
+        </div>
+        <div className="flex gap-[2.5%]">
+          <div className="w-[30%]">
+            <p>Despesa</p>
+            <Input
+              type="text"
+              placeholder="Ex: Conta de luz"
+              variant="default"
+            />
+          </div>
+          <div className="w-[30%]">
+            <p>Gasto Mensal</p>
+            <Input type="money" placeholder="R$ 0,00" variant="default" />
+          </div>
+          <div className="w-[30%]">
+            <p>Categoria</p>
+            {/*TODO: trocar esse input por um select ou um input com pesquisa */}
+            <Input type="text" placeholder="Contas" variant="default" />
+          </div>
+        </div>
+        {/*TODO: adicionar button com icon */}
+        <Button className="mx-auto w-fit">Adicionar Despesa</Button>
+        {/*TODO: terminar formulário */}
+      </div>
+      <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
+        <div>
+          <h2>Terminou?</h2>
+          <p>Agora nós entramos em ação!</p>
+        </div>
+        {/*TODO: adicionar button com icon */}
+        <Button className="w-fit">Gerar Planejamento</Button>
       </div>
       <Footer />
     </div>
