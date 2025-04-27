@@ -1,8 +1,12 @@
 "use client";
+{
+  /*TODO: Alterar para apenas o Link ser client component */
+}
 
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import logo from "../../../public/poupa-logo.png";
 import { Button } from "./button";
 
@@ -18,11 +22,11 @@ const Header = () => {
         </Link>
 
         {/* links para as outras páginas*/}
-        <div className="flex">
+        <div className="gap-[50px] flex  items-center">
           <Link
-            className={`text-header ${
+            className={`text-header h-fit ${
               pathname === "/" ? "text-header-active" : ""
-            }`}
+            }  transition-all`}
             href="/"
           >
             Planejar Finanças

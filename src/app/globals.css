@@ -5,12 +5,14 @@
 *::before,
 *::after {
   font-family: var(--font-source-sans-3);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
-  color: var(--color-gray-950);
 }
 
 @layer base {
+  body {
+    color: var(--color-gray-950);
+  }
   h1 {
     font-size: 48px;
     font-weight: 800;
@@ -54,23 +56,26 @@
   font-family: var(--font-rubik);
 }
 .text-body {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
 }
 .text-bold {
   font-weight: 700;
 }
 .text-light {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
 }
 .text-header {
-  font-size: 22px;
+  font-size: 20px;
   line-height: 150%;
   font-weight: 600;
   color: var(--color-emerald-500);
+  transition: all 0.3s;
+  &:hover {
+    color: var(--color-emerald-600);
+  }
 }
-
 .text-header-active {
   text-decoration: underline;
 }
