@@ -14,7 +14,7 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className="default-shadow flex w-full px-[200px] pt-[24px] pb-[18px]">
+    <header className="header-shadow flex w-full px-[200px] pt-[40px] pb-[28px]">
       <nav className="container flex justify-between">
         {/* logotipo e link */}
         <Link href="/" className="">

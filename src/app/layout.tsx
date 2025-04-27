@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Rubik, Source_Sans_3 } from "next/font/google";
 
+import { Footer } from "@/components/ui/footer";
 import { Header } from "@/components/ui/header";
 
 // Fonte do titulo
@@ -38,6 +39,7 @@ export default function RootLayout({
       >
         <Header />
         <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );
