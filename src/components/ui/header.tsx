@@ -14,19 +14,19 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className="w-full px-[200px] pt-[24px] pb-[18px] flex default-shadow ">
-      <nav className="flex justify-between w-full ">
+    <header className="default-shadow flex w-full px-[200px] pt-[24px] pb-[18px]">
+      <nav className="flex w-full justify-between">
         {/* logotipo e link */}
         <Link href="/" className="">
           <Image src={logo} alt="Logotipo do Poupa+" /> {/* Este é o Header */}
         </Link>
 
         {/* links para as outras páginas*/}
-        <div className="gap-[50px] flex  items-center">
+        <div className="flex items-center gap-[50px]">
           <Link
             className={`text-header h-fit ${
               pathname === "/" ? "text-header-active" : ""
-            }  transition-all`}
+            } transition-all`}
             href="/"
           >
             Planejar Finanças
