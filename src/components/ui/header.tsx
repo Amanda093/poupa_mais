@@ -15,7 +15,7 @@ const Header = () => {
 
   return (
     <header className="default-shadow flex w-full px-[200px] pt-[24px] pb-[18px]">
-      <nav className="flex w-full justify-between">
+      <nav className="container flex justify-between">
         {/* logotipo e link */}
         <Link href="/" className="">
           <Image src={logo} alt="Logotipo do Poupa+" /> {/* Este é o Header */}

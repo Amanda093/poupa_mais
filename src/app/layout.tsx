@@ -36,7 +36,7 @@ export default function RootLayout({
       <body
         className={`${fontRubik.variable} ${fontSource_Sans_3.variable} antialiased`}
       >
-        <Header></Header>
+        <Header />
         <main>{children}</main>
       </body>
     </html>
