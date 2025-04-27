@@ -1,18 +1,11 @@
-"use client";
-{
-  /*TODO: Alterar para apenas o Link ser client component */
-}
-
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 import logo from "../../../public/poupa-logo.png";
 import { Button } from "./button";
+import { LinkHeader } from "./link-header";
 
 const Header = () => {
-  const pathname = usePathname();
-
   return (
     <header className="header-shadow flex w-full px-[200px] pt-[40px] pb-[28px]">
       <nav className="container flex justify-between">
@@ -23,16 +16,12 @@ const Header = () => {
 
         {/* links para as outras páginas*/}
         <div className="flex items-center gap-[50px]">
-          <Link
-            className={`text-header h-fit ${
-              pathname === "/" ? "text-header-active" : ""
-            } transition-all`}
-            href="/"
-          >
-            Planejar Finanças
-          </Link>
-
-          <Button variant="default">Login</Button>
+          <LinkHeader text="Planejar Finanças" path="/"></LinkHeader>
+          <Button variant="default" asChild>
+            <Link href="/" className="">
+              Login
+            </Link>
+          </Button>
         </div>
       </nav>
     </header>
