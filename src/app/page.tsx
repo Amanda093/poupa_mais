@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/ui/footer";
 import { Input } from "@/components/ui/input";
+import { Title } from "@/components/ui/title";
 
 export default function Home() {
   return (
     <div>
       <div className="container mx-auto !max-w-[1270px] py-[60px]">
-        <h1>Controle seus gastos.</h1>
-        <h1 className="pb-6 text-emerald-500">Planeje seu futuro.</h1>
+        <Title
+          mainTitle="Controle seus gastos."
+          subTitle="Planeje seu futuro."
+        />
         <div className="flex gap-[1%]">
           <div className="flex w-[33%] flex-col gap-4">
             <div className="max-w-[400px]">
@@ -62,7 +65,9 @@ export default function Home() {
           </div>
         </div>
         {/*TODO: adicionar button com icon */}
-        <Button className="mx-auto w-fit">Adicionar Despesa</Button>
+        <Button variant="outline" className="mx-auto w-fit">
+          Adicionar Despesa
+        </Button>
         {/*TODO: terminar formulário */}
       </div>
       <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
