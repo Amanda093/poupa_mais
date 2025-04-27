@@ -14,7 +14,7 @@ const ChatComponent: React.FunctionComponent<IChatComponentProps> = () => {
     const [custeio, setCusteio] = useState<Custeio>({
         renda: '',
         gastos: [{ nome: '', valor: '' }],
-        regiao: ''
+        estado: 0
       });
     
       const handleChangeRenda = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,8 +27,8 @@ const ChatComponent: React.FunctionComponent<IChatComponentProps> = () => {
         setCusteio({ ...custeio, gastos: novosGastos });
       };
 
-      const handleChangeRegiao = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setCusteio({...custeio, regiao: e.target.value});
+      const handleChangeEstado = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setCusteio({...custeio, estado: Number(e.target.value)});
       };
     
       const addGastos = () => {
@@ -61,18 +61,19 @@ const ChatComponent: React.FunctionComponent<IChatComponentProps> = () => {
             />
 
             <label htmlFor="regiao-select">Selecione sua região:</label>
-            <select 
+            <select
             id='regiao-select'
-            className='flex flex-col items-center p-4 bg-gray-50'
-            value={custeio.regiao}
-            onChange={handleChangeRegiao}
+            className='flex flex-col items-center p-4 bg-gray-50 border rounded-lg'
+            value={custeio.estado}
+            onChange={(e) => handleChangeEstado(e)}
             >
-              <option value={1}>Norte</option>
+              <option value={35}>São Paulo</option>
               <option value={2}>Nordeste</option>
               <option value={3}>Centro-Oeste</option>
               <option value={4}>Sul</option>
               <option value={5}>Sudeste</option>
             </select>
+
             {custeio.gastos.map((gasto, index) => (
                 <div key={index} className='flex flex-row overflow-y-auto'>
                 <input type='text'

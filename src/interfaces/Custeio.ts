@@ -6,7 +6,7 @@ interface Gasto {
 interface Custeio {
     renda: string,
     gastos: Gasto[]
-    regiao: string
+    estado: number
 }
 
 export type {Custeio};
