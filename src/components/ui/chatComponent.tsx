@@ -1,5 +1,6 @@
 "use client";
 
+import { codigosEstadosIBGE } from '@/context/global';
 import useChatbot from '@/hooks/useChatbot';
 import { Custeio } from '@/interfaces/Custeio';
 import React, { useState } from 'react';
@@ -11,12 +12,18 @@ interface IChatComponentProps {
 
 const ChatComponent: React.FunctionComponent<IChatComponentProps> = () => {
 
-    const [custeio, setCusteio] = useState<Custeio>({
+    
+
+      const estadosOrdenados = Object.entries(codigosEstadosIBGE).sort((a, b) => a[1].localeCompare(b[1]));
+      const primeiroEstadoKey = estadosOrdenados[0][0];
+      const [estadoSelecionado, setEstadoSelecionado] = useState<string>(primeiroEstadoKey);
+    
+      const [custeio, setCusteio] = useState<Custeio>({
         renda: '',
         gastos: [{ nome: '', valor: '' }],
-        estado: 0
+        estado: Number(estadosOrdenados[0][0])
       });
-    
+
       const handleChangeRenda = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCusteio({ ...custeio, renda: e.target.value });
       };
@@ -25,10 +32,6 @@ const ChatComponent: React.FunctionComponent<IChatComponentProps> = () => {
         const novosGastos = [...custeio.gastos];
         novosGastos[index][campo] = value;
         setCusteio({ ...custeio, gastos: novosGastos });
-      };
-
-      const handleChangeEstado = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setCusteio({...custeio, estado: Number(e.target.value)});
       };
     
       const addGastos = () => {
@@ -60,20 +63,28 @@ const ChatComponent: React.FunctionComponent<IChatComponentProps> = () => {
                 onChange={(e) => handleChangeRenda(e)}
             />
 
-            <label htmlFor="regiao-select">Selecione sua região:</label>
+            <label htmlFor="regiao-select">Selecione seu estado:</label>
             <select
-            id='regiao-select'
-            className='flex flex-col items-center p-4 bg-gray-50 border rounded-lg'
-            value={custeio.estado}
-            onChange={(e) => handleChangeEstado(e)}
+              id='regiao-select'
+              className='flex flex-col items-center p-4 bg-gray-50 border rounded-lg'
+              value={estadoSelecionado}
+              onChange={(e) => {
+                const novoEstado = Number(e.target.value);
+                setEstadoSelecionado(e.target.value);
+                setCusteio((prev) => ({
+                  ...prev,
+                  estado: novoEstado,
+                }));
+              }}
             >
-              <option value={35}>São Paulo</option>
-              <option value={2}>Nordeste</option>
-              <option value={3}>Centro-Oeste</option>
-              <option value={4}>Sul</option>
-              <option value={5}>Sudeste</option>
+              {estadosOrdenados.map(([key, value]) => (
+                <option value={key} key={key}>
+                  {value}
+                </option>
+              ))}
             </select>
 
+            Selecione seus gastos:
             {custeio.gastos.map((gasto, index) => (
                 <div key={index} className='flex flex-row overflow-y-auto'>
                 <input type='text'
