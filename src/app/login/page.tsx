@@ -66,7 +66,7 @@ const LoginPage = () => {
         </div>
       </div>
       {/* Banner */}
-      <Banner />
+      <Banner containerClassName=" right-0 pl-0" />
     </div>
   );
 };

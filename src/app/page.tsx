@@ -1,6 +1,12 @@
 import Image from "next/image";
 
-import { Button, ExpenseForm, Footer, Input, Title } from "@/components";
+import {
+  Button,
+  ExpenseForm,
+  Footer,
+  Title,
+  UserBasicInfoForm,
+} from "@/components";
 
 import IA from "../../public/IA.png";
 
@@ -13,40 +19,11 @@ export default function Home() {
           subTitle="Planeje seu futuro."
         />
 
-        <div className="flex gap-[1%]">
-          <div className="flex w-[33%] flex-col gap-4">
-            <div className="max-w-[400px]">
-              <label htmlFor="monthpay">Qual sua renda mensal?</label>
-              <Input
-                id="monthpay"
-                type="money"
-                placeholder="R$ 0,00"
-                variant="background"
-              />
-            </div>
-            <p className="text-light">
-              Esse é o total que você recebe por mês.
-            </p>
-          </div>
-          <div className="flex w-[33%] flex-col gap-4">
-            <div className="max-w-[400px]">
-              <label htmlFor="state">Onde você mora?</label>
-              {/*TODO: trocar esse input por um select ou um input com pesquisa */}
-              <Input
-                type="text"
-                id="state"
-                placeholder="Ex: São Paulo"
-                variant="background"
-              />
-            </div>
-            <p className="text-light">
-              Isso nos ajuda a gerar planejamentos mais precisos
-            </p>
-          </div>
-        </div>
+        {/* Formulário 01 */}
+        <UserBasicInfoForm />
       </div>
 
-      {/* Formulário */}
+      {/* Formulário 02 */}
       <ExpenseForm />
 
       <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
