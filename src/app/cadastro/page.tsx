@@ -1,23 +1,13 @@
-import Image from "next/image";
 import Link from "next/link";
 
-import { Button } from "@/components";
-
-import banner from "../../../public/banner.png";
+import { Banner, Button } from "@/components";
 
 const CadastroPage = () => {
   return (
     <div className="relative mx-auto flex h-[calc(100vh-6em)] w-screen max-w-[2000px] justify-between overflow-y-hidden">
       {/* Banner */}
-      <div className="absolute top-0 left-0 h-full w-[50%] p-[1em] pr-0 max-lg:hidden">
-        <div className="flex size-full items-center justify-center rounded-[2em] bg-gray-950 px-[12.5%] py-[5%]">
-          <Image
-            src={banner}
-            className="max-h-full max-w-full object-scale-down"
-            alt="Banner"
-          />
-        </div>
-      </div>
+      <Banner containerClassName="left-0 pr-0 p-[1em]" />
+
       <div className="absolute top-0 right-0 flex min-h-[calc(100vh-6em)] w-[50%] items-center justify-center max-lg:w-full">
         {/* Formulário */}
         <div className="max-h-[calc(100vh-6em)] w-full max-w-[24.5em] overflow-y-auto px-[1em] py-[2em]">
