@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { Button, Footer, Input, Title } from "@/components";
 
+import IA from "../../public/IA.png";
 import plus from "../../public/plus.png";
 
 export default function Home() {
@@ -66,11 +67,12 @@ export default function Home() {
             <Input type="text" placeholder="Contas" variant="default" />
           </div>
         </div>
-        {/*TODO: adicionar button com icon */}
+
         <Button variant="outline" className="mx-auto w-fit">
           <Image src={plus} alt="Adicionar" />
           Adicionar Despesa
         </Button>
+
         {/*TODO: terminar formulário */}
       </div>
       <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
@@ -78,9 +80,14 @@ export default function Home() {
           <h2>Terminou?</h2>
           <p>Agora nós entramos em ação!</p>
         </div>
-        {/*TODO: adicionar button com icon */}
-        <Button className="w-fit">Gerar Planejamento</Button>
+
+        <Button className="w-fit">
+          <Image src={IA} alt="Simbolo de IA" />
+          Gerar Planejamento
+        </Button>
       </div>
+
+      {/* Footer */}
       <Footer />
     </div>
   );
