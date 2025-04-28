@@ -1,21 +1,24 @@
+import "./globals.css";
+
 import type { Metadata } from "next";
 import { Rubik, Source_Sans_3 } from "next/font/google";
-import "./globals.css";
+
+import { Header } from "@/components";
 
 // Fonte do titulo
 const fontRubik = Rubik({
   variable: "--font-rubik",
   subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  // 400 = normal, 500 = medium, 700 = bold, 800 = extrabold
+  weight: ["400", "600", "700", "800"],
+  // 400 = regular, 600 = semibold, 700 = bold, 800 = extrabold
 });
 
 // Fonte do texto
 const fontSource_Sans_3 = Source_Sans_3({
   variable: "--font-source-sans-3",
   subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  // 400 = normal, 500 = medium, 700 = bold, 800 = extrabold
+  weight: ["400", "600", "700", "800"],
+  // 400 = regular, 600 = semibold, 700 = bold, 800 = extrabold
 });
 
 export const metadata: Metadata = {
@@ -33,7 +36,8 @@ export default function RootLayout({
       <body
         className={`${fontRubik.variable} ${fontSource_Sans_3.variable} antialiased`}
       >
-        <main>{children}</main>
+        <Header />
+        <main className="overflow-hidden">{children}</main>
       </body>
     </html>
   );
