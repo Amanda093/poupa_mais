@@ -16,8 +16,13 @@ export default function Home() {
         <div className="flex gap-[1%]">
           <div className="flex w-[33%] flex-col gap-4">
             <div className="max-w-[400px]">
-              <p>Qual sua renda mensal?</p>
-              <Input type="money" placeholder="R$ 0,00" variant="background" />
+              <label htmlFor="monthpay">Qual sua renda mensal?</label>
+              <Input
+                id="monthpay"
+                type="money"
+                placeholder="R$ 0,00"
+                variant="background"
+              />
             </div>
             <p className="text-light">
               Esse é o total que você recebe por mês.
@@ -25,10 +30,11 @@ export default function Home() {
           </div>
           <div className="flex w-[33%] flex-col gap-4">
             <div className="max-w-[400px]">
-              <p>Onde você mora?</p>
+              <label htmlFor="state">Onde você mora?</label>
               {/*TODO: trocar esse input por um select ou um input com pesquisa */}
               <Input
                 type="text"
+                id="state"
                 placeholder="Ex: São Paulo"
                 variant="background"
               />

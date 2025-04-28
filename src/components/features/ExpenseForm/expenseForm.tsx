@@ -16,15 +16,15 @@ const ExpenseForm = () => {
       </div>
       <div className="flex gap-[2.5%]">
         <div className="w-[30%]">
-          <p>Despesa</p>
+          <label>Despesa</label>
           <Input type="text" placeholder="Ex: Conta de luz" variant="default" />
         </div>
         <div className="w-[30%]">
-          <p>Gasto Mensal</p>
+          <label>Gasto Mensal</label>
           <Input type="money" placeholder="R$ 0,00" variant="default" />
         </div>
         <div className="w-[30%]">
-          <p>Categoria</p>
+          <label>Categoria</label>
           {/*TODO: trocar esse input por um select ou um input com pesquisa */}
           <Input type="text" placeholder="Contas" variant="default" />
         </div>
