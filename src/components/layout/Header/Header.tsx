@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import logo from "../../../public/poupa-logo.png";
-import { Button } from "./button";
-import { LinkHeader } from "./link-header";
+import { Button } from "../../ui/button";
+import { LinkHeader } from "../../ui/link-header";
+import logo from "../assets/poupa-logo.png";
 
 const Header = () => {
   return (

@@ -1,7 +1,7 @@
 import Image from "next/image";
 
+import { Footer } from "@/components";
 import { Button } from "@/components/ui/button";
-import { Footer } from "@/components/ui/footer";
 import { Input } from "@/components/ui/input";
 import { Title } from "@/components/ui/title";
 
