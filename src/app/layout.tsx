@@ -37,7 +37,7 @@ export default function RootLayout({
         className={`${fontRubik.variable} ${fontSource_Sans_3.variable} antialiased`}
       >
         <Header />
-        <main>{children}</main>
+        <main className="overflow-hidden">{children}</main>
       </body>
     </html>
   );

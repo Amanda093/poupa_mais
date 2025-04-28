@@ -1,74 +1,82 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Button, Input } from "@/components";
+import { Button, Checkbox, Input } from "@/components";
 
 import banner from "../../../public/banner.png";
 
 const LoginPage = () => {
   return (
-    <div className="container mx-auto flex max-w-[1270px] items-center justify-between py-[60px]">
-      {/* Formulário */}
-      <div className="flex w-full max-w-md flex-col gap-6">
-        <div className="flex flex-col gap-1 text-center">
-          <h1 className="pb-1">Login</h1>
-          <p className="">Bem-vindo de volta!</p>
+    <div className="relative mx-auto flex h-[calc(100vh-6em)] w-screen max-w-[2000px] justify-between overflow-y-hidden">
+      <div className="absolute top-0 left-0 flex min-h-[calc(100vh-6em)] w-[50%] items-center justify-center max-lg:w-full">
+        {/* Formulário */}
+        <div className="max-h-[calc(100vh-6em)] w-full max-w-[24.5em] overflow-y-auto px-[1em] py-[2em]">
+          <div className="flex w-full flex-col gap-6">
+            <div className="flex flex-col gap-1 text-center">
+              <h1 className="pb-1">Login</h1>
+              <p className="">Bem-vindo de volta!</p>
+            </div>
+
+            {/* Inputs */}
+            <div className="flex flex-col">
+              <div className="">
+                <label htmlFor="email" className="">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  variant="default"
+                />
+              </div>
+
+              <div className="py-5">
+                <label className="">Senha</label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="********"
+                  variant="default"
+                />
+              </div>
+
+              {/* Checkbox */}
+              <div className="flex items-center gap-2">
+                <Checkbox id="remember" />
+                <label htmlFor="remember" className="">
+                  Mantenha-me conectado
+                </label>
+              </div>
+            </div>
+
+            {/* Botão */}
+            <Button variant="default" className="w-full">
+              Logar
+            </Button>
+
+            {/* Cadastro */}
+            <p className="flex gap-[0.25em]">
+              Não tem uma conta?
+              <Link
+                href="/cadastro"
+                className="text-emerald-500 hover:underline"
+              >
+                Cadastrar
+              </Link>
+            </p>
+          </div>
         </div>
-
-        {/* Inputs */}
-        <div className="flex flex-col">
-          <div className="">
-            <label htmlFor="email" className="">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              variant="default"
-            />
-          </div>
-
-          <div className="py-5">
-            <label className="">Senha</label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="********"
-              variant="default"
-            />
-          </div>
-
-          {/* Checkbox */}
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="remember"
-              className="size-4 rounded border border-gray-300"
-            />
-            <label htmlFor="remember" className="">
-              Mantenha-me conectado
-            </label>
-          </div>
-        </div>
-
-        {/* Botão */}
-        <Button variant="default" className="w-full">
-          Logar
-        </Button>
-
-        {/* Cadastro */}
-        <p className="">
-          Não tem uma conta?{" "}
-          <Link href="/cadastro" className="text-emerald-500 hover:underline">
-            Cadastrar
-          </Link>
-        </p>
       </div>
-
       {/* Banner */}
-      <div className="">
-        <Image src={banner} alt="Banner" width={850} />
+      <div className="absolute top-0 right-0 h-full w-[50%] p-[1em] pl-0 max-lg:hidden">
+        <div className="flex size-full items-center justify-center rounded-[2em] bg-gray-950 px-[12.5%] py-[5%]">
+          <Image
+            src={banner}
+            className="max-h-full max-w-full object-scale-down"
+            alt="Banner"
+          />
+        </div>
       </div>
     </div>
   );
