@@ -21,7 +21,8 @@ const ChatComponent: React.FunctionComponent<IChatComponentProps> = () => {
       const [custeio, setCusteio] = useState<Custeio>({
         renda: '',
         gastos: [{ nome: '', valor: '' }],
-        estado: Number(estadosOrdenados[0][0])
+        estado: Number(estadosOrdenados[0][0]),
+        obs: ''
       });
 
       const handleChangeRenda = (e: React.ChangeEvent<HTMLInputElement>) => {

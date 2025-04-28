@@ -14,11 +14,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const mensagem = req.body as Custeio;
     console.log(mensagem.estado || 'sem valor no estado');
 
-    let siglaEstado = '';
+    let siglaEstado, observacao = '';
     if(mensagem.estado){
         siglaEstado = codigosEstadosIBGE[mensagem.estado];
     } else{
         return res.status(400).json({ error: 'Estado inválido ou não informado' });
+    }
+    if(mensagem.obs){
+        observacao = 'Observações do usuário: ', mensagem.obs;
     }
 
     async function buscarDadosEconomia(codigoEstado: number) {
@@ -61,6 +64,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
             Gastos mensais informados:
             ${gastosFormat}
+
+            ${observacao}
 
             Cenário econômico atual:
             - Taxa Selic: ${economia.taxaSelic}% (dados de ${economia.dataReferencia})
