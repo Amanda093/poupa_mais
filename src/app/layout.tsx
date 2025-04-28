@@ -3,7 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Rubik, Source_Sans_3 } from "next/font/google";
 
-import { Header } from "@/components/layout";
+import { Header } from "@/components";
 
 // Fonte do titulo
 const fontRubik = Rubik({
