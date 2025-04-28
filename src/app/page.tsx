@@ -40,6 +40,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Formulário */}
       <ExpenseForm />
 
       <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
