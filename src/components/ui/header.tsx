@@ -18,7 +18,7 @@ const Header = () => {
         <div className="flex items-center gap-[50px]">
           <LinkHeader text="Planejar Finanças" path="/"></LinkHeader>
           <Button variant="default" asChild>
-            <Link href="/" className="">
+            <Link href="/login" className="">
               Login
             </Link>
           </Button>
