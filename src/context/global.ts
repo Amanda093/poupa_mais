@@ -28,4 +28,19 @@ const codigosEstadosIBGE: Record<number, string> = {
   53: "Distrito Federal",
 };
 
-export { codigosEstadosIBGE };
+const categorias = [
+  "Moradia",
+  "Alimentação",
+  "Transporte",
+  "Saúde",
+  "Educação",
+  "Compras pessoais",
+  "Lazer e entretenimento",
+  "Tecnologia e comunicação",
+  "Financeiro",
+  "Presentes e doações",
+  "Pets",
+  "Manutenção e emergências",
+];
+
+export { categorias, codigosEstadosIBGE };

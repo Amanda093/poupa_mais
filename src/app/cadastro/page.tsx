@@ -1,6 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 
-import { Banner, Button } from "@/components";
+import { Banner, Button, Input } from "@/components";
+
+import password from "../../../public/password.png";
 
 const CadastroPage = () => {
   return (
@@ -18,7 +21,75 @@ const CadastroPage = () => {
             </div>
 
             {/* Inputs */}
-            <div className="flex flex-col">{/*TODO: inserir Inputs */}</div>
+            <div className="flex flex-col">
+              {/*TODO: inserir Inputs */}
+              <div className="pb-5">
+                <label htmlFor="nome" className="">
+                  Nome
+                </label>
+                <Input
+                  id="nome"
+                  type="text"
+                  placeholder="Digite seu nome..."
+                  variant="default"
+                />
+              </div>
+
+              <div className="pb-5">
+                <label htmlFor="email" className="">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  variant="default"
+                />
+              </div>
+
+              <div className="pb-5">
+                <label htmlFor="datadenascimento" className="">
+                  Data de nascimento
+                </label>
+                <Input id="datadenascimento" type="date" variant="default" />
+              </div>
+
+              <div className="pb-5">
+                <label className="">Senha</label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="********"
+                  variant="default"
+                  icon={
+                    <Image
+                      src={password}
+                      alt="Ícone Senha"
+                      width={20}
+                      height={20}
+                    />
+                  }
+                />
+              </div>
+
+              <div className="pb-5">
+                <label className="">Confirmar senha</label>
+                <Input
+                  id="confirmpassword"
+                  type="password"
+                  placeholder="********"
+                  variant="default"
+                  icon={
+                    <Image
+                      src={password}
+                      alt="Ícone Senha"
+                      width={20}
+                      height={20}
+                    />
+                  }
+                />
+              </div>
+            </div>
 
             {/* Botão */}
             <Button variant="default" className="w-full">

@@ -42,16 +42,16 @@ function SelectTrigger({
       data-size={size}
       data-variant={variant} // <== Variantes
       className={cn(
-        "focus:invalid:rose-glow focus:emerald-glow flex w-full min-w-0 rounded-[0.5em] px-3 py-[0.3em] text-[0.9em] font-[400] shadow-xs outline-[0.15em] outline-slate-400 transition-[color,box-shadow] transition-all duration-300 outline-solid file:inline-flex file:h-7 file:border-0 file:bg-transparent placeholder:text-slate-400 invalid:outline-rose-500 focus:outline-[0.175em] focus:outline-emerald-400 focus:invalid:outline-rose-500 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+        "aria-expanded:invalid:rose-glow aria-expanded:emerald-glow ttransition-all flex w-full min-w-0 items-center justify-between rounded-[0.5em] bg-white px-3 py-[0.3em] text-[0.9em] font-[400] outline-[0.15em] outline-slate-400 duration-300 outline-solid file:inline-flex file:h-7 file:border-0 file:bg-transparent placeholder:text-slate-400 invalid:outline-rose-500 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-expanded:outline-[0.175em] aria-expanded:outline-emerald-400 aria-expanded:invalid:outline-rose-500",
         variant === "background" &&
-          "border-transparent bg-emerald-50 text-emerald-500 outline-emerald-400 placeholder:text-emerald-400 focus:outline-emerald-500",
+          "border-transparent text-emerald-500 outline-emerald-400 placeholder:text-emerald-400 focus:outline-emerald-500",
         className,
       )}
       {...props}
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="size-4 opacity-50" />
+        <ChevronDownIcon className="size-4 opacity-80" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -68,7 +68,7 @@ function SelectContent({
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          "text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border bg-emerald-50 text-emerald-500 shadow-md outline-emerald-400",
+          "text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border bg-white text-emerald-500 shadow-md outline-emerald-400",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
           className,

@@ -14,7 +14,7 @@ import {
   SelectValue,
   Title,
 } from "@/components";
-import { codigosEstadosIBGE } from "@/context";
+import { categorias, codigosEstadosIBGE } from "@/context";
 import { Custeio } from "@/interface";
 
 import IA from "../../public/IA.png";
@@ -32,14 +32,14 @@ export default function Home() {
 
   const [custeio, setCusteio] = useState<Custeio>({
     renda: "",
-    gastos: [{ nome: "", valor: "" }],
+    gastos: [{ nome: "", valor: "", categoria: "" }],
     estado: Number(estadosOrdenados[0][0]),
     obs: "",
   });
 
   const handleChangeGastos = (
     index: number,
-    campo: "nome" | "valor",
+    campo: "nome" | "valor" | "categoria",
     value: string,
   ) => {
     const novosGastos = [...custeio.gastos];
@@ -50,7 +50,7 @@ export default function Home() {
   const addGastos = () => {
     setCusteio({
       ...custeio,
-      gastos: [...custeio.gastos, { nome: "", valor: "" }],
+      gastos: [...custeio.gastos, { nome: "", valor: "", categoria: "" }],
     });
   };
 
@@ -89,8 +89,10 @@ export default function Home() {
 
         {/* Formulário - Parte 01 */}
         <div className="flex gap-[1%]">
+          {/* Renda Mensal */}
           <div className="flex w-[33%] flex-col gap-4">
-            <div className="max-w-[400px]">
+            <div className="max-w-[380px]">
+              {/* TODO: adicionar bloqueio de letras */}
               <label htmlFor="monthpay">Qual sua renda mensal?</label>
               <Input
                 id="monthpay"
@@ -98,13 +100,16 @@ export default function Home() {
                 placeholder="R$ 0,00"
                 variant="background"
                 value={custeio.renda}
-                onChange={(e) => handleChangeRenda(e)}
+                onChange={handleChangeRenda}
               />
             </div>
             <p className="text-light">
               Esse é o total que você recebe por mês.
             </p>
           </div>
+
+          {/* Onde Você Mora */}
+          {/* TODO: arrumar estilo */}
           <div className="flex w-[33%] flex-col gap-4">
             <div className="max-w-[400px]">
               <label htmlFor="state">Onde você mora?</label>
@@ -128,7 +133,7 @@ export default function Home() {
               </Select>
             </div>
             <p className="text-light">
-              Isso nos ajuda a gerar planejamentos mais precisos
+              Isso nos ajuda a gerar planejamentos mais precisos.
             </p>
           </div>
         </div>
@@ -161,6 +166,7 @@ export default function Home() {
             </div>
             <div className="w-[30%]">
               <label>Gasto Mensal</label>
+              {/* TODO: adicionar bloqueio de letras */}
               <Input
                 type="money"
                 value={gasto.valor}
@@ -173,8 +179,24 @@ export default function Home() {
             </div>
             <div className="w-[30%]">
               <label>Categoria</label>
-              {/*TODO: trocar esse input por um select ou um input com pesquisa */}
-              <Input type="text" placeholder="Contas" variant="default" />
+              <Select
+                value={gasto.categoria}
+                onValueChange={(value) =>
+                  handleChangeGastos(index, "categoria", value)
+                }
+              >
+                <SelectTrigger className="flex" variant="default">
+                  <SelectValue placeholder="Selecione uma categoria" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {categorias.map((categoria) => (
+                    <SelectItem value={categoria} key={categoria}>
+                      {categoria}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <Button
               onClick={() => removeGasto(index)}

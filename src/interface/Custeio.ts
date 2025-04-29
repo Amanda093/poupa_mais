@@ -1,6 +1,7 @@
 interface Gasto {
   nome: string;
   valor: string;
+  categoria: string;
 }
 
 interface Custeio {
