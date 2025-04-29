@@ -1,11 +1,43 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import React, { useState } from "react";
 
 import { Banner, Button, Input } from "@/components";
 
-import password from "../../../public/password.png";
+import password_png from "../../../public/password.png";
 
 const CadastroPage = () => {
+  const [password, setPassword] = useState("");
+
+  function verificarForcaSenha(senha: string): string {
+    const temMinuscula = /[a-z]/.test(senha);
+    const temMaiuscula = /[A-Z]/.test(senha);
+    const temNumero = /[0-9]/.test(senha);
+    const temEspecial = /[^A-Za-z0-9]/.test(senha);
+
+    const requisitos = [
+      temMinuscula,
+      temMaiuscula,
+      temNumero,
+      temEspecial,
+    ].filter(Boolean).length;
+
+    if (senha.length < 6) {
+      return "Fraca";
+    }
+    if (requisitos === 2 || requisitos === 3) {
+      return "Média";
+    }
+    if (requisitos === 4) {
+      return "Forte";
+    }
+    return "Fraca";
+  }
+
+  const forcaSenha = verificarForcaSenha(password);
+
   return (
     <div className="relative mx-auto flex h-[calc(100vh-6em)] w-screen max-w-[2000px] justify-between overflow-y-hidden">
       {/* Banner */}
@@ -59,11 +91,13 @@ const CadastroPage = () => {
                 <Input
                   id="password"
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="********"
                   variant="default"
                   icon={
                     <Image
-                      src={password}
+                      src={password_png}
                       alt="Ícone Senha"
                       width={20}
                       height={20}
@@ -81,13 +115,31 @@ const CadastroPage = () => {
                   variant="default"
                   icon={
                     <Image
-                      src={password}
+                      src={password_png}
                       alt="Ícone Senha"
                       width={20}
                       height={20}
                     />
                   }
                 />
+              </div>
+
+              <div>
+                {/* TODO: colocar imagem */}
+                <p className="">
+                  Senha:{" "}
+                  <span
+                    className={
+                      forcaSenha === "Forte"
+                        ? "text-emerald-500"
+                        : forcaSenha === "Média"
+                          ? "text-orange-500"
+                          : "text-rose-500"
+                    }
+                  >
+                    {forcaSenha}
+                  </span>
+                </p>
               </div>
             </div>
 
