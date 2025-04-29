@@ -134,10 +134,11 @@ const CadastroPage = () => {
               </div>
 
               <div>
-                <p className="flex">
+                <p className="flex gap-[0.2em]
+                ">
                   Senha:
                   {forcaSenha === "Forte" ? (
-                    <span className="flex items-center gap-1 py-7 text-emerald-500">
+                    <span className="flex items-center gap-1 text-emerald-500">
                       {forcaSenha}
                       <FaCheckCircle size={16} />
                     </span>
