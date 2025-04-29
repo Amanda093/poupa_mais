@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
@@ -17,6 +18,7 @@ import {
   Title,
 } from "@/components";
 import { categorias, codigosEstadosIBGE } from "@/context";
+import { useChatbot } from "@/hooks";
 import { Custeio } from "@/interface";
 
 import IA from "../../public/IA.png";
@@ -70,7 +72,6 @@ export default function Home() {
     setEstadoSelecionado(value);
   };
 
-  /*
   const { mensagemBot, sendMensagem } = useChatbot();
 
   const handleSend = () => {
@@ -78,7 +79,6 @@ export default function Home() {
 
     sendMensagem(envio);
   };
-  */
 
   return (
     <div>
@@ -113,7 +113,9 @@ export default function Home() {
           {/* TODO: arrumar estilo */}
           <div className="flex w-[33%] flex-col gap-4">
             <div className="max-w-[400px]">
-              <label htmlFor="state">Onde você mora?</label>
+              <label htmlFor="state">
+                Selecione a região mais perto de sua residência:
+              </label>
               <Select
                 value={estadoSelecionado}
                 onValueChange={(value) => handleChangeEstado(value)}
@@ -148,59 +150,68 @@ export default function Home() {
         </div>
 
         {/* Inputs */}
-        {custeio.gastos.map((gasto, index) => (
-          <div key={index} className="flex items-end justify-center gap-[2.5%]">
-            <div className="w-[30%]">
-              <label>Despesa</label>
-              <Input
-                type="text"
-                value={gasto.nome}
-                placeholder={`Gasto ${index + 1}`}
-                variant="default"
-                onChange={(e) => {
-                  handleChangeGastos(index, "nome", e.target.value);
-                }}
-              />
-            </div>
-            <div className="w-[30%]">
-              <label>Gasto Mensal</label>
-              {/* TODO: adicionar bloqueio de letras */}
-              <Input
-                type="money"
-                value={gasto.valor}
-                placeholder="R$ 0,00"
-                variant="default"
-                onChange={(e) => {
-                  handleChangeGastos(index, "valor", e.target.value);
-                }}
-              />
-            </div>
-            <div className="w-[30%]">
-              <label>Categoria</label>
-              <Select
-                value={gasto.categoria}
-                onValueChange={(value) =>
-                  handleChangeGastos(index, "categoria", value)
-                }
-              >
-                <SelectTrigger className="flex" variant="default">
-                  <SelectValue placeholder="Selecione uma categoria" />
-                </SelectTrigger>
+        <AnimatePresence>
+          {custeio.gastos.map((gasto, index) => (
+            <motion.div
+              key={index}
+              className="flex items-end justify-center gap-[2.5%]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: "0.3" }}
+            >
+              <div className="w-[30%]">
+                <label>Despesa</label>
+                <Input
+                  type="text"
+                  value={gasto.nome}
+                  placeholder={`Gasto ${index + 1}`}
+                  variant="default"
+                  onChange={(e) => {
+                    handleChangeGastos(index, "nome", e.target.value);
+                  }}
+                />
+              </div>
+              <div className="w-[30%]">
+                <label>Gasto Mensal</label>
+                {/* TODO: adicionar bloqueio de letras */}
+                <Input
+                  type="money"
+                  value={gasto.valor}
+                  placeholder="R$ 0,00"
+                  variant="default"
+                  onChange={(e) => {
+                    handleChangeGastos(index, "valor", e.target.value);
+                  }}
+                />
+              </div>
+              <div className="w-[30%]">
+                <label>Categoria</label>
+                <Select
+                  value={gasto.categoria}
+                  onValueChange={(value) =>
+                    handleChangeGastos(index, "categoria", value)
+                  }
+                >
+                  <SelectTrigger className="flex" variant="default">
+                    <SelectValue placeholder="Selecione uma categoria" />
+                  </SelectTrigger>
 
-                <SelectContent>
-                  {categorias.map((categoria) => (
-                    <SelectItem value={categoria} key={categoria}>
-                      {categoria}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <Button onClick={() => removeGasto(index)} variant="delete">
-              <MdDelete className="size-[1.25em]" />
-            </Button>
-          </div>
-        ))}
+                  <SelectContent>
+                    {categorias.map((categoria) => (
+                      <SelectItem value={categoria} key={categoria}>
+                        {categoria}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button onClick={() => removeGasto(index)} variant="delete">
+                <MdDelete className="size-[1.25em]" />
+              </Button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
 
         <Button onClick={addGastos} variant="outline" className="mx-auto w-fit">
           <IoMdAdd className="size-[1.35em]" />
@@ -216,11 +227,12 @@ export default function Home() {
           <p>Agora nós entramos em ação!</p>
         </div>
 
-        <Button className="w-fit px-[0.75em]">
+        <Button className="w-fit px-[0.75em]" onClick={handleSend}>
           <Image src={IA} alt="Simbolo de IA" />
           Gerar Planejamento
         </Button>
       </div>
+      <div className="py-5em">{mensagemBot}</div>
 
       {/* Footer */}
       <Footer />

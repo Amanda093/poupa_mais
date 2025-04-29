@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import { FaCheckCircle } from "react-icons/fa";
 
 import { Banner, Button, Input } from "@/components";
 
@@ -132,19 +133,18 @@ const CadastroPage = () => {
 
               <div>
                 {/* TODO: colocar imagem */}
-                <p className="">
-                  Senha: {/* isto aqui adiciona um espaço */}
-                  <span
-                    className={
-                      forcaSenha === "Forte"
-                        ? "text-emerald-500"
-                        : forcaSenha === "Média"
-                          ? "text-amber-600"
-                          : "text-rose-500"
-                    }
-                  >
-                    {forcaSenha}
-                  </span>
+                <p className="flex">
+                  Senha:
+                  {forcaSenha === "Forte" ? (
+                    <span className="flex items-center gap-1 text-emerald-500">
+                      {forcaSenha}
+                      <FaCheckCircle size={16} />
+                    </span>
+                  ) : forcaSenha === "Média" ? (
+                    <span className="text-amber-600">{forcaSenha}</span>
+                  ) : (
+                    <span className="text-red-600">{forcaSenha}</span>
+                  )}
                 </p>
               </div>
             </div>

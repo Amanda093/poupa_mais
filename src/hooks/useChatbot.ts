@@ -28,4 +28,4 @@ const useChatbot = () => {
   return { mensagemBot, sendMensagem };
 };
 
-export default useChatbot;
+export { useChatbot };

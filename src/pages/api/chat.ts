@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import fetch from "node-fetch";
 
 import { codigosEstadosIBGE } from "@/context/global";
-import { Custeio, DadoBCB } from "@/interface";
+import { Custeio, DadoBCB, DadoGrafico, DadoIBGE } from "@/interface";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
@@ -26,11 +26,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   async function buscarDadosEconomia(codigoEstado: number) {
     try {
-      // Aqui você pode alterar para pegar dados de economia para o estado específico
-      const respostaIBGE = await fetch(
-        `https://servicodados.ibge.gov.br/api/v3/agregados/6390/periodos/202301/variaveis/93?localidades=N3[${codigoEstado}]`,
-      );
-      const dadosIBGE = (await respostaIBGE.json()) as Record<string, unknown>;
+      const codigosEspeciais = new Set([5208707, 5300108]);
+      const gerarURLIBGE = (codigo: number) => {
+        const nivel = codigosEspeciais.has(codigo) ? "N6" : "N7";
+        return `https://servicodados.ibge.gov.br/api/v3/agregados/1705/periodos/-6/variaveis?localidades=${nivel}[${codigo}]`;
+      };
+      const respostaIBGE = await fetch(gerarURLIBGE(codigoEstado));
+      const dadosIBGE = (await respostaIBGE.json()) as DadoIBGE;
+
+      const formatadoIBGE = dadosIBGE
+        .map((item) => {
+          const nome = item.variavel;
+          const unidade = item.unidade;
+          const serie = item.resultados?.[0]?.series?.[0]?.serie;
+
+          const entradas = Object.entries(serie ?? {})
+            .map(([data, valor]) => `${data}: ${valor}`)
+            .join(", ");
+
+          return `${nome} (${unidade}): ${entradas}`;
+        })
+        .join("\n\n");
 
       const respostaBCB = await fetch(
         "https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados/ultimos/1?formato=json",
@@ -40,14 +56,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return {
         taxaSelic: dadosBCB[0]?.valor || "desconhecida",
         dataReferencia: dadosBCB[0]?.data || "desconhecida",
-        ibgeDadoExtra: dadosIBGE[0] || "desconhecida",
+        dadoIBGE: formatadoIBGE || "desconhecido",
       };
     } catch (error) {
       console.error("Erro ao buscar dados econômicos:", error);
       return {
         taxaSelic: "erro ao obter",
         dataReferencia: "erro ao obter",
-        ibgeDadoExtra: "erro ao obter",
+        dadoIBGE: "erro ao obter",
       };
     }
   }
@@ -63,26 +79,38 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .map((g) => `${g.nome}, que custa R$ ${g.valor}`)
       .join("\n");
 
-    const prompt = `
-            O usuário tem uma **renda mensal de R$ ${mensagem.renda}** e mora no estado de **${siglaEstado}**, Brasil.
-
-            Gastos mensais informados:
-            ${gastosFormat}
-
-            ${observacao}
-
-            Cenário econômico atual:
+    const systemprompt = `Você é um consultor financeiro que ajuda brasileiros com educação financeira. Alguns dados do cenário econômico da região estão aqui:
             - Taxa Selic: ${economia.taxaSelic}% (dados de ${economia.dataReferencia})
-            - Dados extra: ${economia.ibgeDadoExtra}
+            - Dados do IPCA15 do IBGE: ${economia.dadoIBGE}`;
 
-            Com base nisso, elabore um plano de economia para o usuário, incluindo:
-            - Estimativa de economia mensal
-            - Sugestões de corte de gastos
-            - Metas de curto, médio e longo prazo
-            - Dicas de investimento compatíveis com o cenário brasileiro atual.
+    const prompt = `
+              O usuário tem uma **renda mensal de R$ ${mensagem.renda}** e mora no estado de **${siglaEstado}**, Brasil.
 
-            Importante: Apenas devolva o plano de economia e os dados financeiros do usuário. Não comente sobre os dados econômicos utilizados.
-                    `;
+              Gastos mensais informados:
+              ${gastosFormat}
+
+              ${observacao}
+
+              Com base nisso, elabore um plano de economia para o usuário, incluindo:
+              - Estimativa de economia mensal
+              - Sugestões de corte de gastos
+              - Metas de curto, médio e longo prazo
+              - Dicas de investimento compatíveis com o cenário brasileiro atual
+
+              ⚠️ Além do plano acima, retorne também um **JSON estruturado** contendo os seguintes dados:
+              {
+                "economia_mensal_estimada": número,
+                "gastos_sugeridos_para_corte": [{ "categoria": string, "valor_sugerido": número }],
+                "metas": {
+                  "curto_prazo": string,
+                  "medio_prazo": string,
+                  "longo_prazo": string
+                },
+                "investimentos_sugeridos": [string]
+              }
+
+              ⚠️ O JSON deve vir abaixo do plano, em um **bloco separado e bem formatado** para que eu possa fazer parsing automático. Não explique o JSON, apenas mostre-o.
+              `;
 
     const out = await hf.chatCompletion({
       provider: "cerebras",
@@ -90,15 +118,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       messages: [
         {
           role: "system",
-          content:
-            "Você é um consultor financeiro que ajuda brasileiros com educação financeira.",
+          content: systemprompt,
         },
         { role: "user", content: prompt },
       ],
       max_tokens: 800,
       temperature: 0.7,
     });
-
     if (!out.choices || out.choices.length === 0) {
       return res
         .status(500)
@@ -106,8 +132,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const mensagemBot = out.choices[0].message.content;
+    if (!mensagemBot) {
+      return res.status(500).json({ error: "Mensagem da LLM não recebida" });
+    }
+    const [respostaTexto, jsonMatch] = mensagemBot.split(/(?=\{[\s\S]*\}$)/); // divide a resposta textual do JSON
 
-    res.status(200).json({ message: mensagemBot });
+    let dadosParaGraficos: DadoGrafico | null = null;
+    try {
+      dadosParaGraficos = JSON.parse(jsonMatch) as DadoGrafico;
+    } catch (e) {
+      console.error("Erro ao converter JSON retornado pela LLM:", e);
+    }
+
+    res.status(200).json({
+      message: respostaTexto.trim(),
+      dadosGraficos: dadosParaGraficos || null,
+    });
   } catch (error) {
     console.error("Erro ao processar:", error);
     res
