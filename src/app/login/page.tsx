@@ -60,7 +60,9 @@ const LoginPage = () => {
 
             {/* Botão */}
             <Button variant="default" className="w-full">
-              Logar
+              <Link href="/historico" className="">
+                Logar
+              </Link>
             </Button>
 
             {/* Cadastro */}

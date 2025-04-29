@@ -22,7 +22,6 @@ const CadastroPage = () => {
 
             {/* Inputs */}
             <div className="flex flex-col">
-              {/*TODO: inserir Inputs */}
               <div className="pb-5">
                 <label htmlFor="nome" className="">
                   Nome
@@ -54,6 +53,7 @@ const CadastroPage = () => {
                 <Input id="datadenascimento" type="date" variant="default" />
               </div>
 
+              {/*TODO: Fazer com que o password possa ser visualizado */}
               <div className="pb-5">
                 <label className="">Senha</label>
                 <Input
