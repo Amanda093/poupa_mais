@@ -10,8 +10,10 @@ import password_png from "../../../public/password.png";
 
 const CadastroPage = () => {
   const [password, setPassword] = useState("");
+  const [confirmpassword, setConfirmPassword] = useState("");
 
-  function verificarForcaSenha(senha: string): string {
+  // verifica se a senha sugerida pelo usuário é forte
+  const verificarForcaSenha = (senha: string): string => {
     const temMinuscula = /[a-z]/.test(senha);
     const temMaiuscula = /[A-Z]/.test(senha);
     const temNumero = /[0-9]/.test(senha);
@@ -34,8 +36,9 @@ const CadastroPage = () => {
       return "Forte";
     }
     return "Fraca";
-  }
+  };
 
+  // chama a const verificar de força da senha, colocando password como seu parametro
   const forcaSenha = verificarForcaSenha(password);
 
   return (
@@ -111,6 +114,8 @@ const CadastroPage = () => {
                 <Input
                   id="confirmpassword"
                   type="password"
+                  value={confirmpassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="********"
                   variant="default"
                   icon={
@@ -127,13 +132,13 @@ const CadastroPage = () => {
               <div>
                 {/* TODO: colocar imagem */}
                 <p className="">
-                  Senha:{" "}
+                  Senha: {/* isto aqui adiciona um espaço */}
                   <span
                     className={
                       forcaSenha === "Forte"
                         ? "text-emerald-500"
                         : forcaSenha === "Média"
-                          ? "text-orange-500"
+                          ? "text-amber-600"
                           : "text-rose-500"
                     }
                   >
