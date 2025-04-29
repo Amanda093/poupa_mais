@@ -5,7 +5,6 @@ import React, { useState } from "react";
 
 import {
   Button,
-  ExpenseForm,
   Footer,
   Input,
   Select,
@@ -19,24 +18,66 @@ import { codigosEstadosIBGE } from "@/context";
 import { Custeio } from "@/interface";
 
 import IA from "../../public/IA.png";
+import plus from "../../public/plus.png";
 
+// const ExpenseForm: React.FunctionComponent<InterfaceExpenseForm> = () => {
 export default function Home() {
   const estadosOrdenados = Object.entries(codigosEstadosIBGE).sort((a, b) =>
     a[1].localeCompare(b[1]),
   );
-  const primeiroEstadoKey = estadosOrdenados[0][0];
+  const primeiroEstado = estadosOrdenados[0][0];
 
   const [estadoSelecionado, setEstadoSelecionado] =
-    useState<string>(primeiroEstadoKey);
+    useState<string>(primeiroEstado);
 
   const [custeio, setCusteio] = useState<Custeio>({
     renda: "",
     gastos: [{ nome: "", valor: "" }],
     estado: Number(estadosOrdenados[0][0]),
+    obs: "",
   });
+
+  const handleChangeGastos = (
+    index: number,
+    campo: "nome" | "valor",
+    value: string,
+  ) => {
+    const novosGastos = [...custeio.gastos];
+    novosGastos[index][campo] = value;
+    setCusteio({ ...custeio, gastos: novosGastos });
+  };
+
+  const addGastos = () => {
+    setCusteio({
+      ...custeio,
+      gastos: [...custeio.gastos, { nome: "", valor: "" }],
+    });
+  };
+
+  const removeGasto = (index: number) => {
+    setCusteio({
+      ...custeio,
+      gastos: custeio.gastos.filter((_, i) => i !== index),
+    });
+  };
+
   const handleChangeRenda = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCusteio({ ...custeio, renda: e.target.value });
   };
+
+  const handleChangeEstado = (value: string) => {
+    setEstadoSelecionado(value);
+  };
+
+  /*
+  const { mensagemBot, sendMensagem } = useChatbot();
+
+  const handleSend = () => {
+    const envio: Custeio = custeio;
+
+    sendMensagem(envio);
+  };
+  */
 
   return (
     <div>
@@ -68,20 +109,14 @@ export default function Home() {
             <div className="max-w-[400px]">
               <label htmlFor="state">Onde você mora?</label>
               <Select
-                id="regiao-select"
-                className="flex flex-col items-center rounded-lg border bg-gray-50 p-4"
                 value={estadoSelecionado}
-                onChange={(e) => {
-                  const novoEstado = Number(e.target.value);
-                  setEstadoSelecionado(e.target.value);
-                  setCusteio((prev) => ({
-                    ...prev,
-                    estado: novoEstado,
-                  }));
-                }}
+                onValueChange={(value) => handleChangeEstado(value)}
               >
-                <SelectTrigger className="w-[280px]" variant="background">
-                  <SelectValue placeholder="Select a timezone" />
+                <SelectTrigger
+                  className="flex bg-emerald-50"
+                  variant="background"
+                >
+                  <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
                   {estadosOrdenados.map(([key, value]) => (
@@ -99,8 +134,65 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Formulário 02 */}
-      <ExpenseForm />
+      {/* Formulário - Parte 02 */}
+      <div className="form-shadow container mx-auto flex !max-w-[1300px] flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em]">
+        <div>
+          <p>Quais são suas despesas?</p>
+          <p className="text-light">
+            Adicione aqui suas despesas fixas, como aluguel, conta de luz,
+            internet ou transporte.
+          </p>
+        </div>
+
+        {/* Inputs */}
+        {custeio.gastos.map((gasto, index) => (
+          <div key={index} className="flex items-end justify-center gap-[2.5%]">
+            <div className="w-[30%]">
+              <label>Despesa</label>
+              <Input
+                type="text"
+                value={gasto.nome}
+                placeholder={`Gasto ${index + 1}`}
+                variant="default"
+                onChange={(e) => {
+                  handleChangeGastos(index, "nome", e.target.value);
+                }}
+              />
+            </div>
+            <div className="w-[30%]">
+              <label>Gasto Mensal</label>
+              <Input
+                type="money"
+                value={gasto.valor}
+                placeholder="R$ 0,00"
+                variant="default"
+                onChange={(e) => {
+                  handleChangeGastos(index, "valor", e.target.value);
+                }}
+              />
+            </div>
+            <div className="w-[30%]">
+              <label>Categoria</label>
+              {/*TODO: trocar esse input por um select ou um input com pesquisa */}
+              <Input type="text" placeholder="Contas" variant="default" />
+            </div>
+            <Button
+              onClick={() => removeGasto(index)}
+              variant="outline"
+              className="hover:rose-glow aspect-square w-[2em] rounded-[0.5em] bg-rose-50 p-0 text-rose-500 outline-rose-500 hover:text-rose-600 hover:outline-rose-600"
+            >
+              X
+            </Button>
+          </div>
+        ))}
+
+        <Button onClick={addGastos} variant="outline" className="mx-auto w-fit">
+          <Image src={plus} alt="Adicionar" />
+          Adicionar Despesa
+        </Button>
+
+        {/*TODO: terminar formulário */}
+      </div>
 
       <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
         <div>

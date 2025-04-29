@@ -1,6 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { Banner, Button, Checkbox, Input } from "@/components";
+
+import password from "../../../public/password.png";
 
 const LoginPage = () => {
   return (
@@ -35,6 +38,14 @@ const LoginPage = () => {
                   type="password"
                   placeholder="********"
                   variant="default"
+                  icon={
+                    <Image
+                      src={password}
+                      alt="Ícone Senha"
+                      width={20}
+                      height={20}
+                    />
+                  }
                 />
               </div>
 

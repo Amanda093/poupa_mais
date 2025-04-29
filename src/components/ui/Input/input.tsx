@@ -23,9 +23,11 @@ const inputVariants = cva(
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {}
+    VariantProps<typeof inputVariants> {
+  icon?: React.ReactNode;
+}
 
-function Input({ variant, type, ...props }: InputProps) {
+function Input({ variant, type, icon, ...props }: InputProps) {
   const [valor, setValor] = React.useState("");
 
   function handleMoneyChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -59,15 +61,34 @@ function Input({ variant, type, ...props }: InputProps) {
     );
   }
 
-  // Senão, input normal
-  return (
+  const inputElement = (
     <input
-      type={type}
+      type={type === "money" ? "text" : type}
       data-slot="input"
-      className={cn(inputVariants({ variant }), props.className)}
+      value={type === "money" ? valor : props.value}
+      onChange={type === "money" ? handleMoneyChange : props.onChange}
+      className={cn(
+        inputVariants({ variant }),
+        icon && "pl-10", // se tiver ícone, coloca padding esquerdo
+        props.className,
+      )}
       {...props}
     />
   );
+
+  if (icon) {
+    // se tiver ícone, renderiza dentro de um container relativo
+    return (
+      <div className="relative w-full">
+        <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400">
+          {icon}
+        </span>
+        {inputElement}
+      </div>
+    );
+  }
+  // Senão, input normal
+  return inputElement;
 }
 
 export { Input };

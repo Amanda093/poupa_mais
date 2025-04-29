@@ -34,13 +34,13 @@ function SelectTrigger({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
   size?: "sm" | "default";
-  variant?: "default" | "background"; // <== NOVO: variantes adicionadas
+  variant?: "default" | "background"; // <== Variantes
 }) {
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       data-size={size}
-      data-variant={variant} // <== NOVO
+      data-variant={variant} // <== Variantes
       className={cn(
         "focus:invalid:rose-glow focus:emerald-glow flex w-full min-w-0 rounded-[0.5em] px-3 py-[0.3em] text-[0.9em] font-[400] shadow-xs outline-[0.15em] outline-slate-400 transition-[color,box-shadow] transition-all duration-300 outline-solid file:inline-flex file:h-7 file:border-0 file:bg-transparent placeholder:text-slate-400 invalid:outline-rose-500 focus:outline-[0.175em] focus:outline-emerald-400 focus:invalid:outline-rose-500 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
         variant === "background" &&
