@@ -12,7 +12,7 @@ const inputVariants = cva(
       variant: {
         default: "bg-white text-gray-950",
         background:
-          "outline-emerald-400 focus:outline-emerald-500 placeholder:text-emerald-400 bg-emerald-50 text-emerald-500",
+          "outline-emerald-400 focus:outline-emerald-500 placeholder:text-emerald-400 bg-white text-emerald-500",
       },
     },
     defaultVariants: {

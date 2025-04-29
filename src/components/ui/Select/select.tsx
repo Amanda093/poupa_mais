@@ -42,9 +42,9 @@ function SelectTrigger({
       data-size={size}
       data-variant={variant} // <== Variantes
       className={cn(
-        "aria-expanded:invalid:rose-glow aria-expanded:emerald-glow ttransition-all flex w-full min-w-0 items-center justify-between rounded-[0.5em] bg-white px-3 py-[0.3em] text-[0.9em] font-[400] outline-[0.15em] outline-slate-400 duration-300 outline-solid file:inline-flex file:h-7 file:border-0 file:bg-transparent placeholder:text-slate-400 invalid:outline-rose-500 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-expanded:outline-[0.175em] aria-expanded:outline-emerald-400 aria-expanded:invalid:outline-rose-500",
+        "aria-expanded:invalid:rose-glow aria-expanded:emerald-glow ttransition-all flex w-full min-w-0 cursor-pointer items-center justify-between rounded-[0.5em] bg-white px-3 py-[0.3em] text-[0.9em] font-[400] outline-[0.15em] outline-slate-400 duration-300 outline-solid file:inline-flex file:h-7 file:border-0 file:bg-transparent placeholder:text-slate-400 invalid:outline-rose-500 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-expanded:outline-[0.175em] aria-expanded:outline-emerald-400 aria-expanded:invalid:outline-rose-500",
         variant === "background" &&
-          "border-transparent text-emerald-500 outline-emerald-400 placeholder:text-emerald-400 focus:outline-emerald-500",
+          "border-transparent text-emerald-500 outline-emerald-400 placeholder:text-emerald-400 aria-expanded:outline-emerald-500",
         className,
       )}
       {...props}
@@ -60,15 +60,21 @@ function SelectTrigger({
 function SelectContent({
   className,
   children,
+  variant = "default",
   position = "popper",
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Content>) {
+}: React.ComponentProps<typeof SelectPrimitive.Content> & {
+  variant?: "default" | "background"; // <== Variantes
+}) {
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         data-slot="select-content"
+        data-variant={variant}
         className={cn(
-          "text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border bg-white text-emerald-500 shadow-md outline-emerald-400",
+          "text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border-[0.120em] border-slate-400 bg-white text-gray-800",
+          variant === "background" &&
+            "text-emerald-500 shadow-md outline-emerald-400",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
           className,
@@ -108,13 +114,19 @@ function SelectLabel({
 function SelectItem({
   className,
   children,
+  variant = "default",
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Item>) {
+}: React.ComponentProps<typeof SelectPrimitive.Item> & {
+  variant?: "default" | "background"; // <== Variantes
+}) {
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
+      data-variant={variant}
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        "[&_svg:not([class*='text-'])]:text-muted-foreground focus:color-gray-950 color-gray-800 relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden transition-all duration-100 select-none focus:bg-slate-200 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        variant === "background" &&
+          "focus:bg-emerald-100 focus:text-emerald-700",
         className,
       )}
       {...props}

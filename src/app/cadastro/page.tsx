@@ -109,6 +109,7 @@ const CadastroPage = () => {
                 />
               </div>
 
+              {/* TODO: faça com que, ao digitar o confirma senha antes de digitar a senha, mude o forcasenha */}
               <div className="pb-5">
                 <label className="">Confirmar senha</label>
                 <Input

@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
+import { IoMdAdd } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
 
 import {
   Button,
@@ -18,7 +20,6 @@ import { categorias, codigosEstadosIBGE } from "@/context";
 import { Custeio } from "@/interface";
 
 import IA from "../../public/IA.png";
-import plus from "../../public/plus.png";
 
 // const ExpenseForm: React.FunctionComponent<InterfaceExpenseForm> = () => {
 export default function Home() {
@@ -91,7 +92,7 @@ export default function Home() {
         <div className="flex gap-[1%]">
           {/* Renda Mensal */}
           <div className="flex w-[33%] flex-col gap-4">
-            <div className="max-w-[380px]">
+            <div className="max-w-[400px]">
               {/* TODO: adicionar bloqueio de letras */}
               <label htmlFor="monthpay">Qual sua renda mensal?</label>
               <Input
@@ -117,15 +118,12 @@ export default function Home() {
                 value={estadoSelecionado}
                 onValueChange={(value) => handleChangeEstado(value)}
               >
-                <SelectTrigger
-                  className="flex bg-emerald-50"
-                  variant="background"
-                >
+                <SelectTrigger className="flex" variant="background">
                   <SelectValue placeholder="" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent variant="background">
                   {estadosOrdenados.map(([key, value]) => (
-                    <SelectItem value={key} key={key}>
+                    <SelectItem variant="background" value={key} key={key}>
                       {value}
                     </SelectItem>
                   ))}
@@ -198,18 +196,14 @@ export default function Home() {
                 </SelectContent>
               </Select>
             </div>
-            <Button
-              onClick={() => removeGasto(index)}
-              variant="outline"
-              className="hover:rose-glow aspect-square w-[2em] rounded-[0.5em] bg-rose-50 p-0 text-rose-500 outline-rose-500 hover:text-rose-600 hover:outline-rose-600"
-            >
-              X
+            <Button onClick={() => removeGasto(index)} variant="delete">
+              <MdDelete className="size-[1.25em]" />
             </Button>
           </div>
         ))}
 
         <Button onClick={addGastos} variant="outline" className="mx-auto w-fit">
-          <Image src={plus} alt="Adicionar" />
+          <IoMdAdd className="size-[1.35em]" />
           Adicionar Despesa
         </Button>
 
@@ -222,7 +216,7 @@ export default function Home() {
           <p>Agora nós entramos em ação!</p>
         </div>
 
-        <Button className="w-fit">
+        <Button className="w-fit px-[0.75em]">
           <Image src={IA} alt="Simbolo de IA" />
           Gerar Planejamento
         </Button>

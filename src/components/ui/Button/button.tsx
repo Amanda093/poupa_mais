@@ -5,7 +5,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "transition-all cursor-pointer duration-300 hover:translate-y-[-0.15em] active:emerald-glow inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[0.75em] text-[1em] font-[700] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "transition-all cursor-pointer duration-300 active:emerald-glow inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[0.75em] text-[1em] font-[700] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
@@ -13,6 +13,8 @@ const buttonVariants = cva(
           "bg-emerald-500 active:bg-emerald-700 text-white p-sm m-0 hover:bg-emerald-600",
         outline:
           "outline-[0.15em] outline-emerald-500 text-emerald-500 hover:text-emerald-600 active:text-emerald-700 bg-white hover:outline-emerald-600 active:outline-emerald-700",
+        delete:
+          "outline-[0.15em] active:rose-glow hover:bg-rose-100 aspect-square w-[2em] rounded-[0.45em] bg-rose-50 !p-0 text-rose-500 outline-rose-500 hover:text-rose-600 hover:outline-rose-600",
       },
       size: {
         default: " px-[1.65em] py-[0.35em] has-[>svg]:px-3",
