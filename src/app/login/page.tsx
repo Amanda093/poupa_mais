@@ -59,7 +59,7 @@ const LoginPage = () => {
             </div>
 
             {/* Botão */}
-            <Button variant="default" className="w-full">
+            <Button variant="default" className="w-full" asChild>
               <Link href="/historico" className="">
                 Logar
               </Link>
