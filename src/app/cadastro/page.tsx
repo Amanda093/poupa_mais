@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
+import { IoCloseCircle } from "react-icons/io5";
+import { MdError } from "react-icons/md";
 
 import { Banner, Button, Input } from "@/components";
 
@@ -132,18 +134,23 @@ const CadastroPage = () => {
               </div>
 
               <div>
-                {/* TODO: colocar imagem */}
                 <p className="flex">
                   Senha:
                   {forcaSenha === "Forte" ? (
-                    <span className="flex items-center gap-1 text-emerald-500">
+                    <span className="flex items-center gap-1 py-7 text-emerald-500">
                       {forcaSenha}
                       <FaCheckCircle size={16} />
                     </span>
                   ) : forcaSenha === "Média" ? (
-                    <span className="text-amber-600">{forcaSenha}</span>
+                    <span className="flex items-center gap-1 text-amber-600">
+                      {forcaSenha}
+                      <MdError />
+                    </span>
                   ) : (
-                    <span className="text-red-600">{forcaSenha}</span>
+                    <span className="flex items-center gap-1 text-red-600">
+                      {forcaSenha}
+                      <IoCloseCircle />
+                    </span>
                   )}
                 </p>
               </div>

@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import React, { useState } from "react";
+import { Fade } from "react-awesome-reveal";
 import { IoMdAdd } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 
@@ -232,8 +233,14 @@ export default function Home() {
           Gerar Planejamento
         </Button>
       </div>
-      <div className="py-5em">{mensagemBot}</div>
-
+      <Fade
+        delay={200} // Wait before starting
+        duration={1000} // Animation duration
+        fraction={0.5} // Trigger when 50% visible
+        triggerOnce // Animate only once
+      >
+        <div className="py-5em">{mensagemBot}</div>
+      </Fade>
       {/* Footer */}
       <Footer />
     </div>
