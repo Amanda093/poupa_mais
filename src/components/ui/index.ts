@@ -5,4 +5,5 @@ export * from "./Input";
 export * from "./Label";
 export * from "./LinkHeader";
 export * from "./Select";
+export * from "./Textarea";
 export * from "./Title";

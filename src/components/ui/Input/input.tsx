@@ -27,7 +27,15 @@ export interface InputProps
   icon?: React.ReactNode;
 }
 
-function Input({ variant, type, icon, value, onChange, ...props }: InputProps) {
+function Input({
+  className,
+  variant,
+  type,
+  icon,
+  value,
+  onChange,
+  ...props
+}: InputProps) {
   function handleMoneyChange(e: React.ChangeEvent<HTMLInputElement>) {
     const valorNumerico = e.target.value.replace(/\D/g, ""); // remove não números
     const valorFloat = parseFloat(valorNumerico) / 100; // ajusta os centavos
@@ -58,11 +66,7 @@ function Input({ variant, type, icon, value, onChange, ...props }: InputProps) {
       data-slot="input"
       value={value}
       onChange={type === "money" ? handleMoneyChange : onChange}
-      className={cn(
-        inputVariants({ variant }),
-        icon && "pl-10",
-        props.className,
-      )}
+      className={cn(inputVariants({ variant }), icon && "pl-10", className)}
       {...props}
     />
   );

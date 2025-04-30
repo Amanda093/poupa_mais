@@ -44,8 +44,8 @@ const Footer: React.FC<FooterProps> = ({ renda, gastos }) => {
     <div className="fixed bottom-0 flex w-full flex-col border-t-[0.15em] border-emerald-500 bg-white py-[0.75em]">
       {mostrar && (
         <div className="container flex h-[4.25em] gap-[1em]">
-          <div className="w-[10%]">
-            <h3>Valor Restante:</h3>
+          <div className="max-lg: w-[10%] max-2xl:w-[15%] max-lg:hidden">
+            <h3 className="text-nowrap">Valor Restante:</h3>
             <h3 className="text-emerald-500">
               {restante.toLocaleString("pt-BR", {
                 style: "currency",
@@ -53,7 +53,7 @@ const Footer: React.FC<FooterProps> = ({ renda, gastos }) => {
               })}
             </h3>
           </div>
-          <div className="flex w-[90%] flex-col gap-[10%]">
+          <div className="flex w-[90%] flex-col gap-[10%] max-2xl:w-[85%] max-lg:w-full">
             {/* Gráfico */}
             <div className="flex h-[30%] w-full justify-end overflow-hidden rounded-[0.5em] bg-emerald-500 outline-[0.15em] outline-white">
               {/* Barras dos gastos */}
