@@ -136,6 +136,22 @@ p {
   /*outline: solid 2px red;*/
 }
 
+label {
+  cursor: text;
+}
+
+@keyframes float {
+  0% {
+    transform: translatey(0px);
+  }
+  50% {
+    transform: translatey(-10px);
+  }
+  100% {
+    transform: translatey(0px);
+  }
+}
+
 /* 2xl */
 @media (max-width: 1536px) {
   .container {
