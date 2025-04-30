@@ -221,30 +221,35 @@ export default function Home() {
       </div>
 
       {!mensagemBot ? (
-        <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
-          <div>
-            <h2>Terminou?</h2>
-            <p>Agora nós entramos em ação!</p>
-          </div>
-          <Button className="w-fit px-[0.75em]" onClick={handleSend}>
-            <HiSparkles />
-            Gerar Planejamento
-          </Button>
-        </div>
-      ) : (
-        <Fade
-          delay={200} // Wait before starting
-          duration={1000} // Animation duration
-          fraction={0.5} // Trigger when 50% visible
-          triggerOnce // Animate only once
-        >
-          <div className="container flex !max-w-[1270px] flex-col items-center gap-[1em] py-[2.5em]">
-            <h2 className="flex w-full items-center gap-[0.25em] text-emerald-500">
+        <>
+          <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
+            <div>
+              <h2>Terminou?</h2>
+              <p>Agora nós entramos em ação!</p>
+            </div>
+            <Button className="w-fit px-[0.75em]" onClick={handleSend}>
               <HiSparkles />
-              Planejamento
-            </h2>
-            {/*Resposta Exemplo: */}
-            {/*Com base nos dados fornecidos, podemos elaborar um plano de economia para o usuário. 
+              Gerar Planejamento
+            </Button>
+          </div>
+          {/* Footer */}
+          <Footer renda={custeio.renda} gastos={custeio.gastos} />
+        </>
+      ) : (
+        <>
+          <Fade
+            delay={200} // Wait before starting
+            duration={1000} // Animation duration
+            fraction={0.5} // Trigger when 50% visible
+            triggerOnce // Animate only once
+          >
+            <div className="container flex !max-w-[1270px] flex-col items-center gap-[1em] py-[2.5em]">
+              <h2 className="flex w-full items-center gap-[0.25em] text-emerald-500">
+                <HiSparkles />
+                Planejamento
+              </h2>
+              {/*Resposta Exemplo: */}
+              {/*Com base nos dados fornecidos, podemos elaborar um plano de economia para o usuário. 
 
             1. **Estimativa de economia mensal**: Considerando que o usuário tem uma renda mensal de R$ 1.000,00 e gasta R$ 200,00 com comida, podemos estimar que o usuário tem um potencial de economia mensal de R$ 800,00. No entanto, é importante considerar que o usuário provavelmente tem outros gastos, como moradia, transporte, etc. Uma estimativa mais realista seria de 20% a 30% da renda, o que daria R$ 200,00 a R$ 300,00 por mês.
 
@@ -263,29 +268,29 @@ export default function Home() {
               - Fundos de investimento imobiliário.
               - Plano de previdência.
           */}
-            <p className="w-full">{mensagemBot}</p>
+              <p className="w-full">{mensagemBot}</p>
 
-            <div className="text-center">
-              <Title mainTitle="Se interessou?" subTitle="Faça parte " />
-              <div className="flex justify-center gap-[1em]">
-                <Button variant="default" asChild>
-                  <Link href="/cadastro" className="">
-                    Cadastrar-se
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/login" className="">
-                    Login
-                  </Link>
-                </Button>
+              <div className="text-center">
+                <Title mainTitle="Se interessou?" subTitle="Faça parte " />
+                <div className="flex justify-center gap-[1em]">
+                  <Button variant="default" asChild>
+                    <Link href="/cadastro" className="">
+                      Cadastrar-se
+                    </Link>
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link href="/login" className="">
+                      Login
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </Fade>
+          </Fade>
+          {/* Footer */}
+          <Footer renda="" gastos={custeio.gastos} />
+        </>
       )}
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

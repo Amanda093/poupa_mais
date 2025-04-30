@@ -1,27 +1,97 @@
-const Footer = () => {
-  const mostrar = false;
+type Gasto = {
+  nome: string;
+  valor: string;
+  categoria: string;
+};
+
+interface FooterProps {
+  renda: string;
+  gastos: Gasto[];
+}
+
+const getCategoriaCor = (categoria: string): string => {
+  switch (categoria.toLowerCase()) {
+    case "moradia":
+      return "bg-blue-500";
+    case "alimentação":
+      return "bg-green-500";
+    case "transporte":
+      return "bg-orange-500";
+    case "saúde":
+      return "bg-red-500";
+    case "educação":
+      return "bg-purple-500";
+    case "lazer":
+      return "bg-pink-500";
+    case "outros":
+      return "bg-gray-400";
+    default:
+      return "bg-gray-400"; // categoria indefinida
+  }
+};
+
+const Footer: React.FC<FooterProps> = ({ renda, gastos }) => {
+  const rendaNumerica = parseFloat(renda.replace(/\D/g, "")) / 100;
+  const gastosTotais = gastos.reduce((total, gasto) => {
+    const valor = parseFloat(gasto.valor.replace(/\D/g, "")) / 100;
+    return total + (isNaN(valor) ? 0 : valor);
+  }, 0);
+  const restante = rendaNumerica - gastosTotais;
+
+  const mostrar = rendaNumerica > 0;
 
   return (
-    <div className="fixed bottom-0 flex w-full flex-col gap-[1em] border-t-[0.15em] border-emerald-500 bg-white py-[0.75em]">
+    <div className="fixed bottom-0 flex w-full flex-col border-t-[0.15em] border-emerald-500 bg-white py-[0.75em]">
       {mostrar && (
-        <div className="container flex gap-[1em]">
+        <div className="container flex h-[4.25em] gap-[1em]">
           <div className="w-[10%]">
             <h3>Valor Restante:</h3>
-            <h3 className="text-emerald-500">VALOR</h3>
+            <h3 className="text-emerald-500">
+              {restante.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </h3>
           </div>
           <div className="flex w-[90%] flex-col gap-[10%]">
-            <div className="flex h-[40%] w-full justify-end rounded-[0.5em] bg-emerald-500 outline-[0.20em] outline-white">
-              <div className="w-[20%] bg-amber-500 outline-[0.20em] outline-white"></div>
+            {/* Gráfico */}
+            <div className="flex h-[30%] w-full justify-end overflow-hidden rounded-[0.5em] bg-emerald-500 outline-[0.15em] outline-white">
+              {/* Barras dos gastos */}
+              {gastos.map((gasto, index) => {
+                const valor = parseFloat(gasto.valor.replace(/\D/g, "")) / 100;
+                const largura = (valor / rendaNumerica) * 100;
+
+                return (
+                  <div
+                    key={index}
+                    className={`h-full ${getCategoriaCor(gasto.categoria)} outline-[0.15em] outline-white`}
+                    style={{
+                      width: `${largura}%`,
+                    }}
+                    title={gasto.nome}
+                  ></div>
+                );
+              })}
             </div>
-            <div className="flex h-[40%] w-full gap-[0.75em]">
-              <div className="flex gap-[0.5em]">
-                <div className="aspect-square h-full rounded-[0.25em] bg-emerald-500"></div>
-                <div>Valor Restante</div>
-              </div>
-              <div className="flex gap-[0.5em]">
-                <div className="aspect-square h-full rounded-[0.25em] bg-amber-500"></div>
-                <div>Conta de luz</div>
-              </div>
+
+            {/* Legendas */}
+            <div className="flex h-[50%] w-full max-w-full gap-[0.75em] overflow-x-auto overflow-y-hidden">
+              {gastos.map((gasto, index) => (
+                <div key={index} className="flex items-center gap-[0.5em]">
+                  <div
+                    className={`aspect-square h-[1em] rounded-[0.25em] ${getCategoriaCor(
+                      gasto.categoria,
+                    )}`}
+                  ></div>
+                  <div className="text-nowrap">{gasto.nome || "Despesa"}</div>
+                </div>
+              ))}
+              {restante > 0 && (
+                <div className="flex items-center gap-[0.5em]">
+                  <div className="aspect-square h-[1em] rounded-[0.25em] bg-emerald-500"></div>
+                  <div className="text-nowrap">Valor Restante</div>
+                </div>
+              )}
             </div>
           </div>
         </div>

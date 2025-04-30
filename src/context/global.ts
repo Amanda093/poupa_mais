@@ -25,6 +25,7 @@ const categorias = [
   "Presentes e doações",
   "Pets",
   "Manutenção e emergências",
+  "Outros",
 ];
 
 export { categorias, codigosEstadosIBGE };
