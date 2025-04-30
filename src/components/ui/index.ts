@@ -6,3 +6,4 @@ export * from "./Label";
 export * from "./LinkHeader";
 export * from "./Select";
 export * from "./Title";
+export * from "./Historico";
