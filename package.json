@@ -25,6 +25,7 @@
     "lucide-react": "^0.503.0",
     "motion": "^12.9.2",
     "next": "15.3.1",
+    "next-firebase-auth-edge": "^1.9.1",
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-awesome-reveal": "^4.3.1",

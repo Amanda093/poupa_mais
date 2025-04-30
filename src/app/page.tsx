@@ -17,6 +17,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Textarea,
   Title,
 } from "@/components";
 import { categorias, codigosEstadosIBGE } from "@/context";
@@ -82,55 +83,52 @@ export default function Home() {
 
   return (
     <div className="pb-[5em]">
-      <div className="container mx-auto !max-w-[1270px] py-[60px]">
+      <div className="container mx-auto py-[60px] xl:!max-w-[1270px]">
         <Title
           mainTitle="Controle seus gastos."
           subTitle="Planeje seu futuro."
         />
 
         {/* Formulário - Parte 01 */}
-        <div className="flex gap-[1%]">
+        <div className="flex gap-[2em]">
           {/* Renda Mensal */}
-          <div className="flex w-[33%] flex-col gap-4">
-            <div className="max-w-[400px]">
-              {/* TODO: adicionar bloqueio de letras */}
-              <label htmlFor="monthpay">Qual sua renda mensal?</label>
-              <Input
-                id="monthpay"
-                type="money"
-                placeholder="R$ 0,00"
-                variant="background"
-                value={custeio.renda}
-                onChange={handleChangeRenda}
-              />
-            </div>
+          <div className="min-w-[20em]">
+            {/* TODO: adicionar bloqueio de letras */}
+            <label htmlFor="monthpay">Qual sua renda mensal?</label>
+            <Input
+              id="monthpay"
+              type="money"
+              placeholder="R$ 0,00"
+              variant="background"
+              value={custeio.renda}
+              onChange={handleChangeRenda}
+            />
+
             <p className="text-light">
               Esse é o total que você recebe por mês.
             </p>
           </div>
 
           {/* Onde Você Mora */}
-          <div className="flex w-[33%] flex-col gap-4">
-            <div className="max-w-[400px]">
-              <label htmlFor="state">
-                Selecione a região mais perto de sua residência:
-              </label>
-              <Select
-                value={estadoSelecionado}
-                onValueChange={(value) => handleChangeEstado(value)}
-              >
-                <SelectTrigger className="flex" variant="background">
-                  <SelectValue placeholder="" />
-                </SelectTrigger>
-                <SelectContent variant="background">
-                  {estadosOrdenados.map(([key, value]) => (
-                    <SelectItem variant="background" value={key} key={key}>
-                      {value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="min-w-[20em]">
+            <label htmlFor="state">
+              Selecione a região mais perto de sua residência:
+            </label>
+            <Select
+              value={estadoSelecionado}
+              onValueChange={(value) => handleChangeEstado(value)}
+            >
+              <SelectTrigger className="flex" variant="background">
+                <SelectValue placeholder="" />
+              </SelectTrigger>
+              <SelectContent variant="background">
+                {estadosOrdenados.map(([key, value]) => (
+                  <SelectItem variant="background" value={key} key={key}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <p className="text-light">
               Isso nos ajuda a gerar planejamentos mais precisos.
             </p>
@@ -139,7 +137,7 @@ export default function Home() {
       </div>
 
       {/* Formulário - Parte 02 */}
-      <div className="form-shadow container mx-auto flex !max-w-[1300px] flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em] transition-[height]">
+      <div className="form-shadow container mx-auto flex flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em] transition-[height] xl:!max-w-[1300px]">
         <div>
           <p>Quais são suas despesas?</p>
           <p className="text-light">
@@ -217,12 +215,19 @@ export default function Home() {
           Adicionar Despesa
         </Button>
 
+        <div className="w-full">
+          <label>Observações</label>
+          <Textarea
+            placeholder="Ex: Quero guardar dinheiro para viajar, tenho dívidas, ou preciso de ajuda com prioridades..."
+            className="min-h-[8em]"
+          />
+        </div>
         {/*TODO: terminar formulário */}
       </div>
 
       {!mensagemBot ? (
         <>
-          <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
+          <div className="container mx-auto flex max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
             <div>
               <h2>Terminou?</h2>
               <p>Agora nós entramos em ação!</p>
@@ -243,7 +248,7 @@ export default function Home() {
             fraction={0.5} // Trigger when 50% visible
             triggerOnce // Animate only once
           >
-            <div className="container flex !max-w-[1270px] flex-col items-center gap-[1em] py-[2.5em]">
+            <div className="container flex max-w-[1270px] flex-col items-center gap-[1em] py-[2.5em]">
               <h2 className="flex w-full items-center gap-[0.25em] text-emerald-500">
                 <HiSparkles />
                 Planejamento

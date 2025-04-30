@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { FaOctopusDeploy } from "react-icons/fa";
 
+import { Button, Input } from "@/components";
+
 import Perfil from "../../../public/FotoPerfilPlaceHolder.png";
 import iconFoto from "../../../public/MudarFoto.png";
 import password from "../../../public/password.png";
@@ -9,7 +11,6 @@ import { Button, Input, Title, Historico } from "@/components";
 
 const HistoricoPage = () => {
   return (
-
     //Div com que contem a todos os elementos
     <div className="h-auto flex flex-col w-full items-center">
       {/*Div de Perfil*/}
@@ -139,14 +140,47 @@ const HistoricoPage = () => {
             width={25}
             height={25}
             alt="Profile Picture"
+            className="rounded-full border-3 border-emerald-500"
+          />
+
+          {/*Botão de alterar perfil*/}
+          <Button className="w-4/5">
+            <Image
+              src={iconFoto}
+              width={25}
+              height={25}
+              alt="Profile Picture"
             />
             Salvar alterações
           </Button>
+        </div>
+
+        {/*Div com a primeira coluna de inputs*/}
+        <div className="mb-2 flex flex-col justify-between">
+          <div>
+            <label htmlFor="nome" className="">
+              Nome
+            </label>
+            <Input
+              id="nome"
+              type="text"
+              placeholder="Komi San"
+              className=""
+              variant="default"
+            />
           </div>
 
-        </div>
-      
-      </div>
+          <div>
+            <label htmlFor="email" className="">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="text"
+              placeholder="Komi San"
+              variant="default"
+            />
+          </div>
 
       {/*Div do historico*/}
       <div>

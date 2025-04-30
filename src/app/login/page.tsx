@@ -36,7 +36,7 @@ const LoginPage = () => {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="********"
+                  placeholder=""
                   variant="default"
                   icon={
                     <Image

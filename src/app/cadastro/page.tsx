@@ -99,7 +99,7 @@ const CadastroPage = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="********"
+                  placeholder=""
                   variant="default"
                   icon={
                     <Image
@@ -120,7 +120,7 @@ const CadastroPage = () => {
                   type="password"
                   value={confirmpassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="********"
+                  placeholder=""
                   variant="default"
                   icon={
                     <Image
@@ -134,8 +134,7 @@ const CadastroPage = () => {
               </div>
 
               <div>
-                <p className="flex gap-[0.2em]
-                ">
+                <p className="flex gap-[0.2em]">
                   Senha:
                   {forcaSenha === "Forte" ? (
                     <span className="flex items-center gap-1 text-emerald-500">
