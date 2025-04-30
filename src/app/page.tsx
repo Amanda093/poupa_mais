@@ -1,9 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
 import { Fade } from "react-awesome-reveal";
+import { HiSparkles } from "react-icons/hi2";
 import { IoMdAdd } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 
@@ -21,8 +22,6 @@ import {
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
 import { Custeio } from "@/interface";
-
-import IA from "../../public/IA.png";
 
 // const ExpenseForm: React.FunctionComponent<InterfaceExpenseForm> = () => {
 export default function Home() {
@@ -82,7 +81,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className="pb-[5em]">
       <div className="container mx-auto !max-w-[1270px] py-[60px]">
         <Title
           mainTitle="Controle seus gastos."
@@ -141,7 +140,7 @@ export default function Home() {
       </div>
 
       {/* Formulário - Parte 02 */}
-      <div className="form-shadow container mx-auto flex !max-w-[1300px] flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em]">
+      <div className="form-shadow container mx-auto flex !max-w-[1300px] flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em] transition-[height]">
         <div>
           <p>Quais são suas despesas?</p>
           <p className="text-light">
@@ -222,25 +221,70 @@ export default function Home() {
         {/*TODO: terminar formulário */}
       </div>
 
-      <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
-        <div>
-          <h2>Terminou?</h2>
-          <p>Agora nós entramos em ação!</p>
+      {!mensagemBot ? (
+        <div className="container mx-auto flex !max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
+          <div>
+            <h2>Terminou?</h2>
+            <p>Agora nós entramos em ação!</p>
+          </div>
+          <Button className="w-fit px-[0.75em]" onClick={handleSend}>
+            <HiSparkles />
+            Gerar Planejamento
+          </Button>
         </div>
+      ) : (
+        <Fade
+          delay={200} // Wait before starting
+          duration={1000} // Animation duration
+          fraction={0.5} // Trigger when 50% visible
+          triggerOnce // Animate only once
+        >
+          <div className="container flex !max-w-[1270px] flex-col items-center gap-[1em] py-[2.5em]">
+            <h2 className="flex w-full items-center gap-[0.25em] text-emerald-500">
+              <HiSparkles />
+              Planejamento
+            </h2>
+            {/*Resposta Exemplo: */}
+            {/*Com base nos dados fornecidos, podemos elaborar um plano de economia para o usuário. 
 
-        <Button className="w-fit px-[0.75em]" onClick={handleSend}>
-          <Image src={IA} alt="Simbolo de IA" />
-          Gerar Planejamento
-        </Button>
-      </div>
-      <Fade
-        delay={200} // Wait before starting
-        duration={1000} // Animation duration
-        fraction={0.5} // Trigger when 50% visible
-        triggerOnce // Animate only once
-      >
-        <div className="py-5em">{mensagemBot}</div>
-      </Fade>
+            1. **Estimativa de economia mensal**: Considerando que o usuário tem uma renda mensal de R$ 1.000,00 e gasta R$ 200,00 com comida, podemos estimar que o usuário tem um potencial de economia mensal de R$ 800,00. No entanto, é importante considerar que o usuário provavelmente tem outros gastos, como moradia, transporte, etc. Uma estimativa mais realista seria de 20% a 30% da renda, o que daria R$ 200,00 a R$ 300,00 por mês.
+
+            2. **Sugestões de corte de gastos**: Além da comida, que já é um gasto essencial, o usuário pode considerar cortar gastos em outras áreas, como:
+              - Reduzir o uso de serviços de streaming e entretenimento.
+              - Economizar na conta de telefone e internet.
+              - Reduzir o consumo de produtos não essenciais.
+
+            3. **Metas de curto, médio e longo prazo**:
+              - **Curto prazo (1-3 meses)**: Criar um fundo de emergência com 1-2 meses de despesas.
+              - **Médio prazo (6-12 meses)**: Aumentar a renda através de um segundo emprego, freelancer ou curso de capacitação.
+              - **Longo prazo (1-5 anos)**: Investir em um plano de previdência ou um fundo de investimento para a aposentadoria.
+
+            4. **Dicas de investimento**: Com a taxa Selic em 0,052531%, os investimentos em renda fixa podem não ser muito atraentes. No entanto, o usuário pode considerar investir em:
+              - Fundos de investimento em ações.
+              - Fundos de investimento imobiliário.
+              - Plano de previdência.
+          */}
+            <p className="w-full">{mensagemBot}</p>
+
+            <div className="text-center">
+              <Title mainTitle="Se interessou?" subTitle="Faça parte " />
+              <div className="flex justify-center gap-[1em]">
+                <Button variant="default" asChild>
+                  <Link href="/cadastro" className="">
+                    Cadastrar-se
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link href="/login" className="">
+                    Login
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Fade>
+      )}
+
       {/* Footer */}
       <Footer />
     </div>

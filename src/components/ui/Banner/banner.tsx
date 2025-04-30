@@ -16,7 +16,7 @@ const Banner = ({ containerClassName = "" }: BannerProps) => {
       <div className="relative flex size-full items-center justify-center rounded-[2em] bg-gray-950 px-[12.5%] py-[5%]">
         <Image
           src={banner}
-          className="z-10 max-h-full max-w-full object-scale-down select-none"
+          className="z-10 max-h-full max-w-full animate-[float_6s_ease-in-out_infinite] object-scale-down select-none"
           alt="Banner"
         />
 
