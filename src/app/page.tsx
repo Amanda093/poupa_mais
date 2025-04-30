@@ -110,7 +110,6 @@ export default function Home() {
           </div>
 
           {/* Onde Você Mora */}
-          {/* TODO: arrumar estilo */}
           <div className="flex w-[33%] flex-col gap-4">
             <div className="max-w-[400px]">
               <label htmlFor="state">
