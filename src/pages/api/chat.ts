@@ -110,6 +110,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               }
 
               ⚠️ O JSON deve vir abaixo do plano, em um **bloco separado e bem formatado** para que eu possa fazer parsing automático. Não explique o JSON, apenas mostre-o.
+              Finalize o JSON completo no final da resposta, dentro de crases triplas.
               `;
 
     const out = await hf.chatCompletion({
@@ -135,7 +136,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!mensagemBot) {
       return res.status(500).json({ error: "Mensagem da LLM não recebida" });
     }
-    const [respostaTexto, jsonMatch] = mensagemBot.split(/(?=\{[\s\S]*\}$)/); // divide a resposta textual do JSON
+    const [respostaTexto, jsonMatch] = mensagemBot.split("```");
 
     let dadosParaGraficos: DadoGrafico | null = null;
     try {

@@ -1,1 +1,1 @@
-export * from "./Historico";
+export * from "./historico";
