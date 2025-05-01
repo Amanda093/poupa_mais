@@ -129,7 +129,7 @@ const HistoricoPage = () => {
               <Input
                 id="nome"
                 type="text"
-                placeholder="Komi San"
+                placeholder="Seu nome..."
                 variant="default"
                 className="w-75"
               />
@@ -139,7 +139,7 @@ const HistoricoPage = () => {
               <Input
                 id="email"
                 type="text"
-                placeholder="komisan@email.com"
+                placeholder="m@example.com"
                 variant="default"
                 className="w-75"
               />
@@ -182,21 +182,13 @@ const HistoricoPage = () => {
                   <Image
                     src={password}
                     alt="Ícone Senha"
-                    width={20}
-                    height={20}
+                    className="size-[1em]"
                   />
                 }
               />
             </div>
             <div className="flex h-[3.5em] items-end gap-[1em]">
-              <Button className="">
-                <Image
-                  src={iconFoto}
-                  className="size-[1.25em]"
-                  alt="Alterar Foto"
-                />
-                Salvar
-              </Button>
+              <Button className="">Salvar</Button>
               <Button variant="delete" className="" onClick={handleLogout}>
                 Sair
               </Button>
@@ -218,10 +210,28 @@ const HistoricoPage = () => {
               valor: 1500.0,
               nome: "Comida",
             },
-            { categoria: "Transporte", valor: 800.0, nome: "Onibus" },
+            { categoria: "Transporte", valor: 800.0, nome: "Ônibus" },
             { categoria: "Saúde", valor: 1200.0, nome: "Médico" },
             { categoria: "Lazer", valor: 500.0, nome: "Jogos" },
           ]}
+          respostaIA="Com base nos dados fornecidos, podemos elaborar um plano de economia para o usuário. 
+
+            1. **Estimativa de economia mensal**: Considerando que o usuário tem uma renda mensal de R$ 1.000,00 e gasta R$ 200,00 com comida, podemos estimar que o usuário tem um potencial de economia mensal de R$ 800,00. No entanto, é importante considerar que o usuário provavelmente tem outros gastos, como moradia, transporte, etc. Uma estimativa mais realista seria de 20% a 30% da renda, o que daria R$ 200,00 a R$ 300,00 por mês.
+
+            2. **Sugestões de corte de gastos**: Além da comida, que já é um gasto essencial, o usuário pode considerar cortar gastos em outras áreas, como:
+              - Reduzir o uso de serviços de streaming e entretenimento.
+              - Economizar na conta de telefone e internet.
+              - Reduzir o consumo de produtos não essenciais.
+
+            3. **Metas de curto, médio e longo prazo**:
+              - **Curto prazo (1-3 meses)**: Criar um fundo de emergência com 1-2 meses de despesas.
+              - **Médio prazo (6-12 meses)**: Aumentar a renda através de um segundo emprego, freelancer ou curso de capacitação.
+              - **Longo prazo (1-5 anos)**: Investir em um plano de previdência ou um fundo de investimento para a aposentadoria.
+
+            4. **Dicas de investimento**: Com a taxa Selic em 0,052531%, os investimentos em renda fixa podem não ser muito atraentes. No entanto, o usuário pode considerar investir em:
+              - Fundos de investimento em ações.
+              - Fundos de investimento imobiliário.
+              - Plano de previdência."
         />
         <Historico
           mes="Setembro"
@@ -233,10 +243,28 @@ const HistoricoPage = () => {
               valor: 1500.0,
               nome: "Comida",
             },
-            { categoria: "Transporte", valor: 800.0, nome: "Onibus" },
+            { categoria: "Transporte", valor: 800.0, nome: "Ônibus" },
             { categoria: "Saúde", valor: 1200.0, nome: "Médico" },
             { categoria: "Lazer", valor: 500.0, nome: "Jogos" },
           ]}
+          respostaIA="Com base nos dados fornecidos, podemos elaborar um plano de economia para o usuário. 
+
+            1. **Estimativa de economia mensal**: Considerando que o usuário tem uma renda mensal de R$ 1.000,00 e gasta R$ 200,00 com comida, podemos estimar que o usuário tem um potencial de economia mensal de R$ 800,00. No entanto, é importante considerar que o usuário provavelmente tem outros gastos, como moradia, transporte, etc. Uma estimativa mais realista seria de 20% a 30% da renda, o que daria R$ 200,00 a R$ 300,00 por mês.
+
+            2. **Sugestões de corte de gastos**: Além da comida, que já é um gasto essencial, o usuário pode considerar cortar gastos em outras áreas, como:
+              - Reduzir o uso de serviços de streaming e entretenimento.
+              - Economizar na conta de telefone e internet.
+              - Reduzir o consumo de produtos não essenciais.
+
+            3. **Metas de curto, médio e longo prazo**:
+              - **Curto prazo (1-3 meses)**: Criar um fundo de emergência com 1-2 meses de despesas.
+              - **Médio prazo (6-12 meses)**: Aumentar a renda através de um segundo emprego, freelancer ou curso de capacitação.
+              - **Longo prazo (1-5 anos)**: Investir em um plano de previdência ou um fundo de investimento para a aposentadoria.
+
+            4. **Dicas de investimento**: Com a taxa Selic em 0,052531%, os investimentos em renda fixa podem não ser muito atraentes. No entanto, o usuário pode considerar investir em:
+              - Fundos de investimento em ações.
+              - Fundos de investimento imobiliário.
+              - Plano de previdência."
         />
       </div>
     </div>
