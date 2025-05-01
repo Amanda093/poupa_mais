@@ -11,9 +11,9 @@ const HistoricoPage = () => {
     // Div que contém todos os elementos
     <div className="container flex flex-col items-center gap-[3em] py-[45px] xl:!max-w-[1270px]">
       {/* Div de Perfil */}
-      <div className="flex gap-[2em]">
+      <div className="flex gap-[2em] max-lg:flex-col">
         {/* Div da foto de perfil */}
-        <div className="flex w-max flex-col items-center gap-[0.5em]">
+        <div className="flex w-max flex-col items-center gap-[0.5em] max-lg:w-full max-lg:justify-center">
           {/* Foto do perfil */}
           <Image
             src={Perfil}
@@ -32,6 +32,8 @@ const HistoricoPage = () => {
           </Button>
         </div>
 
+        {/*Div do formulario*/}
+        <div className="flex gap-[2em] max-sm:flex-col max-sm:gap-0">
         {/* Div com a primeira coluna de inputs */}
         <div className="mb-2 flex w-fit flex-col gap-[0.5em]">
           <div>
@@ -61,7 +63,7 @@ const HistoricoPage = () => {
         </div>
 
         {/* Div com a segunda coluna de inputs */}
-        <div className="mb-2 flex h-[33%] w-fit flex-col gap-[0.5em]">
+        <div className="mb-2 flex w-fit flex-col gap-[0.5em]">
           <div>
             <label htmlFor="novaSenha">Nova Senha</label>
             <Input
@@ -112,6 +114,7 @@ const HistoricoPage = () => {
             </Button>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Div do histórico */}
