@@ -1,11 +1,13 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useAuthState } from "react-firebase-hooks/auth";
 
+import { auth } from "@/lib/clientApp";
+
+import Perfil from "../../../../public/FotoPerfilPlaceHolder.png";
 import { Button, LinkHeader } from "../../ui";
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/clientApp';
 import logo from "../assets/poupa-logo.png";
 
 const Header = () => {
@@ -21,18 +23,21 @@ const Header = () => {
 
         {/* links para as outras páginas*/}
         <div className="flex items-center gap-[2.5em] max-sm:gap-[1.5em]">
-          <LinkHeader text="Planejar Finanças" path="/"></LinkHeader>
+          <LinkHeader text="Planejar Finanças" path="" />
           {loading ? null : user ? (
-            <Button variant="default" asChild>
+            <>
+              <LinkHeader text="Histórico" path="historico" />
               <Link href="/historico">
-                Meu Perfil
+                <Image
+                  src={Perfil}
+                  className="size-[2.75em] cursor-pointer rounded-[100%] object-scale-down outline-[0.15em] outline-emerald-500 transition-all duration-300 select-none hover:translate-y-[-0.15em] hover:outline-emerald-600"
+                  alt="Foto de perfil"
+                />
               </Link>
-            </Button>
+            </>
           ) : (
             <Button variant="default" asChild>
-              <Link href="/login">
-                Login
-              </Link>
+              <Link href="/login">Login</Link>
             </Button>
           )}
         </div>

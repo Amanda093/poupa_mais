@@ -86,6 +86,42 @@ p {
   font-size: 0.9em;
   font-weight: 400;
 }
+.colored-toast {
+  width: 20rem;
+  border-radius: 1em;
+}
+
+.colored-toast.swal2-icon-success {
+  background-color: var(--color-emerald-500) !important;
+}
+
+.colored-toast.swal2-icon-error {
+  background-color: var(--color-red-500) !important;
+}
+
+.colored-toast.swal2-icon-warning {
+  background-color: var(--color-amber-500) !important;
+}
+
+.colored-toast.swal2-icon-info {
+  background-color: var(--color-indigo-500) !important;
+}
+
+.colored-toast.swal2-icon-question {
+  background-color: var(--color-gray-500) !important;
+}
+
+.colored-toast .swal2-title {
+  color: white;
+}
+
+.colored-toast .swal2-close {
+  color: white;
+}
+
+.colored-toast .swal2-html-container {
+  color: white;
+}
 .text-header {
   line-height: 150%;
   font-weight: 600;

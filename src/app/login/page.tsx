@@ -1,13 +1,18 @@
-"use client"
+"use client";
 
+import {
+  browserLocalPersistence,
+  browserSessionPersistence,
+  setPersistence,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { setPersistence, browserLocalPersistence, browserSessionPersistence, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/clientApp";
+import { useState } from "react";
 
 import { Banner, Button, Checkbox, Input } from "@/components";
+import { auth } from "@/lib/clientApp";
 
 import password from "../../../public/password.png";
 
@@ -19,15 +24,22 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     try {
-      await setPersistence(auth, lembrar ? browserLocalPersistence : browserSessionPersistence);
-      const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+      await setPersistence(
+        auth,
+        lembrar ? browserLocalPersistence : browserSessionPersistence,
+      );
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        senha,
+      );
       console.log("Usuário logado:", userCredential.user);
       router.push("/historico");
     } catch (error) {
       console.error("Erro no login:", error);
     }
   };
-  
+
   return (
     <div className="relative mx-auto flex h-[calc(100vh-6em)] w-screen max-w-[2000px] justify-between overflow-y-hidden">
       <div className="absolute top-0 left-0 flex min-h-[calc(100vh-6em)] w-[50%] items-center justify-center max-lg:w-full">
@@ -60,7 +72,7 @@ const LoginPage = () => {
                 <Input
                   id="password"
                   type="password"
-                  placeholder=""
+                  placeholder="Digite sua senha..."
                   variant="default"
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
@@ -77,7 +89,8 @@ const LoginPage = () => {
 
               {/* Checkbox */}
               <div className="flex items-center gap-2">
-                <Checkbox id="remember" 
+                <Checkbox
+                  id="remember"
                   checked={lembrar}
                   onCheckedChange={(val) => setLembrar(!!val)}
                 />
@@ -89,7 +102,7 @@ const LoginPage = () => {
 
             {/* Botão */}
             <Button variant="default" className="w-full" onClick={handleLogin}>
-                Logar
+              Logar
             </Button>
 
             {/* Cadastro */}

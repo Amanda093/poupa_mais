@@ -14,7 +14,7 @@ const buttonVariants = cva(
         outline:
           "outline-[0.15em] outline-emerald-500 text-emerald-500 hover:text-emerald-600 active:text-emerald-700 bg-white hover:outline-emerald-600 active:outline-emerald-700",
         delete:
-          "outline-[0.15em] active:rose-glow hover:bg-rose-100 aspect-square w-[2em] rounded-[0.45em] bg-rose-50 !p-0 text-rose-500 outline-rose-500 hover:text-rose-600 hover:outline-rose-600",
+          "outline-[0.15em] active:rose-glow hover:bg-rose-100  rounded-[0.45em] bg-rose-50  text-rose-500 outline-rose-500 hover:text-rose-600 hover:outline-rose-600",
       },
       size: {
         default: " px-[1.65em] py-[0.35em] has-[>svg]:px-3",

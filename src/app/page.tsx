@@ -1,14 +1,13 @@
-  "use client";
+"use client";
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Fade } from "react-awesome-reveal";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { HiSparkles } from "react-icons/hi2";
 import { IoMdAdd } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/clientApp';
 
 import {
   Button,
@@ -25,11 +24,11 @@ import {
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
 import { Custeio } from "@/interface";
+import { auth } from "@/lib/clientApp";
 
 // const ExpenseForm: React.FunctionComponent<InterfaceExpenseForm> = () => {
 export default function Home() {
-
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   console.log("Loading: ", loading, "|", "Current user: ", user);
 
   const estadosOrdenados = Object.entries(codigosEstadosIBGE).sort((a, b) =>
@@ -79,7 +78,7 @@ export default function Home() {
     setEstadoSelecionado(value);
     setCusteio({ ...custeio, estado: Number(value) });
   };
-  
+
   const handleChangeObs = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCusteio({ ...custeio, obs: e.target.value });
   };
@@ -94,19 +93,18 @@ export default function Home() {
 
   return (
     <div className="pb-[5em]">
-      <div className="container mx-auto py-[60px] xl:!max-w-[1270px] ">
+      <div className="container mx-auto py-[60px] xl:!max-w-[1270px]">
         <div className="max-lg:text-center">
-        <Title
-          mainTitle="Controle seus gastos."
-          subTitle="Planeje seu futuro."
-        />
-      </div>
+          <Title
+            mainTitle="Controle seus gastos."
+            subTitle="Planeje seu futuro."
+          />
+        </div>
 
         {/* Formulário - Parte 01 */}
-        <div className="flex gap-[2em] d:gap-[0.5em] max-lg:justify-center max-md:flex-col max-md:items-center">
-
+        <div className="d:gap-[0.5em] flex gap-[2em] max-lg:justify-center max-md:flex-col max-md:items-center">
           {/* Renda Mensal */}
-          <div className="min-w-[20em] max-md:min-w-auto max-md:w-[80%]">
+          <div className="min-w-[20em] max-md:w-[80%] max-md:min-w-auto">
             {/* TODO: adicionar bloqueio de letras */}
             <label htmlFor="monthpay">Qual sua renda mensal?</label>
             <Input
@@ -124,7 +122,7 @@ export default function Home() {
           </div>
 
           {/* Onde Você Mora */}
-          <div className="min-w-[20em] max-md:min-w-auto max-md:w-[80%]">
+          <div className="min-w-[20em] max-md:w-[80%] max-md:min-w-auto">
             <label htmlFor="state">
               Selecione a região mais perto de sua residência:
             </label>
@@ -217,7 +215,11 @@ export default function Home() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button onClick={() => removeGasto(index)} variant="delete">
+              <Button
+                onClick={() => removeGasto(index)}
+                className="aspect-square w-[2em] !p-0"
+                variant="delete"
+              >
                 <MdDelete className="size-[1.25em]" />
               </Button>
             </motion.div>

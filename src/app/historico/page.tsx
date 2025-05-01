@@ -1,7 +1,6 @@
 import Image from "next/image";
-import { FaOctopusDeploy } from "react-icons/fa";
 
-import { Button, Input, Title, Historico } from "@/components";
+import { Button, Historico, Input, Title } from "@/components";
 
 import Perfil from "../../../public/FotoPerfilPlaceHolder.png";
 import iconFoto from "../../../public/MudarFoto.png";
@@ -10,27 +9,23 @@ import password from "../../../public/password.png";
 const HistoricoPage = () => {
   return (
     // Div que contém todos os elementos
-    <div className="h-auto flex flex-col w-full items-center gap-10">
+    <div className="container flex flex-col items-center gap-[3em] py-[45px] xl:!max-w-[1270px]">
       {/* Div de Perfil */}
-      <div className="flex gap-10 w-fit">
-
+      <div className="flex gap-[2em]">
         {/* Div da foto de perfil */}
-        <div className="flex flex-col w-max items-center gap-5">
+        <div className="flex w-max flex-col items-center gap-[0.5em]">
           {/* Foto do perfil */}
           <Image
             src={Perfil}
-            width={158}
-            height={158}
             alt="Profile Picture"
-            className="rounded-full border-3 border-emerald-500"
-          /> 
+            className="aspect-square w-[8.5em] rounded-full border-3 border-emerald-500"
+          />
 
           {/* Botão de alterar foto de perfil */}
           <Button>
-            <Image 
+            <Image
               src={iconFoto}
-              width={25}
-              height={25}
+              className="size-[1.25em]"
               alt="Alterar Foto"
             />
             Mudar Foto
@@ -38,7 +33,7 @@ const HistoricoPage = () => {
         </div>
 
         {/* Div com a primeira coluna de inputs */}
-        <div className="flex flex-col justify-between mb-2 w-fit">
+        <div className="mb-2 flex w-fit flex-col gap-[0.5em]">
           <div>
             <label htmlFor="nome">Nome</label>
             <Input
@@ -60,18 +55,13 @@ const HistoricoPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="data">Data</label>
-            <Input
-              id="data"
-              type="date"
-              variant="default"
-              className="w-75"
-            /> 
+            <label htmlFor="data">Data de Nascimento</label>
+            <Input id="data" type="date" variant="default" className="w-75" />
           </div>
         </div>
 
         {/* Div com a segunda coluna de inputs */}
-        <div className="flex flex-col justify-between mb-2 w-fit">
+        <div className="mb-2 flex h-[33%] w-fit flex-col gap-[0.5em]">
           <div>
             <label htmlFor="novaSenha">Nova Senha</label>
             <Input
@@ -90,7 +80,7 @@ const HistoricoPage = () => {
               }
             />
           </div>
-          <div>
+          <div className="h-[33%]">
             <label htmlFor="senhaAtual">Senha Atual</label>
             <Input
               id="senhaAtual"
@@ -108,26 +98,27 @@ const HistoricoPage = () => {
               }
             />
           </div>
-          <div className="h-[61px] flex items-end">
-            <Button className="w-5/6">
-            <Image 
-              src={iconFoto}
-              width={25}
-              height={25}
-              alt="Alterar Foto"
-            />
-              Salvar Alterações
+          <div className="flex h-[3.5em] items-end gap-[1em]">
+            <Button className="">
+              <Image
+                src={iconFoto}
+                className="size-[1.25em]"
+                alt="Alterar Foto"
+              />
+              Salvar
+            </Button>
+            <Button variant="delete" className="">
+              Sair
             </Button>
           </div>
         </div>
       </div>
 
       {/* Div do histórico */}
-      <div className="mt-5 w-[80%]">
+      <div className="flex w-full flex-col gap-[1em]">
         <Title mainTitle="Histórico de" subTitle="Planejamentos" />
-        <Historico mes="Abril"/>
-        <br />
-        <Historico mes="Setembro"/>
+        <Historico mes="Abril" ano="2025" />
+        <Historico mes="Setembro" ano="2024" />
       </div>
     </div>
   );

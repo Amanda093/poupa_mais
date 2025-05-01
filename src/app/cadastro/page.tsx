@@ -1,28 +1,27 @@
 "use client";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/clientApp";
-import { db } from "@/lib/clientApp";
 import { doc, setDoc } from "firebase/firestore";
-import { useRouter } from "next/navigation"; // para redirecionar
-
-
-
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // para redirecionar
 import React, { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { IoCloseCircle } from "react-icons/io5";
 import { MdError } from "react-icons/md";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 import { Banner, Button, Input } from "@/components";
+import { auth } from "@/lib/clientApp";
+import { db } from "@/lib/clientApp";
 
 import password_png from "../../../public/password.png";
 const CadastroPage = () => {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
-  const [email, setEmail] = useState('');
-  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState("");
+  const [nome, setNome] = useState("");
 
   // verifica se a senha sugerida pelo usuário é forte
   const verificarForcaSenha = (senha: string): string => {
@@ -58,30 +57,62 @@ const CadastroPage = () => {
       alert("As senhas não coincidem.");
       return;
     }
-  
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
       const user = userCredential.user;
-  
+
       // Salvar dados adicionais no Firestore
       await setDoc(doc(db, "usuarios", user.uid), {
         uid: user.uid,
         nome,
         email,
-        dataNascimento: new Date((document.getElementById("datadenascimento") as HTMLInputElement)?.value),
+        dataNascimento: new Date(
+          (
+            document.getElementById("datadenascimento") as HTMLInputElement
+          )?.value,
+        ),
         criadoEm: new Date(),
       });
-  
-      alert("Cadastro realizado com sucesso!");
-  
+
+      withReactContent(Swal).fire({
+        toast: true,
+        position: "bottom-right",
+        iconColor: "white",
+        customClass: {
+          popup: "colored-toast",
+        },
+        showConfirmButton: false,
+        timer: 6500,
+        timerProgressBar: true,
+        icon: "success",
+        title: "Cadastro realizado com sucesso!",
+      });
+
       // Redirecionar para dashboard
       router.push("/");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao cadastrar:", error);
-      alert(error.message);
+      withReactContent(Swal).fire({
+        toast: true,
+        position: "bottom-right",
+        iconColor: "white",
+        customClass: {
+          popup: "colored-toast",
+        },
+        showConfirmButton: false,
+        timer: 6500,
+        timerProgressBar: true,
+        icon: "error",
+        title: error.message,
+      });
     }
   };
-  
 
   return (
     <div className="relative mx-auto flex h-[calc(100vh-6em)] w-screen max-w-[2000px] justify-between overflow-y-hidden">
@@ -142,7 +173,7 @@ const CadastroPage = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder=""
+                  placeholder="Digite sua senha..."
                   variant="default"
                   icon={
                     <Image
@@ -163,7 +194,7 @@ const CadastroPage = () => {
                   type="password"
                   value={confirmpassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder=""
+                  placeholder="Confirme sua senha..."
                   variant="default"
                   icon={
                     <Image
@@ -200,7 +231,11 @@ const CadastroPage = () => {
             </div>
 
             {/* Botão */}
-            <Button variant="default" className="w-full" onClick={handleCadastro}>
+            <Button
+              variant="default"
+              className="w-full"
+              onClick={handleCadastro}
+            >
               Cadastrar-se
             </Button>
 
