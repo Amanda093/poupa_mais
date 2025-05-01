@@ -37,41 +37,44 @@ const HistoricoPage = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
+  
     setUploading(true);
-
-    // Criação do FormData e upload para o Cloudinary
+  
+    // 1. Deleta imagem antiga (se existir)
+    const oldPublicId = localStorage.getItem("photoPublicId");
+    if (oldPublicId) {
+      await fetch("/api/deleteImage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ public_id: oldPublicId }),
+      });
+      localStorage.removeItem("photoPublicId"); // Limpa o antigo
+    }
+  
+    // 2. Faz upload da nova imagem
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "your_upload_preset"); // Substitua pelo seu preset de upload no Cloudinary
-
-    const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
+    formData.append("upload_preset", "your_upload_preset");
+  
+    const response = await fetch("/api/upload", {
       method: "POST",
       body: formData,
     });
-
-    if (!response.ok) {
-      const text = await response.text(); // Lê como texto, caso não seja JSON
-      console.error("Erro ao enviar imagem:", text);
-      return;
-    }
-
+  
     const data = await response.json();
-    console.log("Imagem enviada:", data.secure_url);
-
+    console.log("Nova imagem enviada:", data);
+  
+    // 3. Atualiza Firebase, localStorage e estado
     if (response.ok) {
-      // Atualiza a foto de perfil no Firebase
       await updateProfile(auth.currentUser!, {
         photoURL: data.secure_url,
       });
-
-      // Atualiza o estado local da foto
+  
       setPhotoURL(data.secure_url);
-
-      // Armazena a foto no localStorage
       localStorage.setItem("photoURL", data.secure_url);
+      localStorage.setItem("photoPublicId", data.public_id); // Salva o novo public_id
     }
-
+  
     setUploading(false);
   };
 
