@@ -10,7 +10,7 @@ import password from "../../../public/password.png";
 const HistoricoPage = () => {
   return (
     // Div que contém todos os elementos
-    <div className="h-auto flex flex-col w-full items-center">
+    <div className="h-auto flex flex-col w-full items-center gap-10">
       {/* Div de Perfil */}
       <div className="flex gap-10 w-fit">
 
@@ -125,7 +125,9 @@ const HistoricoPage = () => {
       {/* Div do histórico */}
       <div className="mt-5 w-[80%]">
         <Title mainTitle="Histórico de" subTitle="Planejamentos" />
-        <Historico />
+        <Historico mes="Abril"/>
+        <br />
+        <Historico mes="Setembro"/>
       </div>
     </div>
   );
