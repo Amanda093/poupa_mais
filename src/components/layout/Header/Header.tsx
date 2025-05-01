@@ -26,7 +26,7 @@ const Header = () => {
 
         {/* links para as outras páginas*/}
         <div className="flex items-center gap-[2.5em] max-sm:flex-col max-sm:gap-[0.5em]">
-          <LinkHeader text="Planejar Finanças" path="" />
+          <LinkHeader text="Planejar Finanças" path="/" />
           {loading ? null : user ? (
             <>
               <LinkHeader text="Histórico" path="historico" />

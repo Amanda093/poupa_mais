@@ -12,7 +12,7 @@ const LinkHeader = (props: { path: string; text: string }) => {
       className={`text-header h-fit ${
         pathname === path ? "text-header-active" : ""
       } transition-all`}
-      href={`/${path}`}
+      href={`${path}`}
     >
       {text}
     </Link>

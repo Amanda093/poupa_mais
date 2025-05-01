@@ -20,7 +20,7 @@ const HistoricoPage = () => {
   // Carregar a foto de perfil do Firebase ou localStorage sempre que o componente for montado
   useEffect(() => {
     const storedPhotoURL = localStorage.getItem("photoURL");
-    
+
     if (storedPhotoURL) {
       // Se a foto estiver no localStorage, usa ela
       setPhotoURL(storedPhotoURL);
@@ -37,9 +37,9 @@ const HistoricoPage = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-  
+
     setUploading(true);
-  
+
     // 1. Deleta imagem antiga (se existir)
     const oldPublicId = localStorage.getItem("photoPublicId");
     if (oldPublicId) {
@@ -50,31 +50,31 @@ const HistoricoPage = () => {
       });
       localStorage.removeItem("photoPublicId"); // Limpa o antigo
     }
-  
+
     // 2. Faz upload da nova imagem
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "your_upload_preset");
-  
+
     const response = await fetch("/api/upload", {
       method: "POST",
       body: formData,
     });
-  
+
     const data = await response.json();
     console.log("Nova imagem enviada:", data);
-  
+
     // 3. Atualiza Firebase, localStorage e estado
     if (response.ok) {
       await updateProfile(auth.currentUser!, {
         photoURL: data.secure_url,
       });
-  
+
       setPhotoURL(data.secure_url);
       localStorage.setItem("photoURL", data.secure_url);
       localStorage.setItem("photoPublicId", data.public_id); // Salva o novo public_id
     }
-  
+
     setUploading(false);
   };
 
@@ -104,7 +104,11 @@ const HistoricoPage = () => {
             unoptimized
           />
           <Button onClick={handleChangePhotoClick} disabled={uploading}>
-            <Image src={iconFoto} className="size-[1.25em]" alt="Alterar Foto" />
+            <Image
+              src={iconFoto}
+              className="size-[1.25em]"
+              alt="Alterar Foto"
+            />
             {uploading ? "Enviando..." : "Mudar Foto"}
           </Button>
           <input
@@ -118,87 +122,87 @@ const HistoricoPage = () => {
 
         {/*Div do formulario*/}
         <div className="flex gap-[2em] max-sm:flex-col max-sm:gap-0">
-        {/* Div com a primeira coluna de inputs */}
-        <div className="mb-2 flex w-fit flex-col gap-[0.5em]">
-          <div>
-            <label htmlFor="nome">Nome</label>
-            <Input
-              id="nome"
-              type="text"
-              placeholder="Komi San"
-              variant="default"
-              className="w-75"
-            />
-          </div>
-          <div>
-            <label htmlFor="email">Email</label>
-            <Input
-              id="email"
-              type="text"
-              placeholder="komisan@email.com"
-              variant="default"
-              className="w-75"
-            />
-          </div>
-          <div>
-            <label htmlFor="data">Data de Nascimento</label>
-            <Input id="data" type="date" variant="default" className="w-75" />
-          </div>
-        </div>
-
-        {/* Div com a segunda coluna de inputs */}
-        <div className="mb-2 flex w-fit flex-col gap-[0.5em]">
-          <div>
-            <label htmlFor="novaSenha">Nova Senha</label>
-            <Input
-              id="novaSenha"
-              type="password"
-              placeholder="Nova Senha"
-              variant="default"
-              className="w-75"
-              icon={
-                <Image
-                  src={password}
-                  alt="Ícone Senha"
-                  width={20}
-                  height={20}
-                />
-              }
-            />
-          </div>
-          <div className="h-[33%]">
-            <label htmlFor="senhaAtual">Senha Atual</label>
-            <Input
-              id="senhaAtual"
-              type="password"
-              placeholder="Senha Atual"
-              variant="default"
-              className="w-75"
-              icon={
-                <Image
-                  src={password}
-                  alt="Ícone Senha"
-                  width={20}
-                  height={20}
-                />
-              }
-            />
-          </div>
-          <div className="flex h-[3.5em] items-end gap-[1em]">
-            <Button className="">
-              <Image
-                src={iconFoto}
-                className="size-[1.25em]"
-                alt="Alterar Foto"
+          {/* Div com a primeira coluna de inputs */}
+          <div className="mb-2 flex w-fit flex-col gap-[0.5em]">
+            <div>
+              <label htmlFor="nome">Nome</label>
+              <Input
+                id="nome"
+                type="text"
+                placeholder="Komi San"
+                variant="default"
+                className="w-75"
               />
-              Salvar
-            </Button>
-            <Button variant="delete" className="" onClick={handleLogout}>
-              Sair
-            </Button>
+            </div>
+            <div>
+              <label htmlFor="email">Email</label>
+              <Input
+                id="email"
+                type="text"
+                placeholder="komisan@email.com"
+                variant="default"
+                className="w-75"
+              />
+            </div>
+            <div>
+              <label htmlFor="data">Data de Nascimento</label>
+              <Input id="data" type="date" variant="default" className="w-75" />
+            </div>
+          </div>
+
+          {/* Div com a segunda coluna de inputs */}
+          <div className="mb-2 flex w-fit flex-col gap-[0.5em]">
+            <div>
+              <label htmlFor="novaSenha">Nova Senha</label>
+              <Input
+                id="novaSenha"
+                type="password"
+                placeholder="Nova Senha"
+                variant="default"
+                className="w-75"
+                icon={
+                  <Image
+                    src={password}
+                    alt="Ícone Senha"
+                    width={20}
+                    height={20}
+                  />
+                }
+              />
+            </div>
+            <div className="h-[33%]">
+              <label htmlFor="senhaAtual">Senha Atual</label>
+              <Input
+                id="senhaAtual"
+                type="password"
+                placeholder="Senha Atual"
+                variant="default"
+                className="w-75"
+                icon={
+                  <Image
+                    src={password}
+                    alt="Ícone Senha"
+                    width={20}
+                    height={20}
+                  />
+                }
+              />
+            </div>
+            <div className="flex h-[3.5em] items-end gap-[1em]">
+              <Button className="">
+                <Image
+                  src={iconFoto}
+                  className="size-[1.25em]"
+                  alt="Alterar Foto"
+                />
+                Salvar
+              </Button>
+              <Button variant="delete" className="" onClick={handleLogout}>
+                Sair
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
       </div>
 
       {/* Div do histórico */}
@@ -207,21 +211,31 @@ const HistoricoPage = () => {
         <Historico
           mes="Abril"
           ano="2025"
+          renda="R$4500,00"
           despesas={[
-            { cor: "bg-emerald-500", valor: 1500.00, titulo: "Alimentação" },
-            { cor: "bg-pink-400", valor: 800.00, titulo: "Transporte" },
-            { cor: "bg-red-500", valor: 1200.00, titulo: "Saúde" },
-            { cor: "bg-indigo-500", valor: 500.00, titulo: "Lazer" }
+            {
+              categoria: "Alimentação",
+              valor: 1500.0,
+              nome: "Comida",
+            },
+            { categoria: "Transporte", valor: 800.0, nome: "Onibus" },
+            { categoria: "Saúde", valor: 1200.0, nome: "Médico" },
+            { categoria: "Lazer", valor: 500.0, nome: "Jogos" },
           ]}
         />
         <Historico
           mes="Setembro"
           ano="2025"
+          renda="R$4500,00"
           despesas={[
-            { cor: "bg-emerald-500", valor: 1500.00, titulo: "Alimentação" },
-            { cor: "bg-pink-400", valor: 800.00, titulo: "Transporte" },
-            { cor: "bg-red-500", valor: 1200.00, titulo: "Saúde" },
-            { cor: "bg-indigo-500", valor: 500.00, titulo: "Lazer" }
+            {
+              categoria: "Alimentação",
+              valor: 1500.0,
+              nome: "Comida",
+            },
+            { categoria: "Transporte", valor: 800.0, nome: "Onibus" },
+            { categoria: "Saúde", valor: 1200.0, nome: "Médico" },
+            { categoria: "Lazer", valor: 500.0, nome: "Jogos" },
           ]}
         />
       </div>
