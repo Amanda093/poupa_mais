@@ -14,15 +14,15 @@ const Header = () => {
   const [user, loading] = useAuthState(auth);
 
   return (
-    <header className="header-shadow flex h-[6em] w-full pt-[2em] pb-[1.5em]">
-      <nav className="container flex justify-between">
+    <header className="header-shadow flex h-[6em] w-full pt-[2em] pb-[1.5em] max-sm:h-auto">
+      <nav className="container flex justify-between max-sm:flex-col max-sm:gap-[1em]">
         {/* logotipo e link */}
-        <Link href="/" className="">
+        <Link href="/" className="flex justify-center">
           <Image src={logo} alt="Logotipo do Poupa+" /> {/* Este é o Header */}
         </Link>
 
         {/* links para as outras páginas*/}
-        <div className="flex items-center gap-[2.5em] max-sm:gap-[1.5em]">
+        <div className="flex items-center gap-[2.5em] max-sm:flex-col max-sm:gap-[0.5em]">
           <LinkHeader text="Planejar Finanças" path="" />
           {loading ? null : user ? (
             <>
