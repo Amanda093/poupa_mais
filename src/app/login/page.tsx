@@ -12,9 +12,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Banner, Button, Checkbox, Input } from "@/components";
+import password from "@/components/assets/password.png";
 import { auth } from "@/lib/clientApp";
-
-import password from "../../../public/password.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");

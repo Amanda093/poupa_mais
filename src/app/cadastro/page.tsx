@@ -12,10 +12,11 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 import { Banner, Button, Input } from "@/components";
+import password_png from "@/components/assets/password.png";
 import { auth } from "@/lib/clientApp";
 import { db } from "@/lib/clientApp";
 
-import password_png from "../../../public/password.png";
+
 const CadastroPage = () => {
   const router = useRouter();
   const [password, setPassword] = useState("");
