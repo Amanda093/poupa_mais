@@ -1,9 +1,17 @@
-const Historico = (props: { mes: string; ano: string }) => {
-  const { mes, ano } = props;
+import React from "react";
+
+interface HistoricoProps {
+  mes: string;
+  ano: string;
+  despesas: { cor: string; valor: number; titulo: string }[];
+}
+
+const Historico = (props: HistoricoProps) => {
+  const { mes, ano, despesas } = props;
+
   return (
-    //Div que contem todas as divs
     <div>
-      {/* Titulo */}
+      {/* Título */}
       <div className="flex items-center gap-[1em]">
         <h2 className="font-bold text-nowrap text-emerald-500">
           {mes} - {ano}
@@ -13,65 +21,26 @@ const Historico = (props: { mes: string; ano: string }) => {
 
       {/* Gráfico */}
       <div className="flex h-[30%] w-full justify-end overflow-hidden rounded-[0.5em] outline-[0.15em] outline-white">
-        {/* Barras dos gastos */}
-        <div
-          className={`flex h-full w-[25%] items-center justify-center bg-emerald-500 text-white outline-[0.15em] outline-white`}
-          title="Titulo Despesa"
-        >
-          R$0,00
-        </div>
-
-        <div
-          className={`flex h-full w-[25%] items-center justify-center bg-pink-400 text-white outline-[0.15em] outline-white`}
-          title="Titulo Despesa"
-        >
-          R$0,00
-        </div>
-
-        <div
-          className={`flex h-full w-[25%] items-center justify-center bg-red-500 text-white outline-[0.15em] outline-white`}
-          title="Titulo Despesa"
-        >
-          R$0,00
-        </div>
-
-        <div
-          className={`flex h-full w-[25%] items-center justify-center bg-indigo-500 text-white outline-[0.15em] outline-white`}
-          title="Titulo Despesa"
-        >
-          R$0,00
-        </div>
+        {despesas.map((despesa, index) => (
+          <div
+            key={index}
+            className={`flex h-full w-[${100 / despesas.length}%] items-center justify-center ${despesa.cor} text-white outline-[0.15em] outline-white`}
+            title={despesa.titulo}
+          >
+            {`R$ ${despesa.valor.toFixed(2)}`}
+          </div>
+        ))}
       </div>
 
-      {/*Legendas*/}
+      {/* Legendas */}
       <div className="mt-2 flex gap-3">
-        {/*Uma das legendas*/}
-        <div className="flex items-center gap-2">
-          {/*Cor*/}
-          <div className="h-4 w-4 rounded-xs bg-emerald-500"></div>
-          Despesa
-        </div>
-
-        {/*Uma das legendas*/}
-        <div className="flex items-center gap-2">
-          {/*Cor*/}
-          <div className="h-4 w-4 rounded-xs bg-pink-400"></div>
-          Despesa
-        </div>
-
-        {/*Uma das legendas*/}
-        <div className="flex items-center gap-2">
-          {/*Cor*/}
-          <div className="h-4 w-4 rounded-xs bg-indigo-500"></div>
-          Despesa
-        </div>
-
-        {/*Uma das legendas*/}
-        <div className="flex items-center gap-2">
-          {/*Cor*/}
-          <div className="h-4 w-4 rounded-xs bg-red-500"></div>
-          Despesa
-        </div>
+        {despesas.map((despesa, index) => (
+          <div key={index} className="flex items-center gap-2">
+            {/* Cor */}
+            <div className="h-4 w-4 rounded-xs" style={{ backgroundColor: despesa.cor }}></div>
+            {despesa.titulo}
+          </div>
+        ))}
       </div>
     </div>
   );
