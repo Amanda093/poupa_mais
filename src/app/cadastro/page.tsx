@@ -1,4 +1,11 @@
 "use client";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/clientApp";
+import { db } from "@/lib/clientApp";
+import { doc, setDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation"; // para redirecionar
+
+
 
 import Image from "next/image";
 import Link from "next/link";
@@ -10,10 +17,12 @@ import { MdError } from "react-icons/md";
 import { Banner, Button, Input } from "@/components";
 
 import password_png from "../../../public/password.png";
-
 const CadastroPage = () => {
+  const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [nome, setNome] = useState('');
 
   // verifica se a senha sugerida pelo usuário é forte
   const verificarForcaSenha = (senha: string): string => {
@@ -44,6 +53,36 @@ const CadastroPage = () => {
   // chama a const verificar de força da senha, colocando password como seu parametro
   const forcaSenha = verificarForcaSenha(password);
 
+  const handleCadastro = async () => {
+    if (password !== confirmpassword) {
+      alert("As senhas não coincidem.");
+      return;
+    }
+  
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // Salvar dados adicionais no Firestore
+      await setDoc(doc(db, "usuarios", user.uid), {
+        uid: user.uid,
+        nome,
+        email,
+        dataNascimento: new Date((document.getElementById("datadenascimento") as HTMLInputElement)?.value),
+        criadoEm: new Date(),
+      });
+  
+      alert("Cadastro realizado com sucesso!");
+  
+      // Redirecionar para dashboard
+      router.push("/");
+    } catch (error: any) {
+      console.error("Erro ao cadastrar:", error);
+      alert(error.message);
+    }
+  };
+  
+
   return (
     <div className="relative mx-auto flex h-[calc(100vh-6em)] w-screen max-w-[2000px] justify-between overflow-y-hidden">
       {/* Banner */}
@@ -69,6 +108,8 @@ const CadastroPage = () => {
                   type="text"
                   placeholder="Digite seu nome..."
                   variant="default"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
                 />
               </div>
 
@@ -81,6 +122,8 @@ const CadastroPage = () => {
                   type="email"
                   placeholder="m@example.com"
                   variant="default"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -157,7 +200,7 @@ const CadastroPage = () => {
             </div>
 
             {/* Botão */}
-            <Button variant="default" className="w-full">
+            <Button variant="default" className="w-full" onClick={handleCadastro}>
               Cadastrar-se
             </Button>
 

@@ -7,10 +7,8 @@ import { Fade } from "react-awesome-reveal";
 import { HiSparkles } from "react-icons/hi2";
 import { IoMdAdd } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
-
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { auth } from '@/lib/clientApp';
 
 import {
   Button,
@@ -79,6 +77,11 @@ export default function Home() {
 
   const handleChangeEstado = (value: string) => {
     setEstadoSelecionado(value);
+    setCusteio({ ...custeio, estado: Number(value) });
+  };
+  
+  const handleChangeObs = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCusteio({ ...custeio, obs: e.target.value });
   };
 
   const { mensagemBot, sendMensagem } = useChatbot();
@@ -100,7 +103,8 @@ export default function Home() {
       </div>
 
         {/* Formulário - Parte 01 */}
-d:gap-[0.5em]        <div className="flex gap-[2em] max-lg:justify-center max-md:flex-col max-md:items-center max-">
+        <div className="flex gap-[2em] d:gap-[0.5em] max-lg:justify-center max-md:flex-col max-md:items-center">
+
           {/* Renda Mensal */}
           <div className="min-w-[20em] max-md:min-w-auto max-md:w-[80%]">
             {/* TODO: adicionar bloqueio de letras */}
@@ -230,6 +234,8 @@ d:gap-[0.5em]        <div className="flex gap-[2em] max-lg:justify-center max-md
           <Textarea
             placeholder="Ex: Quero guardar dinheiro para viajar, tenho dívidas, ou preciso de ajuda com prioridades..."
             className="min-h-[8em]"
+            value={custeio.obs}
+            onChange={handleChangeObs}
           />
         </div>
         {/*TODO: terminar formulário */}
