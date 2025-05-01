@@ -1,5 +1,16 @@
 "use client";
 
+{
+  /*TODO: Checar se todos os requisitos estão sendo compridos
+  TODO: Terminar README do projeto
+  TODO: Certificar responsividade geral
+  TODO: Comentar o código
+  TODO: Organizar o código
+  TODO: Adicionar animação na troca das paginas de login/cadastro
+  TODO: Estilizar componentes faltantes, ex: Input do tipo date
+  */
+}
+
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -26,6 +37,9 @@ import { useChatbot } from "@/hooks";
 import { Custeio } from "@/interface";
 import { auth } from "@/lib/clientApp";
 
+{
+  /*TODO: Implementar limite de usos do site*/
+}
 const limitado = false;
 // const ExpenseForm: React.FunctionComponent<InterfaceExpenseForm> = () => {
 export default function Home() {
@@ -106,7 +120,6 @@ export default function Home() {
         <div className="d:gap-[0.5em] flex gap-[2em] max-lg:justify-center max-md:flex-col max-md:items-center">
           {/* Renda Mensal */}
           <div className="min-w-[20em] max-md:w-[80%] max-md:min-w-auto">
-            {/* TODO: adicionar bloqueio de letras */}
             <label htmlFor="monthpay">Qual sua renda mensal?</label>
             <Input
               id="monthpay"
@@ -152,6 +165,7 @@ export default function Home() {
       {/* Formulário - Parte 02 */}
       <div className="relative container mx-auto xl:!max-w-[1300px]">
         {limitado && (
+          // TODO: Mudar mensagem caso o usuario já esteja logado
           <div className="text-bold form-shadow absolute top-[50%] left-0 z-10 flex w-full translate-y-[-50%] flex-col justify-center gap-[0.25em] rounded-[1em] bg-white py-[1.5em] text-center">
             <h1>Gostou do site?</h1>
             <h2 className="text-emerald-500">
@@ -207,7 +221,6 @@ export default function Home() {
                 </div>
                 <div className="w-[30%]">
                   <label>Gasto Mensal</label>
-                  {/* TODO: adicionar bloqueio de letras */}
                   <Input
                     type="money"
                     value={gasto.valor}
@@ -278,6 +291,7 @@ export default function Home() {
                 <h2>Terminou?</h2>
                 <p>Agora nós entramos em ação!</p>
               </div>
+              {/*TODO: Adicionar confirmação antes de gerar resposta*/}
               <Button className="w-fit px-[0.75em]" onClick={handleSend}>
                 <HiSparkles />
                 Gerar Planejamento
@@ -288,6 +302,7 @@ export default function Home() {
           </>
         ) : (
           <>
+            {/*TODO: Dar Scroll para o começo da resposta quando ela for gerada*/}
             <Fade
               delay={200} // Wait before starting
               duration={1000} // Animation duration
@@ -299,8 +314,10 @@ export default function Home() {
                   <HiSparkles />
                   Planejamento
                 </h2>
+                {/*TODO: Formatar mensagem do bot, ex: bold, listas*/}
                 <p className="w-full">{mensagemBot}</p>
 
+                {/*TODO: Mudar mensagem caso o usuario já esteja logado */}
                 <div className="text-center">
                   <Title mainTitle="Se interessou?" subTitle="Faça parte " />
                   <div className="flex justify-center gap-[1em]">

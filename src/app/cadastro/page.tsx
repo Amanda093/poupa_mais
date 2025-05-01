@@ -16,7 +16,6 @@ import password_png from "@/components/assets/password.png";
 import { auth } from "@/lib/clientApp";
 import { db } from "@/lib/clientApp";
 
-
 const CadastroPage = () => {
   const router = useRouter();
   const [password, setPassword] = useState("");
@@ -79,7 +78,9 @@ const CadastroPage = () => {
         ),
         criadoEm: new Date(),
       });
-
+      {
+        /*TODO: Criar constante global para os toasts*/
+      }
       withReactContent(Swal).fire({
         toast: true,
         position: "bottom-right",
@@ -187,7 +188,6 @@ const CadastroPage = () => {
                 />
               </div>
 
-              {/* TODO: faça com que, ao digitar o confirma senha antes de digitar a senha, mude o forcasenha */}
               <div className="pb-5">
                 <label className="">Confirmar senha</label>
                 <Input

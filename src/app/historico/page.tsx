@@ -120,6 +120,7 @@ const HistoricoPage = () => {
           />
         </div>
 
+        {/*TODO: Mostrar dados do usuario*/}
         {/*Div do formulario*/}
         <div className="flex gap-[2em] max-sm:flex-col max-sm:gap-0">
           {/* Div com a primeira coluna de inputs */}
