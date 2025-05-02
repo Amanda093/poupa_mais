@@ -350,7 +350,6 @@ Além disso, é fundamental ter uma **reserva de emergência** antes de começar
                 <h2>Terminou?</h2>
                 <p>Agora nós entramos em ação!</p>
               </div>
-              {/*TODO: Adicionar confirmação antes de gerar resposta*/}
               <Button className="w-fit px-[0.75em]" onClick={handleSend}>
                 <HiSparkles />
                 Gerar Planejamento
@@ -375,7 +374,6 @@ Além disso, é fundamental ter uma **reserva de emergência** antes de começar
                   <HiSparkles />
                   Planejamento
                 </h2>
-                {/*TODO: Formatar mensagem do bot, ex: bold, listas*/}
                 <p className="prose prose-sm text-light text-ia w-full max-w-none">
                   <ReactMarkdown>{mensagemBot}</ReactMarkdown>
                 </p>
