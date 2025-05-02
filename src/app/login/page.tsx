@@ -14,6 +14,7 @@ import { useState } from "react";
 import { Banner, Button, Checkbox, Input } from "@/components";
 import password from "@/components/assets/password.png";
 import { auth } from "@/lib/clientApp";
+import { Toast } from "@/lib/sweetalert";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -34,6 +35,10 @@ const LoginPage = () => {
       );
       console.log("Usuário logado:", userCredential.user);
       router.push("/historico");
+      Toast.fire({
+        title: "Login realizado com sucesso!",
+        icon: "success",
+      });
     } catch (error) {
       console.error("Erro no login:", error);
     }

@@ -36,6 +36,7 @@ import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
 import { Custeio } from "@/interface";
 import { auth } from "@/lib/clientApp";
+import { Popup } from "@/lib/sweetalert";
 
 {
   /*TODO: Implementar limite de usos do site*/
@@ -101,9 +102,21 @@ export default function Home() {
   const { mensagemBot, sendMensagem } = useChatbot();
 
   const handleSend = () => {
-    const envio: Custeio = custeio;
-
-    sendMensagem(envio);
+    Popup.fire({
+      html: `<div>
+      <h3>Confirmar envio?</h3>
+      </div> `,
+      icon: "question",
+      focusConfirm: false,
+      showDenyButton: true,
+      confirmButtonText: "Sim",
+      denyButtonText: "Não",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const envio: Custeio = custeio;
+        sendMensagem(envio);
+      }
+    });
   };
 
   return (
@@ -302,7 +315,9 @@ export default function Home() {
           </>
         ) : (
           <>
+            {/*TODO: Adicionar loading enquanto a propmt é gerada*/}
             {/*TODO: Dar Scroll para o começo da resposta quando ela for gerada*/}
+            {/*TODO: Criar cookie para planejamento gerado e um botão para gerar novo ( se o usuario nao estiver limitado )*/}
             <Fade
               delay={200} // Wait before starting
               duration={1000} // Animation duration

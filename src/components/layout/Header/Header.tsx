@@ -29,7 +29,7 @@ const Header = () => {
           <LinkHeader text="Planejar Finanças" path="/" />
           {loading ? null : user ? (
             <>
-              <LinkHeader text="Histórico" path="historico" />
+              <LinkHeader text="Histórico" path="/historico" />
               <Link href="/historico">
                 <Image
                   src={profilePicture}

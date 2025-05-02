@@ -8,13 +8,12 @@ import React, { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { IoCloseCircle } from "react-icons/io5";
 import { MdError } from "react-icons/md";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 
 import { Banner, Button, Input } from "@/components";
 import password_png from "@/components/assets/password.png";
 import { auth } from "@/lib/clientApp";
 import { db } from "@/lib/clientApp";
+import { Toast } from "@/lib/sweetalert";
 
 const CadastroPage = () => {
   const router = useRouter();
@@ -54,7 +53,10 @@ const CadastroPage = () => {
 
   const handleCadastro = async () => {
     if (password !== confirmpassword) {
-      alert("As senhas não coincidem.");
+      Toast.fire({
+        icon: "warning",
+        title: "As senhas não coincidem.",
+      });
       return;
     }
 
@@ -78,21 +80,9 @@ const CadastroPage = () => {
         ),
         criadoEm: new Date(),
       });
-      {
-        /*TODO: Criar constante global para os toasts*/
-      }
-      withReactContent(Swal).fire({
-        toast: true,
-        position: "bottom-right",
-        iconColor: "white",
-        customClass: {
-          popup: "colored-toast",
-        },
-        showConfirmButton: false,
-        timer: 6500,
-        timerProgressBar: true,
-        icon: "success",
+      Toast.fire({
         title: "Cadastro realizado com sucesso!",
+        icon: "success",
       });
 
       // Redirecionar para dashboard
@@ -100,18 +90,9 @@ const CadastroPage = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao cadastrar:", error);
-      withReactContent(Swal).fire({
-        toast: true,
-        position: "bottom-right",
-        iconColor: "white",
-        customClass: {
-          popup: "colored-toast",
-        },
-        showConfirmButton: false,
-        timer: 6500,
-        timerProgressBar: true,
-        icon: "error",
+      Toast.fire({
         title: error.message,
+        icon: "success",
       });
     }
   };
