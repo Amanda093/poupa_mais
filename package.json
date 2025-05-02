@@ -39,7 +39,7 @@
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.19.1",
+    "sweetalert2": "^11.6.13",
     "sweetalert2-react-content": "^5.1.0",
     "tailwind-merge": "^3.2.0",
     "zod": "^3.24.3"

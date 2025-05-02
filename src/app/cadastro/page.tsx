@@ -149,7 +149,6 @@ const CadastroPage = () => {
                 <Input id="datadenascimento" type="date" variant="default" />
               </div>
 
-              {/*TODO: Fazer com que o password possa ser visualizado */}
               <div className="pb-5">
                 <label className="">Senha</label>
                 <Input
@@ -160,9 +159,17 @@ const CadastroPage = () => {
                   placeholder="Digite sua senha..."
                   variant="default"
                   icon={
-                    <Button onClick={() => setShowPassword((prev) => !prev)}>
-                      {showPassword ? <LucideEye/> : <LucideEyeClosed/>}
-                    </Button>
+                    showPassword ? (
+                      <LucideEye
+                        className="size-[1em] cursor-pointer select-none"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      />
+                    ) : (
+                      <LucideEyeClosed
+                        className="size-[1em] cursor-pointer select-none"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      />
+                    )
                   }
                 />
               </div>
@@ -172,14 +179,22 @@ const CadastroPage = () => {
                 <Input
                   id="password"
                   type={showConfirmPassword ? "text" : "password"}
-                  value={password}
+                  value={confirmpassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirme sua senha..."
                   variant="default"
                   icon={
-                    <Button onClick={() => setShowConfirmPassword((prev) => !prev)}>
-                      {showPassword ? <LucideEye size={20}/> : <LucideEyeClosed size={20}/>}
-                    </Button>
+                    showConfirmPassword ? (
+                      <LucideEye
+                        className="size-[1em] cursor-pointer select-none"
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      />
+                    ) : (
+                      <LucideEyeClosed
+                        className="size-[1em] cursor-pointer select-none"
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      />
+                    )
                   }
                 />
               </div>

@@ -84,9 +84,17 @@ const LoginPage = () => {
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
                   icon={
-                    <Button onClick={() => setShowSenha((prev) => !prev)}>
-                      {showSenha ? <LucideEye size={20}/> : <LucideEyeClosed size={20}/>}
-                    </Button>
+                    showSenha ? (
+                      <LucideEye
+                        className="size-[1em] cursor-pointer select-none"
+                        onClick={() => setShowSenha((prev) => !prev)}
+                      />
+                    ) : (
+                      <LucideEyeClosed
+                        className="size-[1em] cursor-pointer select-none"
+                        onClick={() => setShowSenha((prev) => !prev)}
+                      />
+                    )
                   }
                 />
               </div>
