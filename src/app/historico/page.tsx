@@ -4,26 +4,39 @@
   /*TODO: Não permitir que usuarios não autenticados entrem nessa página. Feito, linha 32! */
 }
 
+import { format } from "date-fns";
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
   signOut,
   updateEmail,
   updatePassword,
-  updateProfile} from "firebase/auth";
+  updateProfile,
+} from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { LucideEye, LucideEyeClosed } from "lucide-react";
+import { CalendarIcon, LucideEye, LucideEyeClosed } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-import { Button, Historico, Input, Title } from "@/components";
+import {
+  Button,
+  Calendar,
+  Historico,
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Title,
+} from "@/components";
 import placeholderFoto from "@/components/assets/FotoPerfilPlaceHolder.png";
 import iconFoto from "@/components/assets/MudarFoto.png";
 import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup, Toast } from "@/lib/sweetalert";
+import { cn } from "@/lib/utils";
 
 const HistoricoPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -33,12 +46,12 @@ const HistoricoPage = () => {
       router.push("/login"); // redirecione para a página de login
     }
   }, [user]);
-    
+
   const [photoURL, setPhotoURL] = useState<string>(placeholderFoto.src); // Começa com o placeholder
   const [uploading, setUploading] = useState(false);
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [dataNascimento, setDataNascimento] = useState("");
+  const [dataNascimento, setDataNascimento] = React.useState<Date>();
   const [novaSenha, setNovaSenha] = useState("");
   const [showNovaSenha, setShowNovaSenha] = useState(false);
   const [senhaAtual, setSenhaAtual] = useState("");
@@ -57,13 +70,7 @@ const HistoricoPage = () => {
         const data = userSnap.data();
         setNome(data.nome || "");
         setEmail(data.email || "");
-        setDataNascimento(
-          data.dataNascimento
-            ? new Date(data.dataNascimento.seconds * 1000)
-                .toISOString()
-                .split("T")[0]
-            : "",
-        );
+        setDataNascimento(data.dataNascimento || "");
       }
 
       const storedPhotoURL = localStorage.getItem("photoURL");
@@ -136,7 +143,7 @@ const HistoricoPage = () => {
 
   const handleSalvar = async () => {
     if (!user) return;
-  
+
     try {
       // Reautenticação antes de mudanças sensíveis
       if (novaSenha || email !== user.email) {
@@ -147,33 +154,36 @@ const HistoricoPage = () => {
           });
           return;
         }
-  
-        const credential = EmailAuthProvider.credential(user.email!, senhaAtual);
+
+        const credential = EmailAuthProvider.credential(
+          user.email!,
+          senhaAtual,
+        );
         await reauthenticateWithCredential(user, credential);
-  
+
         if (email !== user.email) {
           await updateEmail(user, email);
         }
-  
+
         if (novaSenha) {
           await updatePassword(user, novaSenha);
         }
       }
-  
+
       // Atualiza nome e foto
       await updateProfile(user, {
         displayName: nome,
         photoURL: user.photoURL || undefined,
       });
-  
+
       // Atualiza Firestore
       const userRef = doc(db, "usuarios", user.uid);
       await updateDoc(userRef, {
         nome,
         email,
-        dataNascimento: new Date(dataNascimento),
+        dataNascimento,
       });
-  
+
       Toast.fire({
         title: "Dados atualizados com sucesso!",
         icon: "success",
@@ -194,7 +204,6 @@ const HistoricoPage = () => {
       }
     }
   };
-  
 
   const handleLogout = async () => {
     try {
@@ -274,14 +283,32 @@ const HistoricoPage = () => {
             </div>
             <div>
               <label htmlFor="data">Data de Nascimento</label>
-              <Input
-                id="data"
-                type="date"
-                variant="default"
-                className="w-75"
-                value={dataNascimento}
-                onChange={(e) => setDataNascimento(e.target.value)}
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "aria-expanded:emerald-glow w-full justify-start rounded-[0.5em] bg-white text-left font-light text-gray-950 outline-slate-400 hover:text-gray-950 hover:outline-slate-400 active:outline-slate-400 aria-expanded:outline-emerald-500",
+                      !dataNascimento && "text-muted-foreground",
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4 text-slate-400" />
+                    {dataNascimento ? (
+                      format(dataNascimento, "P")
+                    ) : (
+                      <span>Escolha a data</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={dataNascimento}
+                    onSelect={setDataNascimento}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 
@@ -298,9 +325,17 @@ const HistoricoPage = () => {
                 variant="default"
                 className="w-75"
                 icon={
-                  <Button onClick={() => setShowNovaSenha((prev) => !prev)}>
-                    {showNovaSenha ? <LucideEye size={20}/> : <LucideEyeClosed size={20}/>}
-                  </Button>
+                  showNovaSenha ? (
+                    <LucideEye
+                      className="size-[1em] cursor-pointer select-none"
+                      onClick={() => setShowNovaSenha((prev) => !prev)}
+                    />
+                  ) : (
+                    <LucideEyeClosed
+                      className="size-[1em] cursor-pointer select-none"
+                      onClick={() => setShowNovaSenha((prev) => !prev)}
+                    />
+                  )
                 }
               />
             </div>
@@ -315,9 +350,17 @@ const HistoricoPage = () => {
                 variant="default"
                 className="w-75"
                 icon={
-                  <Button onClick={() => setShowSenhaAtual((prev) => !prev)}>
-                    {showSenhaAtual ? <LucideEye size={20}/> : <LucideEyeClosed size={20}/>}
-                  </Button>
+                  showSenhaAtual ? (
+                    <LucideEye
+                      className="size-[1em] cursor-pointer select-none"
+                      onClick={() => setShowSenhaAtual((prev) => !prev)}
+                    />
+                  ) : (
+                    <LucideEyeClosed
+                      className="size-[1em] cursor-pointer select-none"
+                      onClick={() => setShowSenhaAtual((prev) => !prev)}
+                    />
+                  )
                 }
               />
             </div>

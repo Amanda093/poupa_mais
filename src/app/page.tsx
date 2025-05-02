@@ -7,7 +7,7 @@
   TODO: Comentar o código
   TODO: Organizar o código
   TODO: Adicionar animação na troca das paginas de login/cadastro
-  TODO: Estilizar componentes faltantes, ex: Input do tipo date
+  TODO: Arrumar data no input data
   */
 }
 
