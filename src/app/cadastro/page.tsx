@@ -1,7 +1,7 @@
 "use client";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import Image from "next/image";
+import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // para redirecionar
 import React, { useState } from "react";
@@ -10,7 +10,6 @@ import { IoCloseCircle } from "react-icons/io5";
 import { MdError } from "react-icons/md";
 
 import { Banner, Button, Input } from "@/components";
-import password_png from "@/components/assets/password.png";
 import { auth } from "@/lib/clientApp";
 import { db } from "@/lib/clientApp";
 import { Toast } from "@/lib/sweetalert";
@@ -19,6 +18,8 @@ const CadastroPage = () => {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [nome, setNome] = useState("");
 
@@ -153,18 +154,15 @@ const CadastroPage = () => {
                 <label className="">Senha</label>
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Digite sua senha..."
                   variant="default"
                   icon={
-                    <Image
-                      src={password_png}
-                      alt="Ícone Senha"
-                      width={20}
-                      height={20}
-                    />
+                    <Button onClick={() => setShowPassword((prev) => !prev)}>
+                      {showPassword ? <LucideEye/> : <LucideEyeClosed/>}
+                    </Button>
                   }
                 />
               </div>
@@ -172,19 +170,16 @@ const CadastroPage = () => {
               <div className="pb-5">
                 <label className="">Confirmar senha</label>
                 <Input
-                  id="confirmpassword"
-                  type="password"
-                  value={confirmpassword}
+                  id="password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={password}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirme sua senha..."
                   variant="default"
                   icon={
-                    <Image
-                      src={password_png}
-                      alt="Ícone Senha"
-                      width={20}
-                      height={20}
-                    />
+                    <Button onClick={() => setShowConfirmPassword((prev) => !prev)}>
+                      {showPassword ? <LucideEye size={20}/> : <LucideEyeClosed size={20}/>}
+                    </Button>
                   }
                 />
               </div>

@@ -7,12 +7,12 @@
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
-  sendSignInLinkToEmail,
   signOut,
   updateEmail,
   updatePassword,
   updateProfile} from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -21,7 +21,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { Button, Historico, Input, Title } from "@/components";
 import placeholderFoto from "@/components/assets/FotoPerfilPlaceHolder.png";
 import iconFoto from "@/components/assets/MudarFoto.png";
-import password from "@/components/assets/password.png";
 import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup, Toast } from "@/lib/sweetalert";
@@ -41,7 +40,9 @@ const HistoricoPage = () => {
   const [email, setEmail] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
+  const [showNovaSenha, setShowNovaSenha] = useState(false);
   const [senhaAtual, setSenhaAtual] = useState("");
+  const [showSenhaAtual, setShowSenhaAtual] = useState(false);
   const router = useRouter();
 
   // Carregar a foto de perfil do Firebase ou localStorage sempre que o componente for montado
@@ -151,15 +152,6 @@ const HistoricoPage = () => {
         await reauthenticateWithCredential(user, credential);
   
         if (email !== user.email) {
-          const enviarLinkVerificacao = async (novoEmail: string) => {
-            try {
-              await sendSignInLinkToEmail(auth, novoEmail, actionCodeSettings);
-              localStorage.setItem("emailParaVerificar", novoEmail); // salva para uso posterior
-              alert("Verifique seu novo email. Um link de confirmação foi enviado.");
-            } catch (error) {
-              console.error("Erro ao enviar link de verificação:", error);
-            }
-          };
           await updateEmail(user, email);
         }
   
@@ -299,19 +291,16 @@ const HistoricoPage = () => {
               <label htmlFor="novaSenha">Nova Senha</label>
               <Input
                 id="novaSenha"
-                type="password"
+                type={showNovaSenha ? "text" : "password"}
                 value={novaSenha}
                 onChange={(e) => setNovaSenha(e.target.value)}
                 placeholder="Nova Senha"
                 variant="default"
                 className="w-75"
                 icon={
-                  <Image
-                    src={password}
-                    alt="Ícone Senha"
-                    width={20}
-                    height={20}
-                  />
+                  <Button onClick={() => setShowNovaSenha((prev) => !prev)}>
+                    {showNovaSenha ? <LucideEye size={20}/> : <LucideEyeClosed size={20}/>}
+                  </Button>
                 }
               />
             </div>
@@ -319,18 +308,16 @@ const HistoricoPage = () => {
               <label htmlFor="senhaAtual">Senha Atual</label>
               <Input
                 id="senhaAtual"
-                type="password"
+                type={showSenhaAtual ? "text" : "password"}
                 value={senhaAtual}
                 onChange={(e) => setSenhaAtual(e.target.value)}
                 placeholder="Senha Atual"
                 variant="default"
                 className="w-75"
                 icon={
-                  <Image
-                    src={password}
-                    alt="Ícone Senha"
-                    className="size-[1em]"
-                  />
+                  <Button onClick={() => setShowSenhaAtual((prev) => !prev)}>
+                    {showSenhaAtual ? <LucideEye size={20}/> : <LucideEyeClosed size={20}/>}
+                  </Button>
                 }
               />
             </div>

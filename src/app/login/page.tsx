@@ -6,19 +6,19 @@ import {
   setPersistence,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import Image from "next/image";
+import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Banner, Button, Checkbox, Input } from "@/components";
-import password from "@/components/assets/password.png";
 import { auth } from "@/lib/clientApp";
 import { Toast } from "@/lib/sweetalert";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [showSenha, setShowSenha] = useState(false);
   const [lembrar, setLembrar] = useState(false);
   const router = useRouter();
 
@@ -78,18 +78,15 @@ const LoginPage = () => {
                 <label className="">Senha</label>
                 <Input
                   id="password"
-                  type="password"
+                  type={showSenha ? "text" : "password"}
                   placeholder="Digite sua senha..."
                   variant="default"
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
                   icon={
-                    <Image
-                      src={password}
-                      alt="Ícone Senha"
-                      width={20}
-                      height={20}
-                    />
+                    <Button onClick={() => setShowSenha((prev) => !prev)}>
+                      {showSenha ? <LucideEye size={20}/> : <LucideEyeClosed size={20}/>}
+                    </Button>
                   }
                 />
               </div>
