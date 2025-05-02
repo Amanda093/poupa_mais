@@ -40,7 +40,10 @@ const LoginPage = () => {
         icon: "success",
       });
     } catch (error) {
-      console.error("Erro no login:", error);
+      Toast.fire({
+        title: `Erro no login:, ${error}`,
+        icon: "error",
+      });
     }
   };
 
