@@ -1,17 +1,17 @@
 "use client";
 
 {
-  /*TODO: Não permitir que usuarios não autenticados entrem nessa página */
+  /*TODO: Não permitir que usuarios não autenticados entrem nessa página. Feito, linha 32! */
 }
 
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
+  sendSignInLinkToEmail,
   signOut,
   updateEmail,
   updatePassword,
-  updateProfile,
-} from "firebase/auth";
+  updateProfile} from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -29,6 +29,12 @@ import { Popup, Toast } from "@/lib/sweetalert";
 const HistoricoPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [user] = useAuthState(auth);
+  useEffect(() => {
+    if (user === null) {
+      router.push("/login"); // redirecione para a página de login
+    }
+  }, [user]);
+    
   const [photoURL, setPhotoURL] = useState<string>(placeholderFoto.src); // Começa com o placeholder
   const [uploading, setUploading] = useState(false);
   const [nome, setNome] = useState("");
@@ -129,9 +135,9 @@ const HistoricoPage = () => {
 
   const handleSalvar = async () => {
     if (!user) return;
-
+  
     try {
-      // Reautenticação antes de qualquer mudança sensível
+      // Reautenticação antes de mudanças sensíveis
       if (novaSenha || email !== user.email) {
         if (!senhaAtual) {
           Popup.fire({
@@ -140,31 +146,34 @@ const HistoricoPage = () => {
           });
           return;
         }
-
-        const credential = EmailAuthProvider.credential(
-          user.email! || "",
-          senhaAtual,
-        );
+  
+        const credential = EmailAuthProvider.credential(user.email!, senhaAtual);
         await reauthenticateWithCredential(user, credential);
-        await updateEmail(user, email);
+  
+        if (email !== user.email) {
+          const enviarLinkVerificacao = async (novoEmail: string) => {
+            try {
+              await sendSignInLinkToEmail(auth, novoEmail, actionCodeSettings);
+              localStorage.setItem("emailParaVerificar", novoEmail); // salva para uso posterior
+              alert("Verifique seu novo email. Um link de confirmação foi enviado.");
+            } catch (error) {
+              console.error("Erro ao enviar link de verificação:", error);
+            }
+          };
+          await updateEmail(user, email);
+        }
+  
+        if (novaSenha) {
+          await updatePassword(user, novaSenha);
+        }
       }
-
+  
       // Atualiza nome e foto
       await updateProfile(user, {
         displayName: nome,
         photoURL: user.photoURL || undefined,
       });
-
-      // Atualiza email (se mudou)
-      if (email !== user.email) {
-        await updateEmail(user, email);
-      }
-
-      // Atualiza senha (se fornecida)
-      if (novaSenha) {
-        await updatePassword(user, novaSenha);
-      }
-
+  
       // Atualiza Firestore
       const userRef = doc(db, "usuarios", user.uid);
       await updateDoc(userRef, {
@@ -172,7 +181,7 @@ const HistoricoPage = () => {
         email,
         dataNascimento: new Date(dataNascimento),
       });
-
+  
       Toast.fire({
         title: "Dados atualizados com sucesso!",
         icon: "success",
@@ -193,6 +202,7 @@ const HistoricoPage = () => {
       }
     }
   };
+  
 
   const handleLogout = async () => {
     try {
