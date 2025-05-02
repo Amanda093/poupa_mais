@@ -195,6 +195,10 @@ const HistoricoPage = () => {
       await signOut(auth);
       localStorage.removeItem("photoURL"); // Remove a foto ao deslogar
       window.location.href = "/";
+      Toast.fire({
+        title: "Logout realizado com sucesso!",
+        icon: "success",
+      });
     } catch (error) {
       console.error("Erro ao sair da conta:", error);
     }

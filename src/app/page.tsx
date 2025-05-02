@@ -315,7 +315,7 @@ export default function Home() {
           </>
         ) : (
           <>
-            {/*TODO: Adicionar loading enquanto a propmt é gerada*/}
+            {/*TODO: Adicionar loading enquanto a prompt é gerada*/}
             {/*TODO: Dar Scroll para o começo da resposta quando ela for gerada*/}
             {/*TODO: Criar cookie para planejamento gerado e um botão para gerar novo ( se o usuario nao estiver limitado )*/}
             <Fade
