@@ -1,5 +1,16 @@
 "use client";
 
+{
+  /*TODO: Checar se todos os requisitos estão sendo compridos
+  TODO: Terminar README do projeto
+  TODO: Certificar responsividade geral
+  TODO: Comentar o código
+  TODO: Organizar o código
+  TODO: Adicionar animação na troca das paginas de login/cadastro
+  TODO: Estilizar componentes faltantes, ex: Input do tipo date
+  */
+}
+
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -26,6 +37,10 @@ import { useChatbot } from "@/hooks";
 import { Custeio } from "@/interface";
 import { auth } from "@/lib/clientApp";
 
+{
+  /*TODO: Implementar limite de usos do site*/
+}
+const limitado = false;
 // const ExpenseForm: React.FunctionComponent<InterfaceExpenseForm> = () => {
 export default function Home() {
   const [user, loading] = useAuthState(auth);
@@ -105,7 +120,6 @@ export default function Home() {
         <div className="d:gap-[0.5em] flex gap-[2em] max-lg:justify-center max-md:flex-col max-md:items-center">
           {/* Renda Mensal */}
           <div className="min-w-[20em] max-md:w-[80%] max-md:min-w-auto">
-            {/* TODO: adicionar bloqueio de letras */}
             <label htmlFor="monthpay">Qual sua renda mensal?</label>
             <Input
               id="monthpay"
@@ -149,171 +163,182 @@ export default function Home() {
       </div>
 
       {/* Formulário - Parte 02 */}
-      <div className="form-shadow container mx-auto flex flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em] transition-[height] xl:!max-w-[1300px]">
-        <div>
-          <p>Quais são suas despesas?</p>
-          <p className="text-light">
-            Adicione aqui suas despesas fixas, como aluguel, conta de luz,
-            internet ou transporte.
-          </p>
-        </div>
-
-        {/* Inputs */}
-        <AnimatePresence>
-          {custeio.gastos.map((gasto, index) => (
-            <motion.div
-              key={index}
-              className="flex items-end justify-center gap-[2.5%]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: "0.3" }}
-            >
-              <div className="w-[30%]">
-                <label>Despesa</label>
-                <Input
-                  type="text"
-                  value={gasto.nome}
-                  placeholder={`Gasto ${index + 1}`}
-                  variant="default"
-                  onChange={(e) => {
-                    handleChangeGastos(index, "nome", e.target.value);
-                  }}
-                />
-              </div>
-              <div className="w-[30%]">
-                <label>Gasto Mensal</label>
-                {/* TODO: adicionar bloqueio de letras */}
-                <Input
-                  type="money"
-                  value={gasto.valor}
-                  placeholder="R$ 0,00"
-                  variant="default"
-                  onChange={(e) => {
-                    handleChangeGastos(index, "valor", e.target.value);
-                  }}
-                />
-              </div>
-              <div className="w-[30%]">
-                <label>Categoria</label>
-                <Select
-                  value={gasto.categoria}
-                  onValueChange={(value) =>
-                    handleChangeGastos(index, "categoria", value)
-                  }
-                >
-                  <SelectTrigger className="flex" variant="default">
-                    <SelectValue placeholder="Selecione uma categoria" />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                    {categorias.map((categoria) => (
-                      <SelectItem value={categoria} key={categoria}>
-                        {categoria}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button
-                onClick={() => removeGasto(index)}
-                className="aspect-square w-[2em] !p-0"
-                variant="delete"
-              >
-                <MdDelete className="size-[1.25em]" />
+      <div className="relative container mx-auto xl:!max-w-[1300px]">
+        {limitado && (
+          // TODO: Mudar mensagem caso o usuario já esteja logado
+          <div className="text-bold form-shadow absolute top-[50%] left-0 z-10 flex w-full translate-y-[-50%] flex-col justify-center gap-[0.25em] rounded-[1em] bg-white py-[1.5em] text-center">
+            <h1>Gostou do site?</h1>
+            <h2 className="text-emerald-500">
+              Cadastre-se para usar o serviço novamente
+            </h2>
+            <div className="mt-[1em] flex justify-center gap-[1em]">
+              <Button variant="default" asChild>
+                <Link href="/cadastro" className="">
+                  Cadastrar-se
+                </Link>
               </Button>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-
-        <Button onClick={addGastos} variant="outline" className="mx-auto w-fit">
-          <IoMdAdd className="size-[1.35em]" />
-          Adicionar Despesa
-        </Button>
-
-        <div className="w-full">
-          <label>Observações</label>
-          <Textarea
-            placeholder="Ex: Quero guardar dinheiro para viajar, tenho dívidas, ou preciso de ajuda com prioridades..."
-            className="min-h-[8em]"
-            value={custeio.obs}
-            onChange={handleChangeObs}
-          />
-        </div>
-        {/*TODO: terminar formulário */}
-      </div>
-
-      {!mensagemBot ? (
-        <>
-          <div className="container mx-auto flex max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
-            <div>
-              <h2>Terminou?</h2>
-              <p>Agora nós entramos em ação!</p>
+              <Button variant="outline" asChild>
+                <Link href="/login" className="">
+                  Login
+                </Link>
+              </Button>
             </div>
-            <Button className="w-fit px-[0.75em]" onClick={handleSend}>
-              <HiSparkles />
-              Gerar Planejamento
-            </Button>
           </div>
-          {/* Footer */}
-          <Footer renda={custeio.renda} gastos={custeio.gastos} />
-        </>
-      ) : (
-        <>
-          <Fade
-            delay={200} // Wait before starting
-            duration={1000} // Animation duration
-            fraction={0.5} // Trigger when 50% visible
-            triggerOnce // Animate only once
+        )}
+        <div
+          className={`form-shadow flex w-full flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em] transition-[height] ${limitado && "pointer-events-none relative z-1 blur-xs select-none"}`}
+        >
+          <div>
+            <p>Quais são suas despesas?</p>
+            <p className="text-light">
+              Adicione aqui suas despesas fixas, como aluguel, conta de luz,
+              internet ou transporte.
+            </p>
+          </div>
+
+          {/* Inputs */}
+          <AnimatePresence>
+            {custeio.gastos.map((gasto, index) => (
+              <motion.div
+                key={index}
+                className="flex items-end justify-center gap-[2.5%]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: "0.3" }}
+              >
+                <div className="w-[30%]">
+                  <label>Despesa</label>
+                  <Input
+                    type="text"
+                    value={gasto.nome}
+                    placeholder={`Gasto ${index + 1}`}
+                    variant="default"
+                    onChange={(e) => {
+                      handleChangeGastos(index, "nome", e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="w-[30%]">
+                  <label>Gasto Mensal</label>
+                  <Input
+                    type="money"
+                    value={gasto.valor}
+                    placeholder="R$ 0,00"
+                    variant="default"
+                    onChange={(e) => {
+                      handleChangeGastos(index, "valor", e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="w-[30%]">
+                  <label>Categoria</label>
+                  <Select
+                    value={gasto.categoria}
+                    onValueChange={(value) =>
+                      handleChangeGastos(index, "categoria", value)
+                    }
+                  >
+                    <SelectTrigger className="flex" variant="default">
+                      <SelectValue placeholder="Selecione uma categoria" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {categorias.map((categoria) => (
+                        <SelectItem value={categoria} key={categoria}>
+                          {categoria}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button
+                  onClick={() => removeGasto(index)}
+                  className="aspect-square w-[2em] !p-0"
+                  variant="delete"
+                >
+                  <MdDelete className="size-[1.25em]" />
+                </Button>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          <Button
+            onClick={addGastos}
+            variant="outline"
+            className="mx-auto w-fit"
           >
-            <div className="container flex max-w-[1270px] flex-col items-center gap-[1em] py-[2.5em]">
-              <h2 className="flex w-full items-center gap-[0.25em] text-emerald-500">
+            <IoMdAdd className="size-[1.35em]" />
+            Adicionar Despesa
+          </Button>
+
+          <div className="w-full">
+            <label>Observações</label>
+            <Textarea
+              placeholder="Ex: Quero guardar dinheiro para viajar, tenho dívidas, ou preciso de ajuda com prioridades..."
+              className="min-h-[8em]"
+              value={custeio.obs}
+              onChange={handleChangeObs}
+            />
+          </div>
+        </div>
+      </div>
+      {!limitado &&
+        (!mensagemBot ? (
+          <>
+            <div className="container mx-auto flex max-w-[1270px] flex-col items-center gap-[20px] py-[60px] text-center">
+              <div>
+                <h2>Terminou?</h2>
+                <p>Agora nós entramos em ação!</p>
+              </div>
+              {/*TODO: Adicionar confirmação antes de gerar resposta*/}
+              <Button className="w-fit px-[0.75em]" onClick={handleSend}>
                 <HiSparkles />
-                Planejamento
-              </h2>
-              {/*Resposta Exemplo: */}
-              {/*Com base nos dados fornecidos, podemos elaborar um plano de economia para o usuário. 
+                Gerar Planejamento
+              </Button>
+            </div>
+            {/* Footer */}
+            <Footer renda={custeio.renda} gastos={custeio.gastos} />
+          </>
+        ) : (
+          <>
+            {/*TODO: Dar Scroll para o começo da resposta quando ela for gerada*/}
+            <Fade
+              delay={200} // Wait before starting
+              duration={1000} // Animation duration
+              fraction={0.5} // Trigger when 50% visible
+              triggerOnce // Animate only once
+            >
+              <div className="container flex max-w-[1270px] flex-col items-center gap-[1em] py-[2.5em]">
+                <h2 className="flex w-full items-center gap-[0.25em] text-emerald-500">
+                  <HiSparkles />
+                  Planejamento
+                </h2>
+                {/*TODO: Formatar mensagem do bot, ex: bold, listas*/}
+                <p className="w-full">{mensagemBot}</p>
 
-            1. **Estimativa de economia mensal**: Considerando que o usuário tem uma renda mensal de R$ 1.000,00 e gasta R$ 200,00 com comida, podemos estimar que o usuário tem um potencial de economia mensal de R$ 800,00. No entanto, é importante considerar que o usuário provavelmente tem outros gastos, como moradia, transporte, etc. Uma estimativa mais realista seria de 20% a 30% da renda, o que daria R$ 200,00 a R$ 300,00 por mês.
-
-            2. **Sugestões de corte de gastos**: Além da comida, que já é um gasto essencial, o usuário pode considerar cortar gastos em outras áreas, como:
-              - Reduzir o uso de serviços de streaming e entretenimento.
-              - Economizar na conta de telefone e internet.
-              - Reduzir o consumo de produtos não essenciais.
-
-            3. **Metas de curto, médio e longo prazo**:
-              - **Curto prazo (1-3 meses)**: Criar um fundo de emergência com 1-2 meses de despesas.
-              - **Médio prazo (6-12 meses)**: Aumentar a renda através de um segundo emprego, freelancer ou curso de capacitação.
-              - **Longo prazo (1-5 anos)**: Investir em um plano de previdência ou um fundo de investimento para a aposentadoria.
-
-            4. **Dicas de investimento**: Com a taxa Selic em 0,052531%, os investimentos em renda fixa podem não ser muito atraentes. No entanto, o usuário pode considerar investir em:
-              - Fundos de investimento em ações.
-              - Fundos de investimento imobiliário.
-              - Plano de previdência.
-          */}
-              <p className="w-full">{mensagemBot}</p>
-
-              <div className="text-center">
-                <Title mainTitle="Se interessou?" subTitle="Faça parte " />
-                <div className="flex justify-center gap-[1em]">
-                  <Button variant="default" asChild>
-                    <Link href="/cadastro" className="">
-                      Cadastrar-se
-                    </Link>
-                  </Button>
-                  <Button variant="outline" asChild>
-                    <Link href="/login" className="">
-                      Login
-                    </Link>
-                  </Button>
+                {/*TODO: Mudar mensagem caso o usuario já esteja logado */}
+                <div className="text-center">
+                  <Title mainTitle="Se interessou?" subTitle="Faça parte " />
+                  <div className="flex justify-center gap-[1em]">
+                    <Button variant="default" asChild>
+                      <Link href="/cadastro" className="">
+                        Cadastrar-se
+                      </Link>
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <Link href="/login" className="">
+                        Login
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Fade>
-          {/* Footer */}
-          <Footer renda="" gastos={custeio.gastos} />
-        </>
-      )}
+            </Fade>
+            {/* Footer */}
+            <Footer renda="" gastos={custeio.gastos} />
+          </>
+        ))}
     </div>
   );
 }
