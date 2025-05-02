@@ -13,6 +13,7 @@ const buttonVariants = cva(
           "bg-emerald-500 active:bg-emerald-700 text-white p-sm m-0 hover:bg-emerald-600",
         outline:
           "outline-[0.15em] outline-emerald-500 text-emerald-500 hover:text-emerald-600 active:text-emerald-700 bg-white hover:outline-emerald-600 active:outline-emerald-700",
+        ghost: "",
         delete:
           "outline-[0.15em] active:rose-glow hover:bg-rose-100  rounded-[0.45em] bg-rose-50  text-rose-500 outline-rose-500 hover:text-rose-600 hover:outline-rose-600",
       },

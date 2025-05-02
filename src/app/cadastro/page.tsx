@@ -9,7 +9,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { IoCloseCircle } from "react-icons/io5";
 import { MdError } from "react-icons/md";
 
-import { Banner, Button, Input } from "@/components";
+import { Banner, Button, DatePicker, Input } from "@/components";
 import { auth } from "@/lib/clientApp";
 import { db } from "@/lib/clientApp";
 import { Toast } from "@/lib/sweetalert";
@@ -146,7 +146,8 @@ const CadastroPage = () => {
                 <label htmlFor="datadenascimento" className="">
                   Data de nascimento
                 </label>
-                <Input id="datadenascimento" type="date" variant="default" />
+                <DatePicker></DatePicker>
+                {/*<Input id="datadenascimento" type="date" variant="default" />*/}
               </div>
 
               <div className="pb-5">
