@@ -1,9 +1,5 @@
 "use client";
 
-{
-  /*TODO: Não permitir que usuarios não autenticados entrem nessa página. Feito, linha 32! */
-}
-
 import { format } from "date-fns";
 import {
   EmailAuthProvider,
