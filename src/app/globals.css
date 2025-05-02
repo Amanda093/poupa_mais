@@ -60,6 +60,34 @@ p {
   -moz-box-shadow: 0px 0px 35px 0px rgba(255, 36, 83, 0.4);
   box-shadow: 0px 0px 35px 0px rgba(255, 36, 83, 0.4);
 }
+.text-ia h2 {
+  color: var(--color-emerald-500);
+  font-weight: 600;
+}
+
+.text-ia h3 {
+  color: var(--color-emerald-600);
+  margin-top: 0.75em;
+}
+
+.text-ia strong {
+  color: var(--color-emerald-600);
+}
+.text-ia p {
+  margin-left: 1.5em;
+}
+.text-ia ul,
+ol {
+  margin-left: 2.85em;
+}
+
+.text-ia ul {
+  list-style: disc;
+}
+
+.text-ia ol {
+  list-style: decimal-leading-zero;
+}
 
 .text-h1 {
   font-size: 2.5em;
@@ -201,6 +229,7 @@ p {
 .colored-toast .swal2-html-container {
   color: white;
 }
+
 .text-header {
   line-height: 150%;
   font-weight: 600;

@@ -19,6 +19,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { HiSparkles } from "react-icons/hi2";
 import { IoMdAdd } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
+import ReactMarkdown from "react-markdown";
 
 import {
   Button,
@@ -99,6 +100,51 @@ export default function Home() {
     setCusteio({ ...custeio, obs: e.target.value });
   };
 
+  /*PARA TESTES: 
+  const mensagemBot = `
+## Plano de Economia
+
+### 1. **Análise de Gastos**
+O usuário tem uma renda mensal de **R$ 1.212,32** e gasta **R$ 200,00** com comida.  
+Isso representa aproximadamente **16,5%** da sua renda mensal.
+
+É importante notar que não há informações sobre outros gastos, como aluguel, serviços básicos, transporte, etc.  
+Portanto, é fundamental que o usuário faça um levantamento detalhado de todos os seus gastos para entender melhor sua situação financeira.
+
+### 2. **Estimativa de Economia Mensal**
+Considerando que o usuário gasta **16,5%** da sua renda com comida e não há informações sobre outros gastos, vamos supor que ele gasta cerca de **70%** da sua renda com todas as despesas essenciais (comida, aluguel, serviços, transporte, etc.), o que é um percentual comum para muitas pessoas.
+
+Isso deixaria cerca de **30%** da sua renda para economia e lazer.  
+Portanto, a estimativa de economia mensal seria de aproximadamente **R$ 363,70** (30% de R$ 1.212,32).
+
+### 3. **Sugestões de Corte de Gastos**
+Sem um levantamento detalhado dos gastos, é difícil sugerir cortes específicos.  
+No entanto, é sempre uma boa ideia revisar:
+
+- Gastos com serviços que não são essenciais, como assinaturas de streaming, clubes, etc.
+- Negociar preços de serviços como plano de celular, internet, etc.
+
+### 4. **Metas**
+
+- **Curto Prazo (até 3 meses)**: Fazer um levantamento detalhado de todos os gastos e criar um orçamento que permita aumentar a porcentagem de economia.
+- **Médio Prazo (3 a 12 meses)**: Aumentar a economia mensal para pelo menos **35%** da renda, o que seria cerca de **R$ 424,62**.
+- **Longo Prazo (mais de 12 meses)**: Construir uma reserva de emergência que cubra pelo menos 6 meses de despesas, o que seria aproximadamente **R$ 7.327,92** (considerando despesas mensais de cerca de **R$ 1.221,99**, que é a renda menos os 30% de economia), e começar a investir em fundos de investimento ou outros ativos que sejam adequados para o perfil de risco do usuário.
+
+### 5. **Dicas de Investimento**
+Considerando o cenário econômico brasileiro, é importante diversificar investimentos.
+
+Boas opções incluem:
+
+- Fundos de índice
+- Tesouro Direto
+- Fundos multimercado
+
+Além disso, é fundamental ter uma **reserva de emergência** antes de começar a investir.
+`;
+  const { sendMensagem } = useChatbot();
+*/
+
+  /*CÓDIGO REAL*/
   const { mensagemBot, sendMensagem } = useChatbot();
 
   const handleSend = () => {
@@ -304,7 +350,6 @@ export default function Home() {
                 <h2>Terminou?</h2>
                 <p>Agora nós entramos em ação!</p>
               </div>
-              {/*TODO: Adicionar confirmação antes de gerar resposta*/}
               <Button className="w-fit px-[0.75em]" onClick={handleSend}>
                 <HiSparkles />
                 Gerar Planejamento
@@ -324,13 +369,14 @@ export default function Home() {
               fraction={0.5} // Trigger when 50% visible
               triggerOnce // Animate only once
             >
-              <div className="container flex max-w-[1270px] flex-col items-center gap-[1em] py-[2.5em]">
+              <div className="container flex flex-col items-center gap-[1em] py-[2.5em] xl:!max-w-[1270px]">
                 <h2 className="flex w-full items-center gap-[0.25em] text-emerald-500">
                   <HiSparkles />
                   Planejamento
                 </h2>
-                {/*TODO: Formatar mensagem do bot, ex: bold, listas*/}
-                <p className="w-full">{mensagemBot}</p>
+                <p className="prose prose-sm text-light text-ia w-full max-w-none">
+                  <ReactMarkdown>{mensagemBot}</ReactMarkdown>
+                </p>
 
                 {/*TODO: Mudar mensagem caso o usuario já esteja logado */}
                 <div className="text-center">
