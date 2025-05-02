@@ -1,5 +1,9 @@
 "use client";
 
+{
+  /*TODO: Não permitir que usuarios não autenticados entrem nessa página */
+}
+
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
@@ -194,7 +198,9 @@ const HistoricoPage = () => {
     try {
       await signOut(auth);
       localStorage.removeItem("photoURL"); // Remove a foto ao deslogar
-      window.location.href = "/";
+
+      // Redirecionar para dashboard
+      router.push("/");
       Toast.fire({
         title: "Logout realizado com sucesso!",
         icon: "success",

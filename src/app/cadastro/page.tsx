@@ -80,13 +80,13 @@ const CadastroPage = () => {
         ),
         criadoEm: new Date(),
       });
+      // Redirecionar para dashboard
+      router.push("/");
+
       Toast.fire({
         title: "Cadastro realizado com sucesso!",
         icon: "success",
       });
-
-      // Redirecionar para dashboard
-      router.push("/");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao cadastrar:", error);
