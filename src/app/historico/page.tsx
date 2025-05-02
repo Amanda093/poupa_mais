@@ -1,6 +1,7 @@
 "use client";
 
-import { signOut, updateProfile } from "firebase/auth";
+import { EmailAuthProvider, reauthenticateWithCredential,signOut,updateEmail, updatePassword, updateProfile } from "firebase/auth";
+import { doc, getDoc,updateDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -9,6 +10,7 @@ import { Button, Historico, Input, Title } from "@/components";
 import placeholderFoto from "@/components/assets/FotoPerfilPlaceHolder.png";
 import iconFoto from "@/components/assets/MudarFoto.png";
 import password from "@/components/assets/password.png";
+import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 
 const HistoricoPage = () => {
@@ -16,67 +18,131 @@ const HistoricoPage = () => {
   const [user] = useAuthState(auth);
   const [photoURL, setPhotoURL] = useState<string>(placeholderFoto.src); // Começa com o placeholder
   const [uploading, setUploading] = useState(false);
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
+  const [novaSenha, setNovaSenha] = useState("");
+  const [senhaAtual, setSenhaAtual] = useState("");
+
 
   // Carregar a foto de perfil do Firebase ou localStorage sempre que o componente for montado
   useEffect(() => {
-    const storedPhotoURL = localStorage.getItem("photoURL");
-    
-    if (storedPhotoURL) {
-      // Se a foto estiver no localStorage, usa ela
-      setPhotoURL(storedPhotoURL);
-    } else if (user && user.photoURL) {
-      // Se a foto estiver no Firebase, usa ela
-      setPhotoURL(user.photoURL);
-    }
+    const fetchUserData = async () => {
+      if (!user) return;
+  
+      const userRef = doc(db, "usuarios", user.uid);
+      const userSnap = await getDoc(userRef);
+  
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        setNome(data.nome || "");
+        setEmail(data.email || "");
+        setDataNascimento(
+          data.dataNascimento
+            ? new Date(data.dataNascimento.seconds * 1000).toISOString().split("T")[0]
+            : ""
+        );
+      }
+  
+      const storedPhotoURL = localStorage.getItem("photoURL");
+      if (storedPhotoURL) {
+        setPhotoURL(storedPhotoURL); // do localStorage
+      } else if (user.photoURL) {
+        setPhotoURL(user.photoURL); // do Firebase Auth
+      }
+    };
+  
+    fetchUserData();
   }, [user]);
 
   const handleChangePhotoClick = () => {
-    fileInputRef.current?.click(); // Abre seletor de arquivo
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
   
     setUploading(true);
   
-    // 1. Deleta imagem antiga (se existir)
-    const oldPublicId = localStorage.getItem("photoPublicId");
-    if (oldPublicId) {
-      await fetch("/api/deleteImage", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ public_id: oldPublicId }),
-      });
-      localStorage.removeItem("photoPublicId"); // Limpa o antigo
-    }
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64 = reader.result as string;
   
-    // 2. Faz upload da nova imagem
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "your_upload_preset");
+      try {
+        await updateProfile(user, { photoURL: base64 });
+        setPhotoURL(base64);
+        localStorage.setItem("photoURL", base64);
+      } catch (error) {
+        console.error("Erro ao atualizar foto:", error);
+        alert("Erro ao atualizar foto de perfil.");
+      } finally {
+        setUploading(false);
+      }
+    };
   
-    const response = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-  
-    const data = await response.json();
-    console.log("Nova imagem enviada:", data);
-  
-    // 3. Atualiza Firebase, localStorage e estado
-    if (response.ok) {
-      await updateProfile(auth.currentUser!, {
-        photoURL: data.secure_url,
-      });
-  
-      setPhotoURL(data.secure_url);
-      localStorage.setItem("photoURL", data.secure_url);
-      localStorage.setItem("photoPublicId", data.public_id); // Salva o novo public_id
-    }
-  
-    setUploading(false);
+    reader.readAsDataURL(file);
   };
+  
+  
+  const handleSalvar = async () => {
+    if (!user) return;
+  
+    try {
+      // Reautenticação antes de qualquer mudança sensível
+      if (novaSenha || email !== user.email) {
+        if (!senhaAtual) {
+          alert("Você precisa fornecer a senha atual para alterar email ou senha.");
+          return;
+        }
+  
+        const credential = EmailAuthProvider.credential(
+          user.email! || "",
+          senhaAtual
+        );
+        await reauthenticateWithCredential(user, credential);
+        await updateEmail(user, email)
+      }
+  
+      // Atualiza nome e foto
+      await updateProfile(user, {
+        displayName: nome,
+        photoURL: user.photoURL || undefined,
+      });
+  
+      // Atualiza email (se mudou)
+      if (email !== user.email) {
+        await updateEmail(user, email);
+      }
+  
+      // Atualiza senha (se fornecida)
+      if (novaSenha) {
+        await updatePassword(user, novaSenha);
+      }
+  
+      // Atualiza Firestore
+      const userRef = doc(db, "usuarios", user.uid);
+      await updateDoc(userRef, {
+        nome,
+        email,
+        dataNascimento: new Date(dataNascimento),
+      });
+  
+      alert("Dados atualizados com sucesso!");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Erro ao salvar dados:", error);
+        alert("Erro ao salvar: " + error.message);
+      } else {
+        console.error("Erro desconhecido:", error);
+        alert("Erro desconhecido ao salvar dados.");
+      }
+    }
+  };  
+  
+  
 
   const handleLogout = async () => {
     try {
@@ -121,6 +187,8 @@ const HistoricoPage = () => {
             <Input
               id="nome"
               type="text"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
               placeholder="Komi San"
               variant="default"
               className="w-75"
@@ -131,6 +199,8 @@ const HistoricoPage = () => {
             <Input
               id="email"
               type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="komisan@email.com"
               variant="default"
               className="w-75"
@@ -138,7 +208,14 @@ const HistoricoPage = () => {
           </div>
           <div>
             <label htmlFor="data">Data de Nascimento</label>
-            <Input id="data" type="date" variant="default" className="w-75" />
+            <Input 
+            id="data" 
+            type="date" 
+            value={dataNascimento}
+            onChange={(e) => setDataNascimento(e.target.value)}
+            variant="default" 
+            className="w-75"
+             />
           </div>
         </div>
 
@@ -149,6 +226,8 @@ const HistoricoPage = () => {
             <Input
               id="novaSenha"
               type="password"
+              value={novaSenha}
+              onChange={(e) => setNovaSenha(e.target.value)}
               placeholder="Nova Senha"
               variant="default"
               className="w-75"
@@ -167,6 +246,8 @@ const HistoricoPage = () => {
             <Input
               id="senhaAtual"
               type="password"
+              value={senhaAtual}
+              onChange={(e) => setSenhaAtual(e.target.value)}
               placeholder="Senha Atual"
               variant="default"
               className="w-75"
@@ -181,7 +262,7 @@ const HistoricoPage = () => {
             />
           </div>
           <div className="flex h-[3.5em] items-end gap-[1em]">
-            <Button className="">
+            <Button className="" onClick={handleSalvar}>
               <Image
                 src={iconFoto}
                 className="size-[1.25em]"
