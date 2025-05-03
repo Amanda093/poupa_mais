@@ -100,7 +100,8 @@ export default function Home() {
     setCusteio({ ...custeio, obs: e.target.value });
   };
 
-  /*PARA TESTES: 
+/* Para testes
+  
   const mensagemBot = `
 ## Plano de Economia
 
@@ -141,8 +142,7 @@ Boas opções incluem:
 
 Além disso, é fundamental ter uma **reserva de emergência** antes de começar a investir.
 `;
-  const { sendMensagem } = useChatbot();
-*/
+  const { sendMensagem } = useChatbot();*/
 
   /*CÓDIGO REAL*/
   const { mensagemBot, sendMensagem } = useChatbot();
@@ -243,6 +243,7 @@ Além disso, é fundamental ter uma **reserva de emergência** antes de começar
               </Button>
             </div>
           </div>
+
         )}
         <div
           className={`form-shadow flex w-full flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em] transition-[height] ${limitado && "pointer-events-none relative z-1 blur-xs select-none"}`}
@@ -378,22 +379,38 @@ Além disso, é fundamental ter uma **reserva de emergência** antes de começar
                   <ReactMarkdown>{mensagemBot}</ReactMarkdown>
                 </p>
 
-                {/*TODO: Mudar mensagem caso o usuario já esteja logado */}
-                <div className="text-center">
-                  <Title mainTitle="Se interessou?" subTitle="Faça parte " />
+                  {loading ? null : user ? (
+                  <>
                   <div className="flex justify-center gap-[1em]">
-                    <Button variant="default" asChild>
-                      <Link href="/cadastro" className="">
-                        Cadastrar-se
-                      </Link>
-                    </Button>
-                    <Button variant="outline" asChild>
-                      <Link href="/login" className="">
-                        Login
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
+                        <Button variant="default" asChild>
+                          <Link href="/cadastro" className="">
+                            Salvar planejamento
+                          </Link>
+                        </Button>
+                        <Button variant="outline" asChild>
+                          <Link href="/login" className="">
+                          Novo planejamento
+                          </Link>
+                        </Button>
+                    </div>
+                  </>
+                  ) : (
+                    <div className="text-center">
+                    <Title mainTitle="Se interessou?" subTitle="Faça parte " />
+                      <div className="flex justify-center gap-[1em]">
+                        <Button variant="default" asChild>
+                          <Link href="/cadastro" className="">
+                          Cadastrar-se
+                          </Link>
+                        </Button>
+                        <Button variant="outline" asChild>
+                          <Link href="/login" className="">
+                          Login
+                          </Link>
+                        </Button>
+                    </div>
+                    </div>
+                  )}
               </div>
             </Fade>
             {/* Footer */}

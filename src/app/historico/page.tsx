@@ -1,8 +1,5 @@
 "use client";
 
-{
-  /*TODO: Não permitir que usuarios não autenticados entrem nessa página. Feito, linha 32! */
-}
 
 import { format } from "date-fns";
 import {
@@ -37,6 +34,7 @@ import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup, Toast } from "@/lib/sweetalert";
 import { cn } from "@/lib/utils";
+
 
 const HistoricoPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
