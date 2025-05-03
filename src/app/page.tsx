@@ -7,7 +7,7 @@
   TODO: Comentar o código
   TODO: Organizar o código
   TODO: Adicionar animação na troca das paginas de login/cadastro
-  TODO: Arrumar data no input data
+  TODO: Arrumar data no input data para ter o formato dd/mm/yyyy
   */
 }
 
