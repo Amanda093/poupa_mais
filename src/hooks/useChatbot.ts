@@ -1,21 +1,29 @@
 import axios from "axios";
 import { useState } from "react";
 
-import { Custeio } from "@/interface";
+import { Custeio, DadoGrafico } from "@/interface";
 
 const useChatbot = () => {
   const [mensagemBot, setMensagemBot] = useState<string>("");
+  const [respostaJson, setRespostaJson] = useState<DadoGrafico | null>(null);
 
   const sendMensagem = async (
     mensagem: Custeio,
-  ): Promise<string | undefined> => {
+  ): Promise<{ texto: string; json: DadoGrafico | null } | undefined> => {
     try {
       const resposta = await axios.post("/api/chat", mensagem);
-      const mensagemBot =
+      const mensagemTexto =
         resposta.data.message ?? "Erro: resposta vazia do bot.";
+      const dados = resposta.data.dadosGraficos ?? null;
 
-      setMensagemBot(mensagemBot);
-      return mensagemBot;
+      setMensagemBot(mensagemTexto);
+      setRespostaJson(dados);
+      if (!dados) {
+        console.error("Resposta JSON nula, não será salva no Firestore.");
+        return;
+      }
+
+      return { texto: mensagemTexto, json: dados };
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(
@@ -23,11 +31,11 @@ const useChatbot = () => {
           error.response?.data || "Sem resposta do servidor",
         );
       }
-      return "Erro ao comunicar com o bot.";
+      return { texto: "Erro ao comunicar com o bot.", json: null };
     }
   };
 
-  return { mensagemBot, sendMensagem };
+  return { mensagemBot, respostaJson, sendMensagem };
 };
 
 export { useChatbot };

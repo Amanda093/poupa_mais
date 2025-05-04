@@ -76,7 +76,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     console.log("gastos recebidos:", mensagem?.gastos);
 
     const gastosFormat = mensagem.gastos
-      .map((g) => `${g.nome}, que custa R$ ${g.valor}`)
+      .map((g) => `${g.nome}, que custa R$ ${g.valor}, da categoria ${g.categoria}`)
       .join("\n");
 
     const systemprompt = `Você é um consultor financeiro que ajuda brasileiros com educação financeira. Alguns dados do cenário econômico da região estão aqui:
@@ -97,7 +97,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               - Metas de curto, médio e longo prazo
               - Dicas de investimento compatíveis com o cenário brasileiro atual
 
-              ⚠️ Além do plano acima, retorne também um **JSON estruturado** contendo os seguintes dados:
+              ⚠️ Além do plano acima, retorne EXATAMENTE essa estrutura JSON, exatamente abaixo do texto gerado acima, para que eu possa fazer spit mais tarde:
               {
                 "economia_mensal_estimada": número,
                 "gastos_sugeridos_para_corte": [{ "categoria": string, "valor_sugerido": número }],
@@ -109,8 +109,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 "investimentos_sugeridos": [string]
               }
 
-              ⚠️ O JSON deve vir abaixo do plano, em um **bloco separado e bem formatado** para que eu possa fazer parsing automático. Não explique o JSON, apenas mostre-o.
-              Finalize o JSON completo no final da resposta, dentro de crases triplas.
+              ⚠️ O JSON deve vir abaixo do plano, em um **bloco separado e bem formatado** para que eu possa fazer parsing automático. Não explique o JSON, apenas mostre-o. Não utilize markdown.
               `;
 
     const out = await hf.chatCompletion({
@@ -135,18 +134,25 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const mensagemBot = out.choices[0].message.content;
     if (!mensagemBot) {
       return res.status(500).json({ error: "Mensagem da LLM não recebida" });
+    } else{
+      console.log(mensagemBot);
     }
-    const [respostaTexto, jsonMatch] = mensagemBot.split("```");
+
+    const inicioJSON = mensagemBot.indexOf("{");
+    const fimJSON = mensagemBot.lastIndexOf("}") + 1;
+    const jsonString = mensagemBot.slice(inicioJSON, fimJSON);
+    const mensagemString = mensagemBot.slice(0, inicioJSON).trim();
 
     let dadosParaGraficos: DadoGrafico | null = null;
     try {
-      dadosParaGraficos = JSON.parse(jsonMatch) as DadoGrafico;
+      dadosParaGraficos = JSON.parse(jsonString) as DadoGrafico;
+      console.log(dadosParaGraficos);
     } catch (e) {
       console.error("Erro ao converter JSON retornado pela LLM:", e);
     }
 
     res.status(200).json({
-      message: respostaTexto.trim(),
+      message: mensagemString,
       dadosGraficos: dadosParaGraficos || null,
     });
   } catch (error) {

@@ -9,6 +9,7 @@
   TODO: Adicionar animação na troca das paginas de login/cadastro
   TODO: Customizar mensagens de erro default do firebase  nos sweetalert
     TODO: Fazer o calendario ser usavel kkkkk
+    TODO: Adicionar bloqueio de gerar planejamento sem colocar os inputs antes
   */
 }
 
@@ -171,38 +172,57 @@ export default function Home() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const envio: Custeio = custeio;
-
+  
         const respostaIA = await sendMensagem(envio);
-
+  
+        console.log("Resposta IA:", respostaIA);
+  
         if (!user) {
           localStorage.setItem("usouGeracao", "true");
           return;
         }
-
+  
+        if (!respostaIA || !respostaIA.json) {
+          console.error("Resposta JSON nula. Não será salva no Firestore.");
+          return;
+        }
+  
         const userDocRef = doc(db, "usuarios", user.uid);
         const userDoc = await getDoc(userDocRef);
-
+  
         if (userDoc.exists()) {
           const usosAtual = userDoc.data().usos ?? 0;
-
+  
           if (usosAtual + 1 >= 3) {
             setLimitado(true);
           }
-
+  
           await updateDoc(userDocRef, {
             usos: usosAtual + 1,
           });
-
+  
           const planejamentosRef = collection(userDocRef, "planejamentos");
-          await addDoc(planejamentosRef, {
-            mensagemBot: respostaIA,
-            custeio,
-            geradoEm: serverTimestamp(),
-          });
+  
+          try {
+            await addDoc(planejamentosRef, {
+              mensagemJSON: respostaIA.json, // 👈 agora usamos diretamente a resposta retornada
+              mensagemBot: respostaIA.texto ?? "Resposta não gerada",
+              custeio,
+              geradoEm: serverTimestamp(),
+            });
+            console.log("Dados enviados para o Firestore com sucesso!");
+          } catch (error) {
+            console.error("Erro ao salvar dados no Firestore:", error);
+          }
+        } else {
+          console.error("Usuário não encontrado no Firestore.");
         }
       }
     });
   };
+  
+  
+  
 
   return (
     <div className="pb-[5em]">
