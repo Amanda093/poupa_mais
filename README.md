@@ -1,3 +1,5 @@
+# 💰 Poupa+ – Seu aliado no controle financeiro
+
 ![Logo](public/poupamais.png)
 
 ## 📖 Sumário
@@ -13,9 +15,20 @@
 
 ## ✨ Sobre o projeto
 
-**Poupa+** é um sistema web de gerenciamento financeiro desenvolvido durante o projeto hackateen, ao longo de duas semanas, com o apoio da Venturus.
+**Poupa+** é um sistema web de gerenciamento financeiro desenvolvido durante o projeto HackaTeen, ao longo de duas semanas, com o apoio da Venturus.
 
 A proposta do Poupa+ é oferecer um **sistema de auxílio financeiro** no qual o usuário informa suas despesas mensais e, com base nesses dados, recebe sugestões personalizadas de planejamento financeiro. As recomendações são geradas por meio da inteligência artificial **[Llama](https://www.llama.com)**, promovendo uma gestão mais consciente e eficiente do dinheiro.
+
+### 📷 Demonstração
+
+**1.** Página Inicial
+![Tela inicial](./public/screenshot-home.png)
+
+**2.** Página de Cadastro
+![Tela de cadastro](./public/screenshot-cadastro.png)
+
+**3.** Página de Login
+![Tela de login](./public/screenshot-login.png)
 
 ## 💻 Tecnologias utilizadas
 
