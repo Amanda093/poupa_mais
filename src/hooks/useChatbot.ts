@@ -6,15 +6,16 @@ import { Custeio } from "@/interface";
 const useChatbot = () => {
   const [mensagemBot, setMensagemBot] = useState<string>("");
 
-  const sendMensagem = async (mensagem: Custeio) => {
+  const sendMensagem = async (
+    mensagem: Custeio,
+  ): Promise<string | undefined> => {
     try {
-      // Envia a mensagem para a API
       const resposta = await axios.post("/api/chat", mensagem);
-
       const mensagemBot =
         resposta.data.message ?? "Erro: resposta vazia do bot.";
 
       setMensagemBot(mensagemBot);
+      return mensagemBot;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(
@@ -22,6 +23,7 @@ const useChatbot = () => {
           error.response?.data || "Sem resposta do servidor",
         );
       }
+      return "Erro ao comunicar com o bot.";
     }
   };
 

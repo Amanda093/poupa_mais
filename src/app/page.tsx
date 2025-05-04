@@ -13,7 +13,15 @@
 }
 
 import { differenceInDays } from "date-fns";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -163,24 +171,34 @@ export default function Home() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const envio: Custeio = custeio;
-        sendMensagem(envio);
+
+        const respostaIA = await sendMensagem(envio);
+
         if (!user) {
           localStorage.setItem("usouGeracao", "true");
-        } else if (user) {
-          const userDocRef = doc(db, "usuarios", user.uid);
-          const userDoc = await getDoc(userDocRef);
+          return;
+        }
 
-          if (userDoc.exists()) {
-            const usosAtual = userDoc.data().usos ?? 0;
+        const userDocRef = doc(db, "usuarios", user.uid);
+        const userDoc = await getDoc(userDocRef);
 
-            if (usosAtual + 1 >= 3) {
-              setLimitado(true);
-            }
+        if (userDoc.exists()) {
+          const usosAtual = userDoc.data().usos ?? 0;
 
-            await updateDoc(userDocRef, {
-              usos: usosAtual + 1,
-            });
+          if (usosAtual + 1 >= 3) {
+            setLimitado(true);
           }
+
+          await updateDoc(userDocRef, {
+            usos: usosAtual + 1,
+          });
+
+          const geracoesRef = collection(userDocRef, "geracoes");
+          await addDoc(geracoesRef, {
+            mensagemBot: respostaIA,
+            custeio,
+            geradoEm: serverTimestamp(),
+          });
         }
       }
     });
@@ -394,7 +412,6 @@ export default function Home() {
           <>
             {/*TODO: Adicionar loading enquanto a prompt é gerada*/}
             {/*TODO: Dar Scroll para o começo da resposta quando ela for gerada*/}
-            {/*TODO: Criar cookie para planejamento gerado e um botão para gerar novo ( se o usuario nao estiver limitado )*/}
             <Fade
               delay={200} // Wait before starting
               duration={1000} // Animation duration
