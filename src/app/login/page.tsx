@@ -9,7 +9,8 @@ import {
 import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 import { Banner, Button, Checkbox, Input } from "@/components";
 import { auth } from "@/lib/clientApp";
@@ -21,6 +22,14 @@ const LoginPage = () => {
   const [showSenha, setShowSenha] = useState(false);
   const [lembrar, setLembrar] = useState(false);
   const router = useRouter();
+
+  const [user, loading] = useAuthState(auth);
+
+  useEffect(() => {
+    if (!loading && user !== null) {
+      router.push("/historico");
+    }
+  }, [user, loading]);
 
   const handleLogin = async () => {
     try {

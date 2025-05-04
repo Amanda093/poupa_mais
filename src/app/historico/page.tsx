@@ -1,7 +1,6 @@
 "use client";
 
-
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
@@ -35,15 +34,15 @@ import { auth } from "@/lib/clientApp";
 import { Popup, Toast } from "@/lib/sweetalert";
 import { cn } from "@/lib/utils";
 
-
 const HistoricoPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [user] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
+
   useEffect(() => {
-    if (user === null) {
-      router.push("/login"); // redirecione para a página de login
+    if (!loading && user === null) {
+      router.push("/login");
     }
-  }, [user]);
+  }, [user, loading]);
 
   const [photoURL, setPhotoURL] = useState<string>(placeholderFoto.src); // Começa com o placeholder
   const [uploading, setUploading] = useState(false);
@@ -68,7 +67,7 @@ const HistoricoPage = () => {
         const data = userSnap.data();
         setNome(data.nome || "");
         setEmail(data.email || "");
-        setDataNascimento(data.dataNascimento || "");
+        setDataNascimento(data.dataNascimento?.toDate?.() || undefined);
       }
 
       const storedPhotoURL = localStorage.getItem("photoURL");
@@ -277,24 +276,29 @@ const HistoricoPage = () => {
                 placeholder="m@example.com"
                 variant="default"
                 className="w-75"
+                disabled
               />
             </div>
-            <div>
+            <div className="flex flex-col">
               <label htmlFor="data">Data de Nascimento</label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "aria-expanded:emerald-glow w-full justify-start rounded-[0.5em] bg-white text-left font-light text-gray-950 outline-slate-400 hover:text-gray-950 hover:outline-slate-400 active:outline-slate-400 aria-expanded:outline-emerald-500",
-                      !dataNascimento && "text-muted-foreground",
+                      "aria-expanded:emerald-glow w-75 justify-start rounded-[0.5em] bg-white !px-3 !py-[0.3em] text-left font-light text-gray-950 outline-slate-400 hover:text-gray-950 hover:outline-slate-400 active:outline-slate-400 aria-expanded:outline-emerald-500",
+                      !dataNascimento && "text-slate-400",
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4 text-slate-400" />
-                    {dataNascimento ? (
-                      format(dataNascimento, "P")
+                    {dataNascimento && isValid(dataNascimento) ? (
+                      <span className="text-light">
+                        {format(dataNascimento, "dd/MM/yyyy")}
+                      </span>
                     ) : (
-                      <span>Escolha a data</span>
+                      <span className="text-light text-slate-400">
+                        Escolha a data
+                      </span>
                     )}
                   </Button>
                 </PopoverTrigger>

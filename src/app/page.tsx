@@ -7,7 +7,7 @@
   TODO: Comentar o código
   TODO: Organizar o código
   TODO: Adicionar animação na troca das paginas de login/cadastro
-  TODO: Arrumar data no input data para ter o formato dd/mm/yyyy
+  TODO: Customizar mensagens de erro default do firebase  nos sweetalert
   */
 }
 
@@ -100,7 +100,7 @@ export default function Home() {
     setCusteio({ ...custeio, obs: e.target.value });
   };
 
-/* Para testes
+  /* Para testes
   
   const mensagemBot = `
 ## Plano de Economia
@@ -243,7 +243,6 @@ Além disso, é fundamental ter uma **reserva de emergência** antes de começar
               </Button>
             </div>
           </div>
-
         )}
         <div
           className={`form-shadow flex w-full flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em] transition-[height] ${limitado && "pointer-events-none relative z-1 blur-xs select-none"}`}
@@ -379,38 +378,38 @@ Além disso, é fundamental ter uma **reserva de emergência** antes de começar
                   <ReactMarkdown>{mensagemBot}</ReactMarkdown>
                 </p>
 
-                  {loading ? null : user ? (
+                {loading ? null : user ? (
                   <>
-                  <div className="flex justify-center gap-[1em]">
-                        <Button variant="default" asChild>
-                          <Link href="/cadastro" className="">
-                            Salvar planejamento
-                          </Link>
-                        </Button>
-                        <Button variant="outline" asChild>
-                          <Link href="/login" className="">
+                    <div className="flex justify-center gap-[1em]">
+                      <Button variant="default" asChild>
+                        <Link href="/cadastro" className="">
+                          Salvar planejamento
+                        </Link>
+                      </Button>
+                      <Button variant="outline" asChild>
+                        <Link href="/login" className="">
                           Novo planejamento
-                          </Link>
-                        </Button>
+                        </Link>
+                      </Button>
                     </div>
                   </>
-                  ) : (
-                    <div className="text-center">
+                ) : (
+                  <div className="text-center">
                     <Title mainTitle="Se interessou?" subTitle="Faça parte " />
-                      <div className="flex justify-center gap-[1em]">
-                        <Button variant="default" asChild>
-                          <Link href="/cadastro" className="">
+                    <div className="flex justify-center gap-[1em]">
+                      <Button variant="default" asChild>
+                        <Link href="/cadastro" className="">
                           Cadastrar-se
-                          </Link>
-                        </Button>
-                        <Button variant="outline" asChild>
-                          <Link href="/login" className="">
+                        </Link>
+                      </Button>
+                      <Button variant="outline" asChild>
+                        <Link href="/login" className="">
                           Login
-                          </Link>
-                        </Button>
+                        </Link>
+                      </Button>
                     </div>
-                    </div>
-                  )}
+                  </div>
+                )}
               </div>
             </Fade>
             {/* Footer */}

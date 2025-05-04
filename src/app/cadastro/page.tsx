@@ -7,7 +7,8 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // para redirecionar
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { FaCheckCircle } from "react-icons/fa";
 import { IoCloseCircle } from "react-icons/io5";
 import { MdError } from "react-icons/md";
@@ -28,6 +29,14 @@ const CadastroPage = () => {
   const [email, setEmail] = useState("");
   const [nome, setNome] = useState("");
   const [date, setDate] = React.useState<Date>();
+
+  const [user, loading] = useAuthState(auth);
+
+  useEffect(() => {
+    if (!loading && user !== null) {
+      router.push("/historico");
+    }
+  }, [user, loading]);
 
   // verifica se a senha sugerida pelo usuário é forte
   const verificarForcaSenha = (senha: string): string => {
@@ -153,12 +162,18 @@ const CadastroPage = () => {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "aria-expanded:emerald-glow w-full justify-start rounded-[0.5em] bg-white text-left font-light text-gray-950 outline-slate-400 hover:text-gray-950 hover:outline-slate-400 active:outline-slate-400 aria-expanded:outline-emerald-500",
-                        !date && "text-muted-foreground",
+                        "aria-expanded:emerald-glow w-full justify-start rounded-[0.5em] bg-white !px-3 !py-[0.3em] text-left font-light text-gray-950 outline-slate-400 hover:text-gray-950 hover:outline-slate-400 active:outline-slate-400 aria-expanded:outline-emerald-500",
+                        !date && "text-slate-400",
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4 text-slate-400" />
-                      {date ? format(date, "P") : <span>Escolha a data</span>}
+                      {date ? (
+                        <span className="text-light">
+                          {format(date, "dd/MM/yyyy")}
+                        </span>
+                      ) : (
+                        <span className="text-light">Escolha a data</span>
+                      )}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
