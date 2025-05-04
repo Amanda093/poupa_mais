@@ -11,4 +11,4 @@ interface Custeio {
   obs: string;
 }
 
-export type { Custeio };
+export type { Custeio, Gasto };

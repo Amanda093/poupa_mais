@@ -20,16 +20,20 @@ type DadoIBGE = Array<{
           id: string;
           nome: string;
         };
-        nome: string;
+        nome: string;   
       };
       serie: Record<string, string>;
     }>;
   }>;
 }>;
 
+interface GastoSugerido {
+  categoria: string,
+  valor_sugerido: number
+}
 interface DadoGrafico {
   economia_mensal_estimada: number;
-  gastos_sugeridos_para_corte: { categoria: string; valor_sugerido: number }[];
+  gastos_sugeridos_para_corte: GastoSugerido[];
   metas: {
     curto_prazo: string;
     medio_prazo: string;

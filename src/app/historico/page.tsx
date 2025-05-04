@@ -452,7 +452,8 @@ const HistoricoPage = () => {
               despesas={p.custeio.gastos}
               respostaIA={p.mensagem}
             />
-          ))
+          )
+        )
         ) : (
           <p className="text-light text-center text-gray-500">
             Nenhum planejamento encontrado.
