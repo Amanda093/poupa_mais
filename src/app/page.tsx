@@ -193,8 +193,8 @@ export default function Home() {
             usos: usosAtual + 1,
           });
 
-          const geracoesRef = collection(userDocRef, "geracoes");
-          await addDoc(geracoesRef, {
+          const planejamentosRef = collection(userDocRef, "planejamentos");
+          await addDoc(planejamentosRef, {
             mensagemBot: respostaIA,
             custeio,
             geradoEm: serverTimestamp(),

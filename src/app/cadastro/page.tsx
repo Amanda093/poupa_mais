@@ -28,7 +28,7 @@ const CadastroPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [nome, setNome] = useState("");
-  const [date, setDate] = React.useState<Date>();
+  const [dataNascimento, setDataNascimento] = React.useState<Date>();
 
   const [user, loading] = useAuthState(auth);
 
@@ -89,7 +89,7 @@ const CadastroPage = () => {
         uid: user.uid,
         nome,
         email,
-        date,
+        dataNascimento,
         usos: 0,
         ultimaGeracao: new Date().toISOString(),
         criadoEm: new Date(),
@@ -165,13 +165,13 @@ const CadastroPage = () => {
                       variant={"outline"}
                       className={cn(
                         "aria-expanded:emerald-glow w-full justify-start rounded-[0.5em] bg-white !px-3 !py-[0.3em] text-left font-light text-gray-950 outline-slate-400 hover:text-gray-950 hover:outline-slate-400 active:outline-slate-400 aria-expanded:outline-emerald-500",
-                        !date && "text-slate-400",
+                        !dataNascimento && "text-slate-400",
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4 text-slate-400" />
-                      {date ? (
+                      {dataNascimento ? (
                         <span className="text-light">
-                          {format(date, "dd/MM/yyyy")}
+                          {format(dataNascimento, "dd/MM/yyyy")}
                         </span>
                       ) : (
                         <span className="text-light">Escolha a data</span>
@@ -181,8 +181,8 @@ const CadastroPage = () => {
                   <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
-                      selected={date}
-                      onSelect={setDate}
+                      selected={dataNascimento}
+                      onSelect={setDataNascimento}
                       initialFocus
                     />
                   </PopoverContent>

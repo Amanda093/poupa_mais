@@ -9,7 +9,13 @@ import {
   updatePassword,
   updateProfile,
 } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { CalendarIcon, LucideEye, LucideEyeClosed } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -34,16 +40,29 @@ import { auth } from "@/lib/clientApp";
 import { Popup, Toast } from "@/lib/sweetalert";
 import { cn } from "@/lib/utils";
 
+type Gasto = {
+  categoria: string;
+  nome: string;
+  valor: string;
+};
+
+type Custeio = {
+  estado: number;
+  gastos: Gasto[];
+  obs: string;
+  renda: string;
+};
+
+type Planejamento = {
+  id: string; // assumindo que o id do Firebase é uma string
+  custeio: Custeio;
+  geradoEm: string; // ou string, dependendo de como o Firebase retorna
+  mensagem: string; // mensagem do bot em markdown
+};
+
 const HistoricoPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [user, loading] = useAuthState(auth);
-
-  useEffect(() => {
-    if (!loading && user === null) {
-      router.push("/login");
-    }
-  }, [user, loading]);
-
   const [photoURL, setPhotoURL] = useState<string>(placeholderFoto.src); // Começa com o placeholder
   const [uploading, setUploading] = useState(false);
   const [nome, setNome] = useState("");
@@ -53,7 +72,14 @@ const HistoricoPage = () => {
   const [showNovaSenha, setShowNovaSenha] = useState(false);
   const [senhaAtual, setSenhaAtual] = useState("");
   const [showSenhaAtual, setShowSenhaAtual] = useState(false);
+  const [planejamentos, setPlanejamentos] = useState<Planejamento[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user === null) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   // Carregar a foto de perfil do Firebase ou localStorage sempre que o componente for montado
   useEffect(() => {
@@ -81,6 +107,40 @@ const HistoricoPage = () => {
     fetchUserData();
   }, [user]);
 
+  useEffect(() => {
+    const fetchPlanejamentos = async () => {
+      if (!user) return;
+
+      const planejamentosRef = collection(
+        db,
+        "usuarios",
+        user.uid,
+        "planejamentos",
+      );
+      const snapshot = await getDocs(planejamentosRef);
+
+      const data: Planejamento[] = snapshot.docs.map((doc) => {
+        const raw = doc.data();
+
+        return {
+          id: doc.id,
+          custeio: {
+            estado: raw.custeio.estado,
+            gastos: raw.custeio.gastos,
+            obs: raw.custeio.obs,
+            renda: raw.custeio.renda,
+          },
+          geradoEm: raw.geradoEm.toDate(),
+          mensagem: raw.mensagemBot,
+        };
+      });
+
+      setPlanejamentos(data);
+    };
+
+    fetchPlanejamentos();
+  }, [user]);
+
   const handleChangePhotoClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -93,7 +153,7 @@ const HistoricoPage = () => {
 
     setUploading(true);
 
-    // 1. Deleta imagem antiga (se existir)
+    // 1. Deleta imagem antiga (caso exista)
     const oldPublicId = localStorage.getItem("photoPublicId");
     if (oldPublicId) {
       await fetch("/api/deleteImage", {
@@ -117,7 +177,7 @@ const HistoricoPage = () => {
     const data = await response.json();
     console.log("Nova imagem enviada:", data);
 
-    // 3. Atualiza Firebase, localStorage e estado
+    // 3. Atualiza o Firebase, o localStorage e o estado
     if (response.ok) {
       await updateProfile(auth.currentUser!, {
         photoURL: data.secure_url,
@@ -381,72 +441,23 @@ const HistoricoPage = () => {
       {/* Div do histórico */}
       <div className="flex w-full flex-col gap-[1em]">
         <Title mainTitle="Histórico de" subTitle="Planejamentos" />
-        <Historico
-          mes="Abril"
-          ano="2025"
-          renda="R$4500,00"
-          despesas={[
-            {
-              categoria: "Alimentação",
-              valor: 1500.0,
-              nome: "Comida",
-            },
-            { categoria: "Transporte", valor: 800.0, nome: "Ônibus" },
-            { categoria: "Saúde", valor: 1200.0, nome: "Médico" },
-            { categoria: "Lazer", valor: 500.0, nome: "Jogos" },
-          ]}
-          respostaIA="Com base nos dados fornecidos, podemos elaborar um plano de economia para o usuário. 
 
-            1. **Estimativa de economia mensal**: Considerando que o usuário tem uma renda mensal de R$ 1.000,00 e gasta R$ 200,00 com comida, podemos estimar que o usuário tem um potencial de economia mensal de R$ 800,00. No entanto, é importante considerar que o usuário provavelmente tem outros gastos, como moradia, transporte, etc. Uma estimativa mais realista seria de 20% a 30% da renda, o que daria R$ 200,00 a R$ 300,00 por mês.
-
-            2. **Sugestões de corte de gastos**: Além da comida, que já é um gasto essencial, o usuário pode considerar cortar gastos em outras áreas, como:
-              - Reduzir o uso de serviços de streaming e entretenimento.
-              - Economizar na conta de telefone e internet.
-              - Reduzir o consumo de produtos não essenciais.
-
-            3. **Metas de curto, médio e longo prazo**:
-              - **Curto prazo (1-3 meses)**: Criar um fundo de emergência com 1-2 meses de despesas.
-              - **Médio prazo (6-12 meses)**: Aumentar a renda através de um segundo emprego, freelancer ou curso de capacitação.
-              - **Longo prazo (1-5 anos)**: Investir em um plano de previdência ou um fundo de investimento para a aposentadoria.
-
-            4. **Dicas de investimento**: Com a taxa Selic em 0,052531%, os investimentos em renda fixa podem não ser muito atraentes. No entanto, o usuário pode considerar investir em:
-              - Fundos de investimento em ações.
-              - Fundos de investimento imobiliário.
-              - Plano de previdência."
-        />
-        <Historico
-          mes="Setembro"
-          ano="2025"
-          renda="R$4500,00"
-          despesas={[
-            {
-              categoria: "Alimentação",
-              valor: 1500.0,
-              nome: "Comida",
-            },
-            { categoria: "Transporte", valor: 800.0, nome: "Ônibus" },
-            { categoria: "Saúde", valor: 1200.0, nome: "Médico" },
-            { categoria: "Lazer", valor: 500.0, nome: "Jogos" },
-          ]}
-          respostaIA="Com base nos dados fornecidos, podemos elaborar um plano de economia para o usuário. 
-
-            1. **Estimativa de economia mensal**: Considerando que o usuário tem uma renda mensal de R$ 1.000,00 e gasta R$ 200,00 com comida, podemos estimar que o usuário tem um potencial de economia mensal de R$ 800,00. No entanto, é importante considerar que o usuário provavelmente tem outros gastos, como moradia, transporte, etc. Uma estimativa mais realista seria de 20% a 30% da renda, o que daria R$ 200,00 a R$ 300,00 por mês.
-
-            2. **Sugestões de corte de gastos**: Além da comida, que já é um gasto essencial, o usuário pode considerar cortar gastos em outras áreas, como:
-              - Reduzir o uso de serviços de streaming e entretenimento.
-              - Economizar na conta de telefone e internet.
-              - Reduzir o consumo de produtos não essenciais.
-
-            3. **Metas de curto, médio e longo prazo**:
-              - **Curto prazo (1-3 meses)**: Criar um fundo de emergência com 1-2 meses de despesas.
-              - **Médio prazo (6-12 meses)**: Aumentar a renda através de um segundo emprego, freelancer ou curso de capacitação.
-              - **Longo prazo (1-5 anos)**: Investir em um plano de previdência ou um fundo de investimento para a aposentadoria.
-
-            4. **Dicas de investimento**: Com a taxa Selic em 0,052531%, os investimentos em renda fixa podem não ser muito atraentes. No entanto, o usuário pode considerar investir em:
-              - Fundos de investimento em ações.
-              - Fundos de investimento imobiliário.
-              - Plano de previdência."
-        />
+        {planejamentos.length > 0 ? (
+          planejamentos.map((p) => (
+            <Historico
+              key={p.id}
+              mes="Abril"
+              ano="2025"
+              renda="R$4500,00"
+              despesas={p.custeio.gastos}
+              respostaIA={p.mensagem}
+            />
+          ))
+        ) : (
+          <p className="text-sm text-gray-500">
+            Nenhum planejamento encontrado.
+          </p>
+        )}
       </div>
     </div>
   );

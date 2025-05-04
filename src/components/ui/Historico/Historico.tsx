@@ -3,11 +3,18 @@
 import React, { useState } from "react";
 import { HiSparkles } from "react-icons/hi2";
 import { IoIosArrowForward } from "react-icons/io";
+import ReactMarkdown from "react-markdown";
+
+type Gasto = {
+  categoria: string;
+  nome: string;
+  valor: string;
+};
 
 interface HistoricoProps {
   mes: string;
   ano: string;
-  despesas: { categoria: string; valor: number; nome: string }[];
+  despesas: Gasto[];
   renda: string;
   respostaIA: string;
 }
@@ -17,10 +24,10 @@ const Historico = (props: HistoricoProps) => {
   const [expandido, setExpandido] = useState(false);
 
   const rendaNumerica = parseFloat(renda.replace(/\D/g, "")) / 100;
-  const valorTotalDespesas = despesas.reduce(
-    (total, despesa) => total + despesa.valor,
-    0,
-  );
+  const valorTotalDespesas = despesas.reduce((total, despesa) => {
+    const valor = parseFloat(despesa.valor.replace(",", "."));
+    return total + valor;
+  }, 0);
   const valorRestante = rendaNumerica - valorTotalDespesas;
 
   const getCategoriaCor = (categoria: string): string => {
@@ -65,10 +72,10 @@ const Historico = (props: HistoricoProps) => {
         </div>
 
         {/* Gráfico */}
-        <div className="max-xs:flex-col max-xs:h-auto mt-2 flex h-[2.5rem] w-full flex-row overflow-x-auto overflow-y-hidden rounded-[0.5em] bg-emerald-500 outline-[0.15em] outline-white">
+        <div className="max-xs:flex-col max-xs:h-auto mt-2 flex h-[2.5rem] w-full flex-row justify-end overflow-x-auto overflow-y-hidden rounded-[0.5em] bg-emerald-500 outline-[0.15em] outline-white">
           {valorRestante > 0 && (
             <div
-              className="flex min-w-[40px] items-center justify-center text-[0.85em] text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]"
+              className="flex min-w-[40px] items-center justify-center text-[0.85em] text-nowrap text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]"
               style={{ width: `${(valorRestante / rendaNumerica) * 100}%` }}
             >
               {`R$ ${valorRestante.toFixed(2)}`}
@@ -76,15 +83,17 @@ const Historico = (props: HistoricoProps) => {
           )}
 
           {despesas.map((despesa, index) => {
-            const largura = (despesa.valor / rendaNumerica) * 100;
+            const despesaValorNumerico =
+              parseFloat(despesa.valor.replace(/\D/g, "")) / 100;
+            const largura = (despesaValorNumerico / rendaNumerica) * 100;
             return (
               <div
                 key={index}
-                className={`flex min-w-[40px] items-center justify-center ${getCategoriaCor(despesa.categoria)} text-[0.85em] text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]`}
+                className={`flex min-w-[40px] items-center justify-center text-nowrap ${getCategoriaCor(despesa.categoria)} text-[0.85em] text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]`}
                 style={{ width: `${largura}%` }}
                 title={despesa.nome}
               >
-                {`R$ ${despesa.valor.toFixed(2)}`}
+                {`R$ ${despesaValorNumerico.toFixed(2)}`}
               </div>
             );
           })}
@@ -117,7 +126,9 @@ const Historico = (props: HistoricoProps) => {
             <HiSparkles />
             Resposta
           </h3>
-          <p className="text-light">{respostaIA}</p>
+          <div className="prose prose-sm text-light text-ia w-full max-w-none">
+            <ReactMarkdown>{respostaIA}</ReactMarkdown>
+          </div>
         </div>
       </div>
     </div>
