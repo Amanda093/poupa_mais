@@ -55,8 +55,20 @@ const Historico = (props: HistoricoProps) => {
         return "bg-red-500";
       case "educação":
         return "bg-purple-500";
-      case "lazer":
-        return "bg-pink-500";
+      case "compras pessoais":
+        return "bg-pink-400";
+      case "lazer e entretenimento":
+        return "bg-yellow-500";
+      case "tecnologia e comunicação":
+        return "bg-indigo-500";
+      case "financeiro":
+        return "bg-teal-500";
+      case "presentes e doações":
+        return "bg-rose-500";
+      case "pets":
+        return "bg-amber-500";
+      case "manutenção e emergências":
+        return "bg-cyan-500";
       case "outros":
         return "bg-gray-400";
       default:
@@ -88,7 +100,7 @@ const Historico = (props: HistoricoProps) => {
         <div className="max-xs:flex-col max-xs:h-auto mt-2 flex h-[2.5rem] w-full flex-row overflow-x-auto overflow-y-hidden rounded-[0.5em] bg-emerald-500 outline-[0.15em] outline-white">
           {valorRestante > 0 && (
             <div
-              className="flex items-center justify-center text-[0.85em] text-nowrap text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]"
+              className="flex items-center justify-center px-[0.2em] text-[0.85em] text-nowrap text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]"
               style={{
                 width: `${(valorRestante / rendaNumerica) * 100}%`,
                 minWidth: "fit-content",
@@ -105,7 +117,7 @@ const Historico = (props: HistoricoProps) => {
             return (
               <div
                 key={index}
-                className={`flex min-w-[40px] items-center justify-center text-nowrap ${getCategoriaCor(despesa.categoria)} text-[0.85em] text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]`}
+                className={`flex min-w-[40px] items-center justify-center px-[0.2em] text-nowrap ${getCategoriaCor(despesa.categoria)} text-[0.85em] text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]`}
                 style={{ width: `${largura}%`, minWidth: "fit-content" }}
                 title={despesa.nome}
               >

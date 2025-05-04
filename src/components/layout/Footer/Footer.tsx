@@ -21,12 +21,24 @@ const getCategoriaCor = (categoria: string): string => {
       return "bg-red-500";
     case "educação":
       return "bg-purple-500";
-    case "lazer":
-      return "bg-pink-500";
+    case "compras pessoais":
+      return "bg-pink-400";
+    case "lazer e entretenimento":
+      return "bg-yellow-500";
+    case "tecnologia e comunicação":
+      return "bg-indigo-500";
+    case "financeiro":
+      return "bg-teal-500";
+    case "presentes e doações":
+      return "bg-rose-500";
+    case "pets":
+      return "bg-amber-500";
+    case "manutenção e emergências":
+      return "bg-cyan-500";
     case "outros":
       return "bg-gray-400";
     default:
-      return "bg-gray-400"; // categoria indefinida
+      return "bg-gray-400";
   }
 };
 

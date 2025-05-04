@@ -36,7 +36,7 @@ const CadastroPage = () => {
     if (!loading && user !== null) {
       router.push("/historico");
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
   // verifica se a senha sugerida pelo usuário é forte
   const verificarForcaSenha = (senha: string): string => {

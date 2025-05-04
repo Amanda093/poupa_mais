@@ -6,7 +6,6 @@
   TODO: Certificar responsividade geral
   TODO: Comentar o código
   TODO: Organizar o código
-  TODO: Adicionar animação na troca das paginas de login/cadastro
   TODO: Customizar mensagens de erro default do firebase  nos sweetalert
     TODO: Fazer o calendario ser usavel kkkkk
     TODO: Adicionar bloqueio de gerar planejamento sem colocar os inputs antes
@@ -51,10 +50,6 @@ import { Custeio } from "@/interface";
 import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup } from "@/lib/sweetalert";
-
-{
-  /*TODO: Implementar limite de usos do site*/
-}
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);
@@ -283,7 +278,6 @@ export default function Home() {
       {/* Formulário - Parte 02 */}
       <div className="relative container mx-auto xl:!max-w-[1300px]">
         {limitado && (
-          // TODO: Mudar mensagem caso o usuario já esteja logado
           <div className="text-bold form-shadow absolute top-[50%] left-0 z-10 flex w-full translate-y-[-50%] flex-col justify-center gap-[0.25em] rounded-[1em] bg-white py-[1.5em] text-center">
             {user ? (
               <>
@@ -330,13 +324,13 @@ export default function Home() {
             {custeio.gastos.map((gasto, index) => (
               <motion.div
                 key={index}
-                className="flex items-end justify-center gap-[2.5%]"
+                className="flex items-end justify-center gap-[2.5%] max-sm:flex-col max-sm:w-full max-sm:items-center max-sm:gap-[.75em]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: "0.3" }}
               >
-                <div className="w-[30%]">
+                <div className="w-[30%] max-sm:w-[80%]">
                   <label>Despesa</label>
                   <Input
                     type="text"
@@ -348,7 +342,7 @@ export default function Home() {
                     }}
                   />
                 </div>
-                <div className="w-[30%]">
+                <div className="w-[30%] max-sm:w-[80%]">
                   <label>Gasto Mensal</label>
                   <Input
                     type="money"
@@ -360,7 +354,7 @@ export default function Home() {
                     }}
                   />
                 </div>
-                <div className="w-[30%]">
+                <div className="w-[30%] max-sm:w-[80%]">
                   <label>Categoria</label>
                   <Select
                     value={gasto.categoria}
@@ -375,19 +369,21 @@ export default function Home() {
                     <SelectContent>
                       {categorias.map((categoria) => (
                         <SelectItem value={categoria} key={categoria}>
-                          {categoria}
-                        </SelectItem>
+                      {categoria}
+                    </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-                <Button
-                  onClick={() => removeGasto(index)}
-                  className="aspect-square w-[2em] !p-0"
-                  variant="delete"
-                >
+                <div className="max-sm:mt-2">
+                  <Button
+                    onClick={() => removeGasto(index)}
+                    className="aspect-square w-[2em] !p-0  max-sm:w-[6em] max-sm:h-[2em]"
+                    variant="delete"
+                  >
                   <MdDelete className="size-[1.25em]" />
                 </Button>
+                </div>
               </motion.div>
             ))}
           </AnimatePresence>
