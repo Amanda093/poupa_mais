@@ -7,8 +7,8 @@
   TODO: Comentar o código
   TODO: Organizar o código
   TODO: Customizar mensagens de erro default do firebase  nos sweetalert
-    TODO: Fazer o calendario ser usavel kkkkk
-    TODO: Adicionar bloqueio de gerar planejamento sem colocar os inputs antes
+  TODO: Fazer o calendario ser usavel kkkkk
+  TODO: Adicionar bloqueio de gerar planejamento sem colocar os inputs antes
   */
 }
 
@@ -34,6 +34,7 @@ import ReactMarkdown from "react-markdown";
 
 import {
   Button,
+  Checkbox,
   Footer,
   Input,
   Select,
@@ -54,7 +55,7 @@ import { Popup } from "@/lib/sweetalert";
 export default function Home() {
   const [user, loading] = useAuthState(auth);
   console.log("Loading: ", loading, "|", "Current user: ", user?.email);
-
+  const [ignored, setIgnored] = useState(false);
   const [limitado, setLimitado] = useState(false);
 
   useEffect(() => {
@@ -167,40 +168,41 @@ export default function Home() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const envio: Custeio = custeio;
-  
+
         const respostaIA = await sendMensagem(envio);
-  
+
         console.log("Resposta IA:", respostaIA);
-  
+
         if (!user) {
           localStorage.setItem("usouGeracao", "true");
           return;
         }
-  
+
         if (!respostaIA || !respostaIA.json) {
           console.error("Resposta JSON nula. Não será salva no Firestore.");
           return;
         }
-  
+
         const userDocRef = doc(db, "usuarios", user.uid);
         const userDoc = await getDoc(userDocRef);
-  
+
         if (userDoc.exists()) {
           const usosAtual = userDoc.data().usos ?? 0;
-  
+
           if (usosAtual + 1 >= 3) {
             setLimitado(true);
           }
-  
+
           await updateDoc(userDocRef, {
             usos: usosAtual + 1,
           });
-  
+
           const planejamentosRef = collection(userDocRef, "planejamentos");
-  
+
           try {
             await addDoc(planejamentosRef, {
-              mensagemJSON: respostaIA.json, // 👈 agora usamos diretamente a resposta retornada
+              ignorado: ignored,
+              mensagemJSON: respostaIA.json,
               mensagemBot: respostaIA.texto ?? "Resposta não gerada",
               custeio,
               geradoEm: serverTimestamp(),
@@ -215,9 +217,6 @@ export default function Home() {
       }
     });
   };
-  
-  
-  
 
   return (
     <div className="pb-[5em]">
@@ -324,7 +323,7 @@ export default function Home() {
             {custeio.gastos.map((gasto, index) => (
               <motion.div
                 key={index}
-                className="flex items-end justify-center gap-[2.5%] max-sm:flex-col max-sm:w-full max-sm:items-center max-sm:gap-[.75em]"
+                className="flex items-end justify-center gap-[2.5%] max-sm:w-full max-sm:flex-col max-sm:items-center max-sm:gap-[.75em]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -369,8 +368,8 @@ export default function Home() {
                     <SelectContent>
                       {categorias.map((categoria) => (
                         <SelectItem value={categoria} key={categoria}>
-                      {categoria}
-                    </SelectItem>
+                          {categoria}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -378,11 +377,11 @@ export default function Home() {
                 <div className="max-sm:mt-2">
                   <Button
                     onClick={() => removeGasto(index)}
-                    className="aspect-square w-[2em] !p-0  max-sm:w-[6em] max-sm:h-[2em]"
+                    className="aspect-square w-[2em] !p-0 max-sm:h-[2em] max-sm:w-[6em]"
                     variant="delete"
                   >
-                  <MdDelete className="size-[1.25em]" />
-                </Button>
+                    <MdDelete className="size-[1.25em]" />
+                  </Button>
                 </div>
               </motion.div>
             ))}
@@ -406,6 +405,20 @@ export default function Home() {
               onChange={handleChangeObs}
             />
           </div>
+          {user && (
+            <>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="remember"
+                  checked={ignored}
+                  onCheckedChange={(val) => setIgnored(!!val)}
+                />
+                <label htmlFor="remember" className="">
+                  Usar planejamentos anteriores como base para o novo
+                </label>
+              </div>
+            </>
+          )}
         </div>
       </div>
       {!limitado &&

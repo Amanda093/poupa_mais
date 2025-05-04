@@ -1,9 +1,7 @@
 "use client";
-import { format } from "date-fns";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { LucideEye, LucideEyeClosed } from "lucide-react";
-import { Calendar as CalendarIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // para redirecionar
 import * as React from "react";
@@ -13,12 +11,11 @@ import { FaCheckCircle } from "react-icons/fa";
 import { IoCloseCircle } from "react-icons/io5";
 import { MdError } from "react-icons/md";
 
-import { Banner, Button, Calendar, Input } from "@/components";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components";
+import { Banner, Button, Input } from "@/components";
+import DatePicker from "@/components/ui/DatePicker/date-picker";
 import { auth } from "@/lib/clientApp";
 import { db } from "@/lib/clientApp";
 import { Toast } from "@/lib/sweetalert";
-import { cn } from "@/lib/utils";
 
 const CadastroPage = () => {
   const router = useRouter();
@@ -159,35 +156,11 @@ const CadastroPage = () => {
                 <label htmlFor="datadenascimento" className="">
                   Data de nascimento
                 </label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "aria-expanded:emerald-glow w-full justify-start rounded-[0.5em] bg-white !px-3 !py-[0.3em] text-left font-light text-gray-950 outline-slate-400 hover:text-gray-950 hover:outline-slate-400 active:outline-slate-400 aria-expanded:outline-emerald-500",
-                        !dataNascimento && "text-slate-400",
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4 text-slate-400" />
-                      {dataNascimento ? (
-                        <span className="text-light">
-                          {format(dataNascimento, "dd/MM/yyyy")}
-                        </span>
-                      ) : (
-                        <span className="text-light">Escolha a data</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={dataNascimento}
-                      onSelect={setDataNascimento}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                {/*<Input id="datadenascimento" type="date" variant="default" />*/}
+                <DatePicker
+                  id="datadenascimento"
+                  value={dataNascimento}
+                  onChange={(d) => setDataNascimento(d)}
+                />
               </div>
 
               <div className="pb-5">

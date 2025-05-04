@@ -1,6 +1,5 @@
 "use client";
 
-import { format, isValid } from "date-fns";
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
@@ -17,29 +16,20 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";
-import { CalendarIcon, LucideEye, LucideEyeClosed } from "lucide-react";
+import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-import {
-  Button,
-  Calendar,
-  Historico,
-  Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Title,
-} from "@/components";
+import { Button, Historico, Input, Title } from "@/components";
 import placeholderFoto from "@/components/assets/FotoPerfilPlaceHolder.png";
 import iconFoto from "@/components/assets/MudarFoto.png";
+import DatePicker from "@/components/ui/DatePicker/date-picker";
 import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup, Toast } from "@/lib/sweetalert";
-import { cn } from "@/lib/utils";
 
 type Gasto = {
   categoria: string;
@@ -342,36 +332,11 @@ const HistoricoPage = () => {
             </div>
             <div className="flex flex-col">
               <label htmlFor="data">Data de Nascimento</label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "aria-expanded:emerald-glow w-75 justify-start rounded-[0.5em] bg-white !px-3 !py-[0.3em] text-left font-light text-gray-950 outline-slate-400 hover:text-gray-950 hover:outline-slate-400 active:outline-slate-400 aria-expanded:outline-emerald-500",
-                      !dataNascimento && "text-slate-400",
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4 text-slate-400" />
-                    {dataNascimento && isValid(dataNascimento) ? (
-                      <span className="text-light">
-                        {format(dataNascimento, "dd/MM/yyyy")}
-                      </span>
-                    ) : (
-                      <span className="text-light text-slate-400">
-                        Escolha a data
-                      </span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={dataNascimento}
-                    onSelect={setDataNascimento}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <DatePicker
+                id="datadenascimento"
+                value={dataNascimento}
+                onChange={(d) => setDataNascimento(d)}
+              />
             </div>
           </div>
 
@@ -452,8 +417,7 @@ const HistoricoPage = () => {
               despesas={p.custeio.gastos}
               respostaIA={p.mensagem}
             />
-          )
-        )
+          ))
         ) : (
           <p className="text-light text-center text-gray-500">
             Nenhum planejamento encontrado.

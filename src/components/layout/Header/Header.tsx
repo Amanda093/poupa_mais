@@ -42,9 +42,16 @@ const Header = () => {
           }`}
         >
           <LinkHeader text="Planejar Finanças" path="/" />
+          {/* Leva para a página de FAQ */}
+          <LinkHeader text="FAQ" path="/FAQ" />
+
+          {/* Verifica se o usuário está logado */}
           {loading ? null : user ? (
             <>
+              {/* Leva para a página de histórico */}
               <LinkHeader text="Histórico" path="/historico" />
+
+              {/* Leva para a página de histórico */}
               <Link href="/historico">
                 <Image
                   src={profilePicture}
