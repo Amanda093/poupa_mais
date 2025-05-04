@@ -2,12 +2,10 @@
 
 {
   /*TODO: Checar se todos os requisitos estão sendo compridos
-  TODO: Terminar README do projeto
   TODO: Certificar responsividade geral
   TODO: Comentar o código
   TODO: Organizar o código
   TODO: Customizar mensagens de erro default do firebase  nos sweetalert
-  TODO: Fazer o calendario ser usavel kkkkk
   TODO: Adicionar bloqueio de gerar planejamento sem colocar os inputs antes
   */
 }
