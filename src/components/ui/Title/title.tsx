@@ -1,4 +1,4 @@
-const Title = (props: { mainTitle: string; subTitle: string.prop }) => {
+const Title = (props: { mainTitle: string; subTitle: string }) => {
   const { mainTitle, subTitle, ...prop } = props;
 
   return (
