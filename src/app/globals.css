@@ -76,17 +76,15 @@ p {
 .text-ia p {
   margin-left: 1.5em;
 }
-.text-ia ul,
-ol {
-  margin-left: 2.85em;
-}
 
 .text-ia ul {
   list-style: disc;
+  margin-left: 2.85em;
 }
 
 .text-ia ol {
   list-style: decimal-leading-zero;
+  margin-left: 1em;
 }
 
 .text-h1 {
