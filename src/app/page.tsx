@@ -8,12 +8,15 @@
   TODO: Organizar o código
   TODO: Adicionar animação na troca das paginas de login/cadastro
   TODO: Customizar mensagens de erro default do firebase  nos sweetalert
+    TODO: Fazer o calendario ser usavel kkkkk
   */
 }
 
+import { differenceInDays } from "date-fns";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Fade } from "react-awesome-reveal";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { HiSparkles } from "react-icons/hi2";
@@ -36,17 +39,61 @@ import {
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
 import { Custeio } from "@/interface";
+import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup } from "@/lib/sweetalert";
 
 {
   /*TODO: Implementar limite de usos do site*/
 }
-const limitado = false;
-// const ExpenseForm: React.FunctionComponent<InterfaceExpenseForm> = () => {
+
 export default function Home() {
   const [user, loading] = useAuthState(auth);
-  console.log("Loading: ", loading, "|", "Current user: ", user);
+  console.log("Loading: ", loading, "|", "Current user: ", user?.email);
+
+  const [limitado, setLimitado] = useState(false);
+
+  useEffect(() => {
+    if (!user && !loading) {
+      const usado = localStorage.getItem("usouGeracao");
+      if (usado === "true") {
+        setLimitado(true);
+      }
+    }
+  }, [loading, user]);
+
+  useEffect(() => {
+    const verificarLimite = async () => {
+      if (user) {
+        const userDocRef = doc(db, "usuarios", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        const hoje = new Date();
+
+        if (!userDoc.exists()) {
+          await setDoc(userDocRef, {
+            usos: 0,
+            ultimaGeracao: hoje.toISOString(),
+          });
+        } else {
+          const data = userDoc.data();
+          const ultima = new Date(data.ultimaGeracao);
+          const dias = differenceInDays(hoje, ultima);
+
+          if (dias >= 7) {
+            await updateDoc(userDocRef, {
+              usos: 0,
+              ultimaGeracao: hoje.toISOString(),
+            });
+          } else if (data.usos >= 3) {
+            setLimitado(true);
+          }
+        }
+      }
+    };
+
+    verificarLimite();
+  }, [user]);
 
   const estadosOrdenados = Object.entries(codigosEstadosIBGE).sort((a, b) =>
     a[1].localeCompare(b[1]),
@@ -100,51 +147,6 @@ export default function Home() {
     setCusteio({ ...custeio, obs: e.target.value });
   };
 
-  /* Para testes
-  
-  const mensagemBot = `
-## Plano de Economia
-
-### 1. **Análise de Gastos**
-O usuário tem uma renda mensal de **R$ 1.212,32** e gasta **R$ 200,00** com comida.  
-Isso representa aproximadamente **16,5%** da sua renda mensal.
-
-É importante notar que não há informações sobre outros gastos, como aluguel, serviços básicos, transporte, etc.  
-Portanto, é fundamental que o usuário faça um levantamento detalhado de todos os seus gastos para entender melhor sua situação financeira.
-
-### 2. **Estimativa de Economia Mensal**
-Considerando que o usuário gasta **16,5%** da sua renda com comida e não há informações sobre outros gastos, vamos supor que ele gasta cerca de **70%** da sua renda com todas as despesas essenciais (comida, aluguel, serviços, transporte, etc.), o que é um percentual comum para muitas pessoas.
-
-Isso deixaria cerca de **30%** da sua renda para economia e lazer.  
-Portanto, a estimativa de economia mensal seria de aproximadamente **R$ 363,70** (30% de R$ 1.212,32).
-
-### 3. **Sugestões de Corte de Gastos**
-Sem um levantamento detalhado dos gastos, é difícil sugerir cortes específicos.  
-No entanto, é sempre uma boa ideia revisar:
-
-- Gastos com serviços que não são essenciais, como assinaturas de streaming, clubes, etc.
-- Negociar preços de serviços como plano de celular, internet, etc.
-
-### 4. **Metas**
-
-- **Curto Prazo (até 3 meses)**: Fazer um levantamento detalhado de todos os gastos e criar um orçamento que permita aumentar a porcentagem de economia.
-- **Médio Prazo (3 a 12 meses)**: Aumentar a economia mensal para pelo menos **35%** da renda, o que seria cerca de **R$ 424,62**.
-- **Longo Prazo (mais de 12 meses)**: Construir uma reserva de emergência que cubra pelo menos 6 meses de despesas, o que seria aproximadamente **R$ 7.327,92** (considerando despesas mensais de cerca de **R$ 1.221,99**, que é a renda menos os 30% de economia), e começar a investir em fundos de investimento ou outros ativos que sejam adequados para o perfil de risco do usuário.
-
-### 5. **Dicas de Investimento**
-Considerando o cenário econômico brasileiro, é importante diversificar investimentos.
-
-Boas opções incluem:
-
-- Fundos de índice
-- Tesouro Direto
-- Fundos multimercado
-
-Além disso, é fundamental ter uma **reserva de emergência** antes de começar a investir.
-`;
-  const { sendMensagem } = useChatbot();*/
-
-  /*CÓDIGO REAL*/
   const { mensagemBot, sendMensagem } = useChatbot();
 
   const handleSend = () => {
@@ -156,11 +158,30 @@ Além disso, é fundamental ter uma **reserva de emergência** antes de começar
       focusConfirm: false,
       showDenyButton: true,
       confirmButtonText: "Sim",
+      confirmButtonColor: "#00BC7D",
       denyButtonText: "Não",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         const envio: Custeio = custeio;
         sendMensagem(envio);
+        if (!user) {
+          localStorage.setItem("usouGeracao", "true");
+        } else if (user) {
+          const userDocRef = doc(db, "usuarios", user.uid);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const usosAtual = userDoc.data().usos ?? 0;
+
+            if (usosAtual + 1 >= 3) {
+              setLimitado(true);
+            }
+
+            await updateDoc(userDocRef, {
+              usos: usosAtual + 1,
+            });
+          }
+        }
       }
     });
   };
@@ -226,22 +247,33 @@ Além disso, é fundamental ter uma **reserva de emergência** antes de começar
         {limitado && (
           // TODO: Mudar mensagem caso o usuario já esteja logado
           <div className="text-bold form-shadow absolute top-[50%] left-0 z-10 flex w-full translate-y-[-50%] flex-col justify-center gap-[0.25em] rounded-[1em] bg-white py-[1.5em] text-center">
-            <h1>Gostou do site?</h1>
-            <h2 className="text-emerald-500">
-              Cadastre-se para usar o serviço novamente
-            </h2>
-            <div className="mt-[1em] flex justify-center gap-[1em]">
-              <Button variant="default" asChild>
-                <Link href="/cadastro" className="">
-                  Cadastrar-se
-                </Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href="/login" className="">
-                  Login
-                </Link>
-              </Button>
-            </div>
+            {user ? (
+              <>
+                <h1>Espera aí!</h1>
+                <h2 className="text-emerald-500">
+                  Limite semanal atingido. Tente novamente mais tarde!
+                </h2>
+              </>
+            ) : (
+              <>
+                <h1>Gostou do site?</h1>
+                <h2 className="text-emerald-500">
+                  Cadastre-se para usar o serviço novamente
+                </h2>
+                <div className="mt-[1em] flex justify-center gap-[1em]">
+                  <Button variant="default" asChild>
+                    <Link href="/cadastro" className="">
+                      Cadastrar-se
+                    </Link>
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link href="/login" className="">
+                      Login
+                    </Link>
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         )}
         <div
@@ -374,22 +406,21 @@ Além disso, é fundamental ter uma **reserva de emergência** antes de começar
                   <HiSparkles />
                   Planejamento
                 </h2>
-                <p className="prose prose-sm text-light text-ia w-full max-w-none">
+                <div className="prose prose-sm text-light text-ia w-full max-w-none">
                   <ReactMarkdown>{mensagemBot}</ReactMarkdown>
-                </p>
+                </div>
 
                 {loading ? null : user ? (
                   <>
+                    {/*Fazer funcionalidade de salvar planejamento */}
                     <div className="flex justify-center gap-[1em]">
                       <Button variant="default" asChild>
-                        <Link href="/cadastro" className="">
-                          Salvar planejamento
+                        <Link href="/historico" className="">
+                          Histórico de planejamentos
                         </Link>
                       </Button>
                       <Button variant="outline" asChild>
-                        <Link href="/login" className="">
-                          Novo planejamento
-                        </Link>
+                        Novo planejamento
                       </Button>
                     </div>
                   </>

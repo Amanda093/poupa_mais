@@ -90,6 +90,8 @@ const CadastroPage = () => {
         nome,
         email,
         date,
+        usos: 0,
+        ultimaGeracao: new Date().toISOString(),
         criadoEm: new Date(),
       });
       // Redirecionar para dashboard
