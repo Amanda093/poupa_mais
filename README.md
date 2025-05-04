@@ -1,5 +1,3 @@
-# 💰 Poupa+ – Seu aliado no controle financeiro
-
 ![Logo](public/poupamais.png)
 
 ## 📖 Sumário
