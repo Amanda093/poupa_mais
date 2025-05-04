@@ -22,7 +22,7 @@ A proposta do Poupa+ é oferecer um **sistema de auxílio financeiro** no qual o
 ### 📷 Demonstração
 
 **1.** Página Inicial
-![Tela inicial](./public/screenshot-home.png)
+![Tela inicial](./public/screenshot-principal.png)
 
 **2.** Página de Cadastro
 ![Tela de cadastro](./public/screenshot-cadastro.png)
