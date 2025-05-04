@@ -17,6 +17,28 @@
 
 A proposta do Poupa+ é oferecer um **sistema de auxílio financeiro** no qual o usuário informa suas despesas mensais e, com base nesses dados, recebe sugestões personalizadas de planejamento financeiro. As recomendações são geradas por meio da inteligência artificial **[Llama](https://www.llama.com)**, promovendo uma gestão mais consciente e eficiente do dinheiro.
 
+## 💻 Tecnologias utilizadas
+
+### Front-end:
+
+![HTML](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-663399?&style=for-the-badge&logo=css3&logoColor=white)
+![JS](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=gray)
+
+### Back-end:
+
+![FIREBASE](https://img.shields.io/badge/FIREBASE-DD2C00?&style=for-the-badge&logo=firebase&logoColor=white)
+
+### Libraries:
+
+![REACT](https://img.shields.io/badge/REACT-0088CC?&style=for-the-badge&logo=react&logoColor=white)
+![SHADCN](https://img.shields.io/badge/SHADCN-000000?&style=for-the-badge&logo=shadcnui&logoColor=white)
+
+### Frameworks:
+
+![NEXT.JS](https://img.shields.io/badge/NEXT.JS-000000?&style=for-the-badge&logo=nextdotjs&logoColor=white)
+![TAILWIND](https://img.shields.io/badge/TAILWIND-06B6D4?&style=for-the-badge&logo=tailwindcss&logoColor=white)
+
 ## 📁 Como executar o projeto
 
 **1.** Baixe ou clone o projeto localmente, acesse ele em prompt de comando.
@@ -45,28 +67,6 @@ bun dev
 ```
 
 **4.** Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
-
-## 💻 Tecnologias utilizadas
-
-### Front-end:
-
-![HTML](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS](https://img.shields.io/badge/CSS-663399?&style=for-the-badge&logo=css3&logoColor=white)
-![JS](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=gray)
-
-### Back-end:
-
-![FIREBASE](https://img.shields.io/badge/FIREBASE-DD2C00?&style=for-the-badge&logo=firebase&logoColor=white)
-
-### Libraries:
-
-![REACT](https://img.shields.io/badge/REACT-0088CC?&style=for-the-badge&logo=react&logoColor=white)
-![SHADCN](https://img.shields.io/badge/SHADCN-000000?&style=for-the-badge&logo=shadcnui&logoColor=white)
-
-### Frameworks:
-
-![NEXT.JS](https://img.shields.io/badge/NEXT.JS-000000?&style=for-the-badge&logo=nextdotjs&logoColor=white)
-![TAILWIND](https://img.shields.io/badge/TAILWIND-06B6D4?&style=for-the-badge&logo=tailwindcss&logoColor=white)
 
 ## ❤️ Contribuidores
 
