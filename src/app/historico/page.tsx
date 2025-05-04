@@ -16,6 +16,7 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import { CalendarIcon, LucideEye, LucideEyeClosed } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -56,7 +57,7 @@ type Custeio = {
 type Planejamento = {
   id: string; // assumindo que o id do Firebase é uma string
   custeio: Custeio;
-  geradoEm: string; // ou string, dependendo de como o Firebase retorna
+  geradoEm: Timestamp;
   mensagem: string; // mensagem do bot em markdown
 };
 
@@ -446,15 +447,14 @@ const HistoricoPage = () => {
           planejamentos.map((p) => (
             <Historico
               key={p.id}
-              mes="Abril"
-              ano="2025"
-              renda="R$4500,00"
+              geradoEm={p.geradoEm.toLocaleString()}
+              renda={p.custeio.renda}
               despesas={p.custeio.gastos}
               respostaIA={p.mensagem}
             />
           ))
         ) : (
-          <p className="text-sm text-gray-500">
+          <p className="text-light text-center text-gray-500">
             Nenhum planejamento encontrado.
           </p>
         )}

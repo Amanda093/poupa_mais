@@ -12,24 +12,37 @@ type Gasto = {
 };
 
 interface HistoricoProps {
-  mes: string;
-  ano: string;
+  geradoEm: string;
   despesas: Gasto[];
   renda: string;
   respostaIA: string;
 }
 
-const Historico = (props: HistoricoProps) => {
-  const { mes, ano, despesas, renda, respostaIA } = props;
-  const [expandido, setExpandido] = useState(false);
+function toTitleCase(str: string) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
 
+const Historico = (props: HistoricoProps) => {
+  const { geradoEm, despesas, renda, respostaIA } = props;
+  const [expandido, setExpandido] = useState(false);
+  const dataGerada = new Date(geradoEm);
+  const dia = dataGerada.getDate().toString().padStart(2, "0");
+  const mes = toTitleCase(
+    dataGerada.toLocaleString("pt-BR", { month: "long" }),
+  );
+  const ano = dataGerada.getFullYear();
   const rendaNumerica = parseFloat(renda.replace(/\D/g, "")) / 100;
   const valorTotalDespesas = despesas.reduce((total, despesa) => {
-    const valor = parseFloat(despesa.valor.replace(",", "."));
-    return total + valor;
+    const despesaValorNumerico =
+      parseFloat(despesa.valor.replace(/\D/g, "")) / 100;
+    return total + despesaValorNumerico;
   }, 0);
+  console.log(rendaNumerica);
   const valorRestante = rendaNumerica - valorTotalDespesas;
-
   const getCategoriaCor = (categoria: string): string => {
     switch (categoria.toLowerCase()) {
       case "moradia":
@@ -42,8 +55,20 @@ const Historico = (props: HistoricoProps) => {
         return "bg-red-500";
       case "educação":
         return "bg-purple-500";
-      case "lazer":
-        return "bg-pink-500";
+      case "compras pessoais":
+        return "bg-pink-400";
+      case "lazer e entretenimento":
+        return "bg-yellow-500";
+      case "tecnologia e comunicação":
+        return "bg-indigo-500";
+      case "financeiro":
+        return "bg-teal-500";
+      case "presentes e doações":
+        return "bg-rose-500";
+      case "pets":
+        return "bg-amber-500";
+      case "manutenção e emergências":
+        return "bg-cyan-500";
       case "outros":
         return "bg-gray-400";
       default:
@@ -66,17 +91,20 @@ const Historico = (props: HistoricoProps) => {
                 expandido ? "rotate-90" : "rotate-0"
               }`}
             />
-            {mes} - {ano}
+            {dia} {mes} - {ano}
           </h2>
           <div className="color-emerald-500 h-[0.15em] w-[100%] rounded-[0.25em] bg-emerald-500" />
         </div>
 
         {/* Gráfico */}
-        <div className="max-xs:flex-col max-xs:h-auto mt-2 flex h-[2.5rem] w-full flex-row justify-end overflow-x-auto overflow-y-hidden rounded-[0.5em] bg-emerald-500 outline-[0.15em] outline-white">
+        <div className="max-xs:flex-col max-xs:h-auto mt-2 flex h-[2.5rem] w-full flex-row overflow-x-auto overflow-y-hidden rounded-[0.5em] bg-emerald-500 outline-[0.15em] outline-white">
           {valorRestante > 0 && (
             <div
-              className="flex min-w-[40px] items-center justify-center text-[0.85em] text-nowrap text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]"
-              style={{ width: `${(valorRestante / rendaNumerica) * 100}%` }}
+              className="flex items-center justify-center px-[0.2em] text-[0.85em] text-nowrap text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]"
+              style={{
+                width: `${(valorRestante / rendaNumerica) * 100}%`,
+                minWidth: "fit-content",
+              }}
             >
               {`R$ ${valorRestante.toFixed(2)}`}
             </div>
@@ -89,8 +117,8 @@ const Historico = (props: HistoricoProps) => {
             return (
               <div
                 key={index}
-                className={`flex min-w-[40px] items-center justify-center text-nowrap ${getCategoriaCor(despesa.categoria)} text-[0.85em] text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]`}
-                style={{ width: `${largura}%` }}
+                className={`flex min-w-[40px] items-center justify-center px-[0.2em] text-nowrap ${getCategoriaCor(despesa.categoria)} text-[0.85em] text-white outline-[0.15em] outline-white max-sm:!w-full max-sm:text-[0.6em]`}
+                style={{ width: `${largura}%`, minWidth: "fit-content" }}
                 title={despesa.nome}
               >
                 {`R$ ${despesaValorNumerico.toFixed(2)}`}

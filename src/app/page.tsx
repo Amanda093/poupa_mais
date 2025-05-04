@@ -6,7 +6,6 @@
   TODO: Certificar responsividade geral
   TODO: Comentar o código
   TODO: Organizar o código
-  TODO: Adicionar animação na troca das paginas de login/cadastro
   TODO: Customizar mensagens de erro default do firebase  nos sweetalert
     TODO: Fazer o calendario ser usavel kkkkk
   */
@@ -50,10 +49,6 @@ import { Custeio } from "@/interface";
 import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup } from "@/lib/sweetalert";
-
-{
-  /*TODO: Implementar limite de usos do site*/
-}
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);
@@ -263,7 +258,6 @@ export default function Home() {
       {/* Formulário - Parte 02 */}
       <div className="relative container mx-auto xl:!max-w-[1300px]">
         {limitado && (
-          // TODO: Mudar mensagem caso o usuario já esteja logado
           <div className="text-bold form-shadow absolute top-[50%] left-0 z-10 flex w-full translate-y-[-50%] flex-col justify-center gap-[0.25em] rounded-[1em] bg-white py-[1.5em] text-center">
             {user ? (
               <>
