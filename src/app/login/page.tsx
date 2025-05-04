@@ -29,7 +29,7 @@ const LoginPage = () => {
     if (!loading && user !== null) {
       router.push("/historico");
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
   const handleLogin = async () => {
     try {
