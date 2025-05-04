@@ -48,7 +48,9 @@ type Planejamento = {
   id: string; // assumindo que o id do Firebase é uma string
   custeio: Custeio;
   geradoEm: Timestamp;
-  mensagem: string; // mensagem do bot em markdown
+  ignorado: boolean; // se o planejamento foi ignorado ou não
+  mensagemBot: string; // mensagem do bot em markdown
+  mensagemJSON: []; // mensagem em JSON
 };
 
 const HistoricoPage = () => {
@@ -122,7 +124,9 @@ const HistoricoPage = () => {
             renda: raw.custeio.renda,
           },
           geradoEm: raw.geradoEm.toDate(),
-          mensagem: raw.mensagemBot,
+          ignorado: raw.ignorado,
+          mensagemBot: raw.mensagemBot,
+          mensagemJSON: raw.mensagemJSON,
         };
       });
 
@@ -415,7 +419,7 @@ const HistoricoPage = () => {
               geradoEm={p.geradoEm.toLocaleString()}
               renda={p.custeio.renda}
               despesas={p.custeio.gastos}
-              respostaIA={p.mensagem}
+              respostaIA={p.mensagemBot}
             />
           ))
         ) : (
