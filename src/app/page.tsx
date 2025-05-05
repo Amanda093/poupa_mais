@@ -1,12 +1,14 @@
 "use client";
 
 {
-  /*TODO: Checar se todos os requisitos estão sendo compridos
+  /*TODO: Checar se todos os requisitos estão sendo cumpridos - todos
   TODO: Certificar responsividade geral
-  TODO: Comentar o código
-  TODO: Organizar o código
-  TODO: Customizar mensagens de erro default do firebase  nos sweetalert
-  TODO: Adicionar bloqueio de gerar planejamento sem colocar os inputs antes
+  TODO: Comentar o código Amanda e NI
+  TODO: Organizar o código Miguel
+  TODO: Customizar mensagens de erro default do firebase  nos sweetalert NI e Miguel
+  TODO: Adicionar bloqueio de gerar planejamento sem colocar os inputs antes Sak
+  TODO: Adicionar loading enquanto a prompt é gerada miguel e amanda
+  TODO: Dar Scroll para o começo da resposta quando ela for gerada Ni
   */
 }
 
@@ -59,6 +61,7 @@ export default function Home() {
   const [gerando, setGerando] = useState(false);
   const planejamentoRef = useRef<HTMLDivElement>(null);
 
+  // verifica se o usuário anônimo já usou o serviço anteriormente e limita novo uso
   useEffect(() => {
     if (!user && !loading) {
       const usado = localStorage.getItem("usouGeracao");
@@ -68,6 +71,7 @@ export default function Home() {
     }
   }, [loading, user]);
 
+  // limita usuários autenticados a 3 usos por semana, resetando após 7 dias
   useEffect(() => {
     const verificarLimite = async () => {
       if (user) {
@@ -477,8 +481,7 @@ export default function Home() {
           </>
         ) : (
           <>
-            {/*TODO: Adicionar loading enquanto a prompt é gerada*/}
-            {/*TODO: Dar Scroll para o começo da resposta quando ela for gerada*/}
+
             <Fade
               delay={200} // Wait before starting
               duration={1000} // Animation duration
