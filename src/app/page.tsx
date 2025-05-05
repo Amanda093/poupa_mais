@@ -19,10 +19,10 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
-} from "firebase/firestore";
+} from "firebase/firestore";  
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Fade } from "react-awesome-reveal";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { HiSparkles } from "react-icons/hi2";
@@ -45,16 +45,19 @@ import {
 } from "@/components";
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
-import { Custeio } from "@/interface";
+import { Custeio, Gasto } from "@/interface";
 import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup } from "@/lib/sweetalert";
+import { Spinner } from "@/components/ui/Spinner";
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);
   console.log("Loading: ", loading, "|", "Current user: ", user?.email);
   const [ignored, setIgnored] = useState(false);
   const [limitado, setLimitado] = useState(false);
+  const [gerando, setGerando] = useState(false);
+  const planejamentoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!user && !loading) {
@@ -150,23 +153,45 @@ export default function Home() {
     setCusteio({ ...custeio, obs: e.target.value });
   };
 
+  const isFormularioValido = () => {
+  const rendaValida = !isNaN(Number(custeio.renda)) && Number(custeio.renda) > 0;
+  const estadoValido = !isNaN(Number(custeio.estado));
+  const temDespesaValida = custeio.gastos.some(
+    (gasto: Gasto) =>
+      gasto.nome.trim() !== "" &&
+      !isNaN(Number(gasto.valor)) &&
+      Number(gasto.valor) > 0
+  );
+
+  return rendaValida && estadoValido && temDespesaValida;
+};  
+
   const { mensagemBot, sendMensagem } = useChatbot();
 
   const handleSend = () => {
-    Popup.fire({
-      html: `<div>
-      <h3>Confirmar envio?</h3>
-      </div> `,
-      icon: "question",
-      focusConfirm: false,
-      showDenyButton: true,
-      confirmButtonText: "Sim",
-      confirmButtonColor: "#00BC7D",
-      denyButtonText: "Não",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const envio: Custeio = custeio;
 
+    if (!isFormularioValido()) {
+  Popup.fire({
+    icon: "warning",
+    title: "Campos incompletos",
+    text: "Preencha todos os campos obrigatórios antes de continuar.",
+  });
+  return;
+}
+
+  Popup.fire({
+    html: `<div><h3>Confirmar envio?</h3></div>`,
+    icon: "question",
+    focusConfirm: false,
+    showDenyButton: true,
+    confirmButtonText: "Sim",
+    confirmButtonColor: "#00BC7D",
+    denyButtonText: "Não",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      setGerando(true); // Começa o loading
+      try {
+        const envio: Custeio = custeio;
         const respostaIA = await sendMensagem(envio);
 
         console.log("Resposta IA:", respostaIA);
@@ -197,24 +222,30 @@ export default function Home() {
 
           const planejamentosRef = collection(userDocRef, "planejamentos");
 
-          try {
-            await addDoc(planejamentosRef, {
-              ignorado: ignored,
-              mensagemJSON: respostaIA.json,
-              mensagemBot: respostaIA.texto ?? "Resposta não gerada",
-              custeio,
-              geradoEm: serverTimestamp(),
-            });
-            console.log("Dados enviados para o Firestore com sucesso!");
-          } catch (error) {
-            console.error("Erro ao salvar dados no Firestore:", error);
-          }
+          await addDoc(planejamentosRef, {
+            ignorado: ignored,
+            mensagemJSON: respostaIA.json,
+            mensagemBot: respostaIA.texto ?? "Resposta não gerada",
+            custeio,
+            geradoEm: serverTimestamp(),
+          });
+
+          console.log("Dados enviados para o Firestore com sucesso!");
         } else {
           console.error("Usuário não encontrado no Firestore.");
         }
+      } catch (error) {
+        console.error("Erro ao gerar planejamento:", error);
+      } finally {
+        setGerando(false); // Finaliza o loading
+
+        setTimeout(() => {
+            planejamentoRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
       }
-    });
-  };
+    }
+  });
+};
 
   return (
     <div className="pb-[5em]">
@@ -427,10 +458,19 @@ export default function Home() {
                 <h2>Terminou?</h2>
                 <p>Agora nós entramos em ação!</p>
               </div>
-              <Button className="w-fit px-[0.75em]" onClick={handleSend}>
-                <HiSparkles />
-                Gerar Planejamento
-              </Button>
+              <div className="mt-[2em] flex justify-center">
+                {gerando ? (
+                  <Button disabled variant="default">
+                    <Spinner />
+                    Gerando planejamento...
+                  </Button>
+                ) : (
+                  <Button className="w-fit px-[0.75em]" onClick={handleSend}>
+                    <HiSparkles />
+                    Gerar Planejamento
+                  </Button>
+                )}
+              </div>
             </div>
             {/* Footer */}
             <Footer renda={custeio.renda} gastos={custeio.gastos} />
@@ -445,7 +485,7 @@ export default function Home() {
               fraction={0.5} // Trigger when 50% visible
               triggerOnce // Animate only once
             >
-              <div className="container flex flex-col items-center gap-[1em] py-[2.5em] xl:!max-w-[1270px]">
+              <div ref={planejamentoRef} className="container flex flex-col items-center gap-[1em] py-[2.5em] xl:!max-w-[1270px]">
                 <h2 className="flex w-full items-center gap-[0.25em] text-emerald-500">
                   <HiSparkles />
                   Planejamento
