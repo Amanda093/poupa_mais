@@ -92,7 +92,7 @@ const CadastroPage = () => {
         criadoEm: new Date(),
       });
       // Redirecionar para dashboard
-      router.push("/");
+      router.push("/FAQ");
 
       Toast.fire({
         title: "Cadastro realizado com sucesso!",
