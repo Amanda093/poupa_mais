@@ -12,8 +12,10 @@ import campos from "@/components/assets/Campos.png";
 import perfil from "@/components/assets/DadosPerfil.png";
 import historico from "@/components/assets/historico.png";
 
+//Const que contem o codigo da página de FAQ
 const FAQPage = () => {
   return (
+    //DIv que contem toda a página
     <div className="pb-[5em]">
       <div className="container mx-auto py-[60px] xl:!max-w-[1270px]">
         <div className="pb-[2em] max-lg:text-center">

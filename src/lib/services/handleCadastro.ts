@@ -12,7 +12,7 @@ interface HandleCadastroProps {
   email: string;
   password: string;
   confirmpassword: string;
-  dataNascimento: Date | undefined;
+  dataNascimento: Date;
   router: AppRouterInstance; // usado para redirecionar para outra página
 }
 
@@ -74,7 +74,7 @@ export const handleCadastro = async ({
       uid: user.uid,
       nome,
       email,
-      dataNascimento: dataNascimento.toISOString(),
+      dataNascimento: dataNascimento?.toISOString() ?? null,
       usos: 0,
       ultimaGeracao: new Date().toISOString(),
       criadoEm: new Date(),
