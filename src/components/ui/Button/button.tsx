@@ -48,14 +48,18 @@ const buttonVariants = cva(
 
 //Função que retorna o botão
 function Button({
+  //Declara as props do component button
   className,
   variant,
   size,
   asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
+  //Define o tipo das props, uma combinação de:
+}: React.ComponentProps<"button"> & //Props nativas da tag button do html
   VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
+    //Props de uma tipagem vinda de uma função utilitária (cva) que define variações de estilo (variant/size).
+
+    asChild?: boolean; //Prop de controle para auxiliar a saber que tipo de componente será renderizado
   }) {
   const Comp = asChild ? Slot : "button";
 

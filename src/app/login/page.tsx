@@ -1,11 +1,5 @@
 "use client";
 
-import {
-  browserLocalPersistence,
-  browserSessionPersistence,
-  setPersistence,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
 import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,8 +7,8 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { Banner, Button, Checkbox, Input } from "@/components";
+import { handleLogin } from "@/lib/services";
 import { auth } from "@/lib/services/clientApp";
-import { Toast } from "@/lib/utils";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -30,31 +24,6 @@ const LoginPage = () => {
       router.push("/historico");
     }
   }, [user, loading, router]);
-
-  const handleLogin = async () => {
-    try {
-      await setPersistence(
-        auth,
-        lembrar ? browserLocalPersistence : browserSessionPersistence,
-      );
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        senha,
-      );
-      console.log("Usuário logado:", userCredential.user);
-      router.push("/historico");
-      Toast.fire({
-        title: "Login realizado com sucesso!",
-        icon: "success",
-      });
-    } catch (error) {
-      Toast.fire({
-        title: `Erro no login:, ${error}`,
-        icon: "error",
-      });
-    }
-  };
 
   return (
     <div className="relative mx-auto flex h-[calc(100vh-6em)] w-screen max-w-[2000px] justify-between overflow-y-hidden">
@@ -122,7 +91,18 @@ const LoginPage = () => {
             </div>
 
             {/* Botão */}
-            <Button variant="default" className="w-full" onClick={handleLogin}>
+            <Button
+              variant="default"
+              className="w-full"
+              onClick={() =>
+                handleLogin({
+                  email,
+                  senha,
+                  lembrar,
+                  router,
+                })
+              }
+            >
               Logar
             </Button>
 

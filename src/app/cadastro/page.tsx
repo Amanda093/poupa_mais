@@ -16,7 +16,7 @@ import DatePicker from "@/components/ui/DatePicker/date-picker";
 import { auth, handleCadastro } from "@/lib/services";
 import { verificarForcaSenha } from "@/lib/utils";
 
-// página Cadastro
+// página de cadastro
 const CadastroPage = () => {
   const router = useRouter();
   const [password, setPassword] = useState("");

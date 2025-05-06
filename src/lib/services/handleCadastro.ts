@@ -49,7 +49,7 @@ export const handleCadastro = async ({
       criadoEm: new Date(),
     });
 
-    router.push("/FAQ");
+    router.push("/FAQ"); // redireciona a página de FAQ após cadastrar
 
     Toast.fire({
       title: "Cadastro realizado com sucesso!",
