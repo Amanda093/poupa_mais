@@ -3,7 +3,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import fetch from "node-fetch";
 
 import { codigosEstadosIBGE } from "@/context/global";
-import { Custeio, DadoBCB, DadoGrafico, DadoIBGE } from "@/types";
+import { Custeio, DadoBCB, DadoGrafico, DadoIBGE, Planejamento } from "@/interface";
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "@/lib/clientApp";
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
@@ -11,10 +15,55 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const mensagem = req.body as Custeio;
+  const [user] = useAuthState(auth);
+  const [planejamento, setPlanejamento] = useState<Planejamento[]>([]);
+
+  
+  useEffect(() => {
+    const fetchPenultimoPlanejamento = async () => {
+      if (!user) return;
+  
+      const planejamentosRef = collection(
+        db,
+        "usuarios",
+        user.uid,
+        "planejamentos"
+      );
+  
+      // Busca os dois mais recentes
+      const q = query(planejamentosRef, orderBy("geradoEm", "desc"), limit(2));
+      const snapshot = await getDocs(q);
+
+      if(snapshot.docs.length < 2)  return;
+  
+      const doc = snapshot.docs[1]; // O segundo documento é o penúltimo
+      const raw = doc.data();
+  
+      const penultimoPlanejamento: Planejamento = {
+        id: doc.id,
+        custeio: {
+          estado: raw.custeio.estado,
+          gastos: raw.custeio.gastos,
+          obs: raw.custeio.obs,
+          renda: raw.custeio.renda,
+          utilizavel: raw.custeio.utilizavel
+        },
+        geradoEm: raw.geradoEm,
+        mensagemBot: raw.mensagemBot,
+        mensagemJSON: raw.mensagemJSON,
+      };
+  
+      setPlanejamento([penultimoPlanejamento]); // Ou use em outro estado
+    };
+  
+    fetchPenultimoPlanejamento();
+  }, [user]);
+
   console.log(mensagem.estado || "sem valor no estado");
 
   let siglaEstado,
-    observacao = "";
+    observacao,
+    utilizacao = "";
   if (mensagem.estado) {
     siglaEstado = codigosEstadosIBGE[mensagem.estado];
   } else {
@@ -22,6 +71,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   if (mensagem.obs) {
     observacao = "Observações do usuário: " + mensagem.obs;
+  }
+  if(mensagem.utilizavel = true) {
+    utilizacao = "Saiba que você já deu um planejamento anterior a esse, na data ", planejamento[0].geradoEm, " e seu planejamento gerado em JSON foi esse: ", planejamento[0].mensagemJSON, ". ",
+                "Baseie-se nesse planejamento anterior para fazer o seu novo planejamento, além de dizer ao usuário se ele está caminhando no caminho certo ou errado.";
   }
 
   async function buscarDadosEconomia(codigoEstado: number) {
@@ -102,6 +155,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
               O plano deve ser dividido em tópicos e conter formatação em Markdown, como listas e negrito, para facilitar a leitura, use titulos para cada tópico ditos anteriormente.
               Você deve escrever como se estivesse falando diretamente com o usuário.
+
+              ${utilizacao}
 
               ⚠️ Além do plano acima, retorne EXATAMENTE essa estrutura JSON, exatamente abaixo do texto gerado acima, para que eu possa fazer split mais tarde:
               {

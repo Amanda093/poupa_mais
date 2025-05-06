@@ -49,11 +49,11 @@ import { db } from "@/lib/services/clientApp";
 import { auth } from "@/lib/services/clientApp";
 import { Popup } from "@/lib/utils/sweetalert";
 import { Custeio, Gasto } from "@/types";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);
   console.log("Loading: ", loading, "|", "Current user: ", user?.email);
-  const [anteriores, setAnteriores] = useState(true);
   const [limitado, setLimitado] = useState(false);
   const [gerando, setGerando] = useState(false);
   const planejamentoRef = useRef<HTMLDivElement>(null);
@@ -115,6 +115,7 @@ export default function Home() {
     gastos: [{ nome: "", valor: "", categoria: "" }],
     estado: Number(estadosOrdenados[0][0]),
     obs: "",
+    utilizavel: true
   });
 
   const handleChangeGastos = (
@@ -153,6 +154,10 @@ export default function Home() {
   const handleChangeObs = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCusteio({ ...custeio, obs: e.target.value });
   };
+
+  const handleChangeUtilizavel = (val: CheckedState) => {
+    setCusteio({...custeio, utilizavel: !!val});
+  }
 
   const parseValorMonetario = (valor: string): number => {
     return Number(
@@ -233,7 +238,7 @@ export default function Home() {
             const planejamentosRef = collection(userDocRef, "planejamentos");
 
             await addDoc(planejamentosRef, {
-              usarAnteriores: anteriores,
+              usarAnteriores: custeio.utilizavel,
               mensagemJSON: respostaIA.json,
               mensagemBot: respostaIA.texto ?? "Resposta não gerada",
               custeio,
@@ -449,8 +454,8 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="remember"
-                  checked={anteriores}
-                  onCheckedChange={(val) => setAnteriores(!!val)}
+                  checked={custeio.utilizavel}
+                  onCheckedChange={(val) => handleChangeUtilizavel(val)}
                 />
                 <label htmlFor="remember" className="">
                   Usar planejamentos anteriores como base para o novo

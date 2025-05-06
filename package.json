@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "npx lightningcss --version || true"
+    "postinstall": "npx lightningcss --version || exit 0"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
