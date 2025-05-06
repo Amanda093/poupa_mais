@@ -9,6 +9,7 @@
   TODO: Adicionar bloqueio de gerar planejamento sem colocar os inputs antes Sak
   TODO: Adicionar loading enquanto a prompt é gerada miguel e amanda
   TODO: Dar Scroll para o começo da resposta quando ela for gerada Ni
+  TODO: testando
   */
 }
 
