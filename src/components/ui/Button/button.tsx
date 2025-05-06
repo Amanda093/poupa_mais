@@ -59,11 +59,12 @@ function Button({
   VariantProps<typeof buttonVariants> & {
     //Props de uma tipagem vinda de uma função utilitária (cva) que define variações de estilo (variant/size).
 
-    asChild?: boolean; //Prop de controle para auxiliar a saber que tipo de componente será renderizado
+    asChild?: boolean; //Prop de controle que ajuda a saber o tipo de componente o qual será renderizado
   }) {
-  const Comp = asChild ? Slot : "button";
+  const Comp = asChild ? Slot : "button"; //Armazena o tipo de componente que será renderizado dependendo do valor da prop "asChild"
 
   return (
+    //Retorna o componente Comp, definido acima
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}

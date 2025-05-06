@@ -9,6 +9,7 @@
   */
 }
 
+import { CheckedState } from "@radix-ui/react-checkbox";
 import { differenceInDays } from "date-fns";
 import {
   addDoc,
@@ -49,7 +50,6 @@ import { db } from "@/lib/services/clientApp";
 import { auth } from "@/lib/services/clientApp";
 import { Popup } from "@/lib/utils/sweetalert";
 import { Custeio, Gasto } from "@/types";
-import { CheckedState } from "@radix-ui/react-checkbox";
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);
@@ -115,7 +115,7 @@ export default function Home() {
     gastos: [{ nome: "", valor: "", categoria: "" }],
     estado: Number(estadosOrdenados[0][0]),
     obs: "",
-    utilizavel: true
+    utilizavel: false,
   });
 
   const handleChangeGastos = (
@@ -156,8 +156,8 @@ export default function Home() {
   };
 
   const handleChangeUtilizavel = (val: CheckedState) => {
-    setCusteio({...custeio, utilizavel: !!val});
-  }
+    setCusteio({ ...custeio, utilizavel: !!val });
+  };
 
   const parseValorMonetario = (valor: string): number => {
     return Number(

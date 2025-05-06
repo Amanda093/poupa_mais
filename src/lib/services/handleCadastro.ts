@@ -6,13 +6,14 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { auth, db } from "@/lib/services";
 import { Toast } from "@/lib/utils";
 
+// formato esperado dos dados de entrada
 interface HandleCadastroProps {
   nome: string;
   email: string;
   password: string;
   confirmpassword: string;
   dataNascimento: Date | undefined;
-  router: AppRouterInstance;
+  router: AppRouterInstance; // usado para redirecionar para outra página
 }
 
 export const handleCadastro = async ({
@@ -23,6 +24,35 @@ export const handleCadastro = async ({
   dataNascimento,
   router,
 }: HandleCadastroProps) => {
+  // caso o usuário não tenha colocado sua data de nascimento
+  if (!dataNascimento) {
+    Toast.fire({
+      icon: "warning",
+      title: "Por favor, selecione sua data de nascimento.",
+    });
+    return;
+  }
+
+  // calcula a idade do usuário
+  const hoje = new Date(); // pega o dia atual
+  const idade = hoje.getFullYear() - dataNascimento.getFullYear(); // pega data atual e subtrai a data de nascimento oferecida pelo usúario
+  const aniversarioPassou =
+    hoje.getMonth() > dataNascimento.getMonth() ||
+    (hoje.getMonth() === dataNascimento.getMonth() &&
+      hoje.getDate() >= dataNascimento.getDate());
+
+  const idadeFinal = aniversarioPassou ? idade : idade - 1; // caso o aniversário não tenha passado
+
+  // verifica se o usuário tem mais de 16 anos
+  if (idadeFinal < 16) {
+    Toast.fire({
+      icon: "warning",
+      title: "Você precisa ter pelo menos 16 anos para se cadastrar.",
+    });
+    return;
+  }
+
+  // caso as senhas não estejam iguais
   if (password !== confirmpassword) {
     Toast.fire({
       icon: "warning",
@@ -39,17 +69,18 @@ export const handleCadastro = async ({
     );
     const user = userCredential.user;
 
+    // salva os dados adicionais do usuário no Firestore
     await setDoc(doc(db, "usuarios", user.uid), {
       uid: user.uid,
       nome,
       email,
-      dataNascimento,
+      dataNascimento: dataNascimento.toISOString(),
       usos: 0,
       ultimaGeracao: new Date().toISOString(),
       criadoEm: new Date(),
     });
 
-    router.push("/FAQ"); // redireciona a página de FAQ após cadastrar
+    router.push("/FAQ"); // redireciona para página de FAQ após cadastrar
 
     Toast.fire({
       title: "Cadastro realizado com sucesso!",

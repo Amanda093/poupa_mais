@@ -28,8 +28,8 @@ import iconFoto from "@/components/assets/MudarFoto.png";
 import DatePicker from "@/components/ui/DatePicker/date-picker";
 import { db } from "@/lib/services/clientApp";
 import { auth } from "@/lib/services/clientApp";
-import { Popup, Toast } from "@/lib/sweetalert";
-import { Planejamento } from "@/interface";
+import { Popup, Toast } from "@/lib/utils";
+import { Planejamento } from "@/types";
 
 const HistoricoPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -100,7 +100,7 @@ const HistoricoPage = () => {
             gastos: raw.custeio.gastos,
             obs: raw.custeio.obs,
             renda: raw.custeio.renda,
-            utilizavel: raw.custeio.utilizavel
+            utilizavel: raw.custeio.utilizavel,
           },
           geradoEm: raw.geradoEm.toDate(),
           mensagemBot: raw.mensagemBot,
