@@ -15,7 +15,6 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
 import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -30,28 +29,7 @@ import DatePicker from "@/components/ui/DatePicker/date-picker";
 import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup, Toast } from "@/lib/sweetalert";
-
-type Gasto = {
-  categoria: string;
-  nome: string;
-  valor: string;
-};
-
-type Custeio = {
-  estado: number;
-  gastos: Gasto[];
-  obs: string;
-  renda: string;
-};
-
-type Planejamento = {
-  id: string; // assumindo que o id do Firebase é uma string
-  custeio: Custeio;
-  geradoEm: Timestamp;
-  ignorado: boolean; // se o planejamento foi ignorado ou não
-  mensagemBot: string; // mensagem do bot em markdown
-  mensagemJSON: []; // mensagem em JSON
-};
+import { Planejamento } from "@/interface";
 
 const HistoricoPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -122,9 +100,9 @@ const HistoricoPage = () => {
             gastos: raw.custeio.gastos,
             obs: raw.custeio.obs,
             renda: raw.custeio.renda,
+            utilizavel: raw.custeio.utilizavel
           },
           geradoEm: raw.geradoEm.toDate(),
-          ignorado: raw.ignorado,
           mensagemBot: raw.mensagemBot,
           mensagemJSON: raw.mensagemJSON,
         };
