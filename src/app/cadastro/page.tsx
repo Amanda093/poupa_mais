@@ -177,6 +177,7 @@ const CadastroPage = () => {
                   password,
                   confirmpassword,
                   dataNascimento,
+                  forcaSenha,
                   router,
                 })
               }

@@ -88,42 +88,47 @@ const HistoricoPage = () => {
   }, [user]);
 
   //Busca os planejamentos do usuário no banco de dados
-  useEffect(() => {
-    const fetchPlanejamentos = async () => {
-      if (!user) return; //Caso o usuário não esteja logado a função termina
+  useEffect(
+    () => {
+      const fetchPlanejamentos = async () => {
+        if (!user) return; //Caso o usuário não esteja logado a função termina
 
-      const planejamentosRef = collection(
-        //Acessa o banco e pega os planejamentos
-        db,
-        "usuarios",
-        user.uid,
-        "planejamentos",
-      );
-      const snapshot = await getDocs(planejamentosRef); //Armazena o reusltado
+        const planejamentosRef = collection(
+          //Acessa o banco e pega os planejamentos
+          db,
+          "usuarios",
+          user.uid,
+          "planejamentos",
+        );
+        const snapshot = await getDocs(planejamentosRef);
 
-      const data: Planejamento[] = snapshot.docs.map((doc) => {
-        const raw = doc.data();
+        //Mapeira todos os planejamentos retornados e converte eles em objetos
+        const data: Planejamento[] = snapshot.docs.map((doc) => {
+          const raw = doc.data();
 
-        return {
-          id: doc.id,
-          custeio: {
-            estado: raw.custeio.estado,
-            gastos: raw.custeio.gastos,
-            obs: raw.custeio.obs,
-            renda: raw.custeio.renda,
-            utilizavel: raw.custeio.utilizavel,
-          },
-          geradoEm: raw.geradoEm.toDate(),
-          mensagemBot: raw.mensagemBot,
-          mensagemJSON: raw.mensagemJSON,
-        };
-      });
+          //objeto
+          return {
+            id: doc.id,
+            custeio: {
+              estado: raw.custeio.estado,
+              gastos: raw.custeio.gastos,
+              obs: raw.custeio.obs,
+              renda: raw.custeio.renda,
+              utilizavel: raw.custeio.utilizavel,
+            },
+            geradoEm: raw.geradoEm.toDate(),
+            mensagemBot: raw.mensagemBot,
+            mensagemJSON: raw.mensagemJSON,
+          };
+        });
 
-      setPlanejamentos(data);
-    };
+        setPlanejamentos(data); //Armazena os planejamentos no useState de planejamentos
+      };
 
-    fetchPlanejamentos();
-  }, [user]);
+      fetchPlanejamentos();
+    },
+    [user] /*Com que o useEffect seja executado sempre que o compnente for*/,
+  );
 
   const handleChangePhotoClick = () => {
     if (fileInputRef.current) {

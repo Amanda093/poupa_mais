@@ -15,6 +15,7 @@ interface HandleCadastroProps {
   password: string;
   confirmpassword: string;
   dataNascimento: Date | undefined;
+  forcaSenha: string;
   router: AppRouterInstance; // usado para redirecionar para outra página
 }
 
@@ -24,6 +25,7 @@ export const handleCadastro = async ({
   password,
   confirmpassword,
   dataNascimento,
+  forcaSenha,
   router,
 }: HandleCadastroProps) => {
   // caso o usuário não tenha digitado seu nome
@@ -68,6 +70,14 @@ export const handleCadastro = async ({
     Toast.fire({
       icon: "warning",
       title: "Você precisa ter pelo menos 16 anos para se cadastrar.",
+    });
+    return;
+  }
+
+  if (forcaSenha !== "Forte") {
+    Toast.fire({
+      title: "A senha deve ser forte!",
+      icon: "warning",
     });
     return;
   }
