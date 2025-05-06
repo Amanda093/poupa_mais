@@ -15,9 +15,10 @@ import historico from "@/components/assets/historico.png";
 //Const que contem o codigo da página de FAQ
 const FAQPage = () => {
   return (
-    //DIv que contem toda a página
+    //Divs que contem toda a página
     <div className="pb-[5em]">
       <div className="container mx-auto py-[60px] xl:!max-w-[1270px]">
+        {/*Div que contem a explicação sobre o site*/}
         <div className="pb-[2em] max-lg:text-center">
           <h1>
             O que é <b className="text-emerald-500">Poupa +</b>
@@ -82,10 +83,13 @@ const FAQPage = () => {
             className="mx-auto my-[1.5em] w-[40em] rounded-[1em] border-[0.15em] border-emerald-500 px-[0.2em]"
           />
         </div>
+
+        {/*Div com o título de dúvidas frequentes*/}
         <div className="max-lg:text-center">
           <Title mainTitle="Dúvidas" subTitle="Frequentes" />
         </div>
 
+        {/*Accordion com d*/}
         <Accordion
           type="single"
           collapsible

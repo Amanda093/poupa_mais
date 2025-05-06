@@ -12,7 +12,7 @@ interface HandleCadastroProps {
   email: string;
   password: string;
   confirmpassword: string;
-  dataNascimento: Date;
+  dataNascimento: Date | undefined;
   router: AppRouterInstance; // usado para redirecionar para outra página
 }
 
@@ -25,7 +25,7 @@ export const handleCadastro = async ({
   router,
 }: HandleCadastroProps) => {
   // caso o usuário não tenha colocado sua data de nascimento
-  if (!dataNascimento) {
+  if (dataNascimento == undefined) {
     Toast.fire({
       icon: "warning",
       title: "Por favor, selecione sua data de nascimento.",
@@ -55,8 +55,8 @@ export const handleCadastro = async ({
   // caso as senhas não estejam iguais
   if (password !== confirmpassword) {
     Toast.fire({
-      icon: "warning",
       title: "As senhas não coincidem.",
+      icon: "warning",
     });
     return;
   }
