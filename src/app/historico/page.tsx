@@ -26,8 +26,8 @@ import { Button, Historico, Input, Title } from "@/components";
 import placeholderFoto from "@/components/assets/FotoPerfilPlaceHolder.png";
 import iconFoto from "@/components/assets/MudarFoto.png";
 import DatePicker from "@/components/ui/DatePicker/date-picker";
-import { db } from "@/lib/clientApp";
-import { auth } from "@/lib/clientApp";
+import { db } from "@/lib/services/clientApp";
+import { auth } from "@/lib/services/clientApp";
 import { Popup, Toast } from "@/lib/sweetalert";
 import { Planejamento } from "@/interface";
 

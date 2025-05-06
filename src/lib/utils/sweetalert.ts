@@ -1,5 +1,7 @@
 "use client";
 
+// configuração dos PopUps apresentados no site
+
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 

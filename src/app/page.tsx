@@ -3,8 +3,8 @@
 {
   /*TODO: Checar se todos os requisitos estão sendo cumpridos - todos
   TODO: Certificar responsividade geral
-  TODO: Comentar o código Amanda e NI
-  TODO: Organizar o código Miguel
+  TODO: Comentar o código Miguel
+  TODO: Organizar o código Amanda Ni
   TODO: Customizar mensagens de erro default do firebase  nos sweetalert NI e Miguel
   */
 }
@@ -45,10 +45,10 @@ import {
 import { Spinner } from "@/components/ui/Spinner";
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
-import { Custeio, Gasto } from "@/interface";
-import { db } from "@/lib/clientApp";
-import { auth } from "@/lib/clientApp";
-import { Popup } from "@/lib/sweetalert";
+import { db } from "@/lib/services/clientApp";
+import { auth } from "@/lib/services/clientApp";
+import { Popup } from "@/lib/utils/sweetalert";
+import { Custeio, Gasto } from "@/types";
 import { CheckedState } from "@radix-ui/react-checkbox";
 
 export default function Home() {
@@ -473,7 +473,7 @@ export default function Home() {
                 <h2>Terminou?</h2>
                 <p>Agora nós entramos em ação!</p>
               </div>
-              <div className="mt-[2em] flex justify-center">
+              <div className="flex justify-center">
                 {gerando ? (
                   <Button disabled variant="default">
                     <Spinner />

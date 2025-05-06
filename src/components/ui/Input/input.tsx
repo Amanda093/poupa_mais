@@ -3,7 +3,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/helpers/utils";
 
 const inputVariants = cva(
   "font-[400] text-[0.9em] invalid:outline-rose-500 focus:outline-emerald-400 focus:invalid:outline-rose-500 focus:outline-[0.175em] focus:invalid:rose-glow focus:emerald-glow transition-all outline-solid duration-300 placeholder:text-slate-400 flex w-full min-w-0 rounded-[0.5em] outline-[0.15em] outline-slate-400 px-3 py-[0.3em] shadow-xs transition-[color,box-shadow] file:inline-flex file:h-7 file:border-0 file:bg-transparent disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
@@ -27,7 +27,15 @@ export interface InputProps
   icon?: React.ReactNode;
 }
 
-function Input({ className,variant, type, icon, value, onChange, ...props }: InputProps) {
+function Input({
+  className,
+  variant,
+  type,
+  icon,
+  value,
+  onChange,
+  ...props
+}: InputProps) {
   function handleMoneyChange(e: React.ChangeEvent<HTMLInputElement>) {
     const valorNumerico = e.target.value.replace(/\D/g, ""); // remove não números
     const valorFloat = parseFloat(valorNumerico) / 100; // ajusta os centavos
@@ -58,11 +66,7 @@ function Input({ className,variant, type, icon, value, onChange, ...props }: Inp
       data-slot="input"
       value={value}
       onChange={type === "money" ? handleMoneyChange : onChange}
-      className={cn(
-        inputVariants({ variant }),
-        icon && "pl-10",
-        className,
-      )}
+      className={cn(inputVariants({ variant }), icon && "pl-10", className)}
       {...props}
     />
   );
