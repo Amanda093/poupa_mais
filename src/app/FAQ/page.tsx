@@ -89,7 +89,7 @@ const FAQPage = () => {
           <Title mainTitle="Dúvidas" subTitle="Frequentes" />
         </div>
 
-        {/*Accordion com d*/}
+        {/*Accordion com dúvidas respostas*/}
         <Accordion
           type="single"
           collapsible

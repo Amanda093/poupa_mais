@@ -31,9 +31,15 @@ import { auth } from "@/lib/services/clientApp";
 import { Popup, Toast } from "@/lib/utils";
 import { Planejamento } from "@/types";
 
+//Const que armazena todo o código da página de histórico
 const HistoricoPage = () => {
+  //Hook para um elemento nulo ou input de html
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  //Armazena o usuário logado
   const [user, loading] = useAuthState(auth);
+
+  //Use states usados ao longo da página
   const [photoURL, setPhotoURL] = useState<string>(placeholderFoto.src); // Começa com o placeholder
   const [uploading, setUploading] = useState(false);
   const [nome, setNome] = useState("");
@@ -44,8 +50,11 @@ const HistoricoPage = () => {
   const [senhaAtual, setSenhaAtual] = useState("");
   const [showSenhaAtual, setShowSenhaAtual] = useState(false);
   const [planejamentos, setPlanejamentos] = useState<Planejamento[]>([]);
+
+  //Const de router
   const router = useRouter();
 
+  //Expulsa o usuario da página caso ele não estja logado
   useEffect(() => {
     if (!loading && user === null) {
       router.push("/login");

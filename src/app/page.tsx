@@ -1,11 +1,13 @@
 "use client";
 
 {
-  /*TODO: Checar se todos os requisitos estão sendo cumpridos - todos
-  TODO: Certificar responsividade geral
+  /*TODO: Certificar responsividade geral
   TODO: Comentar o código Miguel
   TODO: Organizar o código Amanda Ni
   TODO: Customizar mensagens de erro default do firebase  nos sweetalert NI e Miguel
+
+  TODO: Não aparecer checkbox quando for o primeiro planejamento do usuário
+  TODO: Melhorar a mensagem do bot quando tiver planejamento anterior
   */
 }
 

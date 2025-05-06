@@ -6,6 +6,8 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { auth, db } from "@/lib/services";
 import { Toast } from "@/lib/utils";
 
+//FIXME: warning não está aparecendo
+
 // formato esperado dos dados de entrada
 interface HandleCadastroProps {
   nome: string;
@@ -24,6 +26,24 @@ export const handleCadastro = async ({
   dataNascimento,
   router,
 }: HandleCadastroProps) => {
+  // caso o usuário não tenha digitado seu nome
+  if (!nome) {
+    Toast.fire({
+      icon: "warning",
+      title: "Por favor, digite seu nome.",
+    });
+    return;
+  }
+
+  // caso o usuário não tenha digitado seu email
+  if (!email) {
+    Toast.fire({
+      icon: "warning",
+      title: "Por favor, digite seu email.",
+    });
+    return;
+  }
+
   // caso o usuário não tenha colocado sua data de nascimento
   if (dataNascimento == undefined) {
     Toast.fire({
