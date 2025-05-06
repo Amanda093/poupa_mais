@@ -87,17 +87,19 @@ const HistoricoPage = () => {
     fetchUserData();
   }, [user]);
 
+  //Busca os planejamentos do usuário no banco de dados
   useEffect(() => {
     const fetchPlanejamentos = async () => {
-      if (!user) return;
+      if (!user) return; //Caso o usuário não esteja logado a função termina
 
       const planejamentosRef = collection(
+        //Acessa o banco e pega os planejamentos
         db,
         "usuarios",
         user.uid,
         "planejamentos",
       );
-      const snapshot = await getDocs(planejamentosRef);
+      const snapshot = await getDocs(planejamentosRef); //Armazena o reusltado
 
       const data: Planejamento[] = snapshot.docs.map((doc) => {
         const raw = doc.data();

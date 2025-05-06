@@ -3,8 +3,7 @@
 {
   /*TODO: Certificar responsividade geral
   TODO: Comentar o código Miguel
-  TODO: Organizar o código Amanda Ni
-  TODO: Customizar mensagens de erro default do firebase  nos sweetalert NI e Miguel
+  TODO: Organizar o código Amanda Ni - organizamos o cadastro e login
 
   TODO: Não aparecer checkbox quando for o primeiro planejamento do usuário
   TODO: Melhorar a mensagem do bot quando tiver planejamento anterior

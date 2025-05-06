@@ -32,6 +32,7 @@ export const handleLogin = async ({
     const userCredential = await signInWithEmailAndPassword(auth, email, senha);
     console.log("Usuário logado:", userCredential.user);
 
+    // quando o usuário logar, é redirecionado a página historico
     router.push("/historico");
 
     Toast.fire({
