@@ -1,3 +1,5 @@
+// aqui, armazenos algumas interfaces que são usadas em pages/api/chat.ts
+
 interface DadoBCB {
   data?: string;
   valor?: string;
@@ -31,7 +33,7 @@ interface GastoSugerido {
   categoria: string;
   valor_sugerido: number;
 }
-interface DadoGrafico {
+interface DadoJson {
   economia_mensal_estimada: number;
   gastos_sugeridos_para_corte: GastoSugerido[];
   metas: {
@@ -42,4 +44,4 @@ interface DadoGrafico {
   investimentos_sugeridos: string[];
 }
 
-export type { DadoBCB, DadoGrafico, DadoIBGE };
+export type { DadoBCB, DadoJson, DadoIBGE };

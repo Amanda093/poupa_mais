@@ -20,7 +20,7 @@ const Header = () => {
   const profilePicture = user?.photoURL || Placeholder;
 
   return (
-    <header className="header-shadow flex h-[6em] w-full pt-[2em] pb-[1.5em] max-sm:h-auto">
+    <header className="header-shadow flex h-[6em] w-full pt-[2em] pb-[1.5em] max-sm:h-auto max-sm:pb-[0.5em]">
       <nav className="container flex justify-between max-sm:flex-col max-sm:gap-[0.5em]">
         {/* logotipo e link */}
         <Link href="/" className="flex justify-center">
@@ -37,8 +37,8 @@ const Header = () => {
 
         {/* links para as outras páginas*/}
         <div
-          className={`flex items-center gap-[2em] transition-all duration-200 ease-in-out max-sm:flex-col max-sm:gap-[0.5em] max-sm:overflow-hidden ${
-            menu ? "max-sm:h-[7em]" : "max-sm:h-0"
+          className={`flex items-center gap-[2em] transition-[max-height] duration-300 ease-in-out max-sm:flex-col max-sm:gap-[0.5em] max-sm:overflow-hidden max-sm:pb-[0.25em] ${
+            menu ? "max-sm:max-h-[500px]" : "max-sm:max-h-0"
           }`}
         >
           <LinkHeader text="Planejar Finanças" path="/" />
@@ -52,7 +52,7 @@ const Header = () => {
               <LinkHeader text="Histórico" path="/historico" />
 
               {/* Leva para a página de histórico */}
-              <Link href="/historico">
+              <Link href="/historico" className="max-sm:hidden">
                 <Image
                   src={profilePicture}
                   className="size-[2.75em] cursor-pointer rounded-full object-cover outline-[0.15em] outline-emerald-500 transition-all duration-300 select-none hover:translate-y-[-0.15em] hover:outline-emerald-600"

@@ -1,4 +1,3 @@
-// lib/firebase/handleLogin.ts
 import {
   browserLocalPersistence,
   browserSessionPersistence,
@@ -25,10 +24,12 @@ export const handleLogin = async ({
 }: HandleLoginProps) => {
   try {
     await setPersistence(
+      // se o usuário quiser se manter conectado, utiliza este setPersistence
       auth,
       lembrar ? browserLocalPersistence : browserSessionPersistence,
     );
 
+    // função que loga o usuário com email e senha
     const userCredential = await signInWithEmailAndPassword(auth, email, senha);
     console.log("Usuário logado:", userCredential.user);
 

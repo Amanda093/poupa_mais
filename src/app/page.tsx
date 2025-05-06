@@ -1,14 +1,8 @@
 "use client";
 
-{
-  /*TODO: Certificar responsividade geral
-  TODO: Comentar o código Miguel
+/*TODO: Comentar o código Miguel
   TODO: Organizar o código Amanda Ni - organizamos o cadastro e login
-
-  TODO: Não aparecer checkbox quando for o primeiro planejamento do usuário
-  TODO: Melhorar a mensagem do bot quando tiver planejamento anterior
   */
-}
 
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { differenceInDays } from "date-fns";
@@ -17,6 +11,8 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
+  query,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -43,8 +39,8 @@ import {
   SelectValue,
   Textarea,
   Title,
+  Spinner,
 } from "@/components";
-import { Spinner } from "@/components/ui/Spinner";
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
 import { db } from "@/lib/services/clientApp";
@@ -57,6 +53,7 @@ export default function Home() {
   console.log("Loading: ", loading, "|", "Current user: ", user?.email);
   const [limitado, setLimitado] = useState(false);
   const [gerando, setGerando] = useState(false);
+  const [mostrarCheck, setmostrarCheck] = useState(false);
   const planejamentoRef = useRef<HTMLDivElement>(null);
 
   // verifica se o usuário anônimo já usou o serviço anteriormente e limita novo uso
@@ -101,6 +98,35 @@ export default function Home() {
     };
 
     verificarLimite();
+  }, [user]);
+
+  useEffect(() => {
+    const verificarSePlanejamentoAnterior = async () => {
+      if (user) {
+        const userDocRef = doc(db, "usuarios", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const planejamentosRef = collection(
+            db,
+            "usuarios",
+            user.uid,
+            "planejamentos",
+          );
+
+          const q = query(planejamentosRef);
+          const snapshot = await getDocs(q);
+
+          if (snapshot.docs.length > 0) {
+            setmostrarCheck(true);
+          } else {
+            setmostrarCheck(false);
+          }
+        }
+      }
+    };
+
+    verificarSePlanejamentoAnterior();
   }, [user]);
 
   const estadosOrdenados = Object.entries(codigosEstadosIBGE).sort((a, b) =>
@@ -450,7 +476,7 @@ export default function Home() {
               onChange={handleChangeObs}
             />
           </div>
-          {user && (
+          {user && mostrarCheck && (
             <>
               <div className="flex items-center gap-2">
                 <Checkbox

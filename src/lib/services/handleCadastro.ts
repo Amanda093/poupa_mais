@@ -1,4 +1,3 @@
-// lib/firebase/handleCadastro.ts
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -92,6 +91,7 @@ export const handleCadastro = async ({
   }
 
   try {
+    // cria o usuário no Firebase Authentication
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,

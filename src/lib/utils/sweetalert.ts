@@ -33,11 +33,3 @@ export const Toast = withReactContent(Swal).mixin({
   timer: 6500,
   timerProgressBar: true,
 });
-
-/*
-Exemplo:
-Toast.fire({
-    title: "Cadastro realizado com sucesso!",
-    icon: "success",
-});
-*/

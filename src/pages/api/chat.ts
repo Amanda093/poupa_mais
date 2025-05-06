@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 
 import { codigosEstadosIBGE } from "@/context/global";
 import { db } from "@/lib/services";
-import { Custeio, DadoBCB, DadoGrafico, DadoIBGE, Planejamento } from "@/types";
+import { Custeio, DadoBCB, DadoJson, DadoIBGE, Planejamento } from "@/types";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
@@ -48,7 +48,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   } catch (err) {
     console.error("Erro ao buscar planejamentos anteriores:", err);
   }
-
   // Validação do estado
   let siglaEstado = "";
   if (mensagem.estado) {
@@ -180,9 +179,9 @@ ${utilizacao}
     const jsonString = mensagemBot.slice(inicioJSON, fimJSON);
     const mensagemString = mensagemBot.slice(0, inicioJSON).trim();
 
-    let dadosParaGraficos: DadoGrafico | null = null;
+    let dadosParaGraficos: DadoJson | null = null;
     try {
-      dadosParaGraficos = JSON.parse(jsonString) as DadoGrafico;
+      dadosParaGraficos = JSON.parse(jsonString) as DadoJson;
     } catch (e) {
       console.error("Erro ao converter JSON retornado pela LLM:", e);
     }

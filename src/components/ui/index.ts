@@ -10,5 +10,6 @@ export * from "./Label";
 export * from "./LinkHeader";
 export * from "./Popover";
 export * from "./Select";
+export * from "./Spinner";
 export * from "./Textarea";
 export * from "./Title";

@@ -1,6 +1,8 @@
 import { Interface } from "node:readline";
 import { Timestamp } from "firebase/firestore";
 
+//aqui, criamos e exportamos a interface Planejamento e Custeio que são utilizadas no código
+
 interface Gasto {
   nome: string;
   valor: string;
@@ -21,6 +23,6 @@ interface Planejamento {
   geradoEm: Timestamp;
   mensagemBot: string; // mensagem do bot em markdown
   mensagemJSON: []; // mensagem em JSON
-};
+}
 
 export type { Custeio, Gasto, Planejamento };
