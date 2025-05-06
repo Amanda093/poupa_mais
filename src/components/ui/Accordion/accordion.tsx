@@ -4,14 +4,16 @@ import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "lucide-react";
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/helpers/utils";
 
+// Função que retorna um Accordion alterado pelas props passadas
 function Accordion({
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
 }
 
+// Função que retorna um item de Accordion já estilizado e alterado pelas props passadas
 function AccordionItem({
   className,
   ...props
@@ -25,6 +27,7 @@ function AccordionItem({
   );
 }
 
+//Função que retorna o título do item do acordion, além de um icon de seta (tudo já estilizado e alterado pelas props)
 function AccordionTrigger({
   className,
   children,
@@ -47,6 +50,7 @@ function AccordionTrigger({
   );
 }
 
+//Função que retorna o conteudo dentro de um item do Accorditon, já estilizado e alterado pelas props passadas
 function AccordionContent({
   className,
   children,

@@ -8,7 +8,7 @@ import { IoMenu } from "react-icons/io5";
 
 import Placeholder from "@/components/assets/FotoPerfilPlaceHolder.png";
 import logo from "@/components/assets/poupa-logo.png";
-import { auth } from "@/lib/clientApp";
+import { auth } from "@/lib/services/clientApp";
 
 import { Button, LinkHeader } from "../../ui";
 

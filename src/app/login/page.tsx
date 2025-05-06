@@ -13,8 +13,8 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { Banner, Button, Checkbox, Input } from "@/components";
-import { auth } from "@/lib/clientApp";
-import { Toast } from "@/lib/sweetalert";
+import { auth } from "@/lib/services/clientApp";
+import { Toast } from "@/lib/utils";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");

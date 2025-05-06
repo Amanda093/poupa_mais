@@ -12,7 +12,7 @@ import {
   useDayPicker,
 } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/helpers/utils";
 
 import { Button, buttonVariants } from "../Button";
 

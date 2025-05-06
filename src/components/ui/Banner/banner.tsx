@@ -3,12 +3,15 @@ import Image from "next/image";
 import banner from "../assets/banner.png";
 import { FluidBackground } from "./FluidBackground";
 
+// Define que a prop 'containerClassName' do banner deve ser do tipo string, caso ela exista
 interface BannerProps {
   containerClassName?: string;
 }
 
+//Função que retorna o banner
 const Banner = ({ containerClassName = "" }: BannerProps) => {
   return (
+    //Div do banner
     <div
       className={`${containerClassName} absolute top-0 h-full w-[50%] p-[1em] max-lg:hidden`}
     >

@@ -20,7 +20,7 @@ type DadoIBGE = Array<{
           id: string;
           nome: string;
         };
-        nome: string;   
+        nome: string;
       };
       serie: Record<string, string>;
     }>;
@@ -28,8 +28,8 @@ type DadoIBGE = Array<{
 }>;
 
 interface GastoSugerido {
-  categoria: string,
-  valor_sugerido: number
+  categoria: string;
+  valor_sugerido: number;
 }
 interface DadoGrafico {
   economia_mensal_estimada: number;

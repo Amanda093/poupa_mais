@@ -1,4 +1,6 @@
 "use client";
+
+// Imports
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { LucideEye, LucideEyeClosed } from "lucide-react";
@@ -13,10 +15,11 @@ import { MdError } from "react-icons/md";
 
 import { Banner, Button, Input } from "@/components";
 import DatePicker from "@/components/ui/DatePicker/date-picker";
-import { auth } from "@/lib/clientApp";
-import { db } from "@/lib/clientApp";
-import { Toast } from "@/lib/sweetalert";
+import { auth } from "@/lib/services";
+import { db } from "@/lib/services";
+import { Toast } from "@/lib/utils";
 
+// página Cadastro
 const CadastroPage = () => {
   const router = useRouter();
   const [password, setPassword] = useState("");

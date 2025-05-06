@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import fetch from "node-fetch";
 
 import { codigosEstadosIBGE } from "@/context/global";
-import { Custeio, DadoBCB, DadoGrafico, DadoIBGE } from "@/interface";
+import { Custeio, DadoBCB, DadoGrafico, DadoIBGE } from "@/types";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {

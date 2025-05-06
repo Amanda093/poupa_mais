@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 
-import { Custeio, DadoGrafico } from "@/interface";
+import { Custeio, DadoGrafico } from "@/types";
 
 const useChatbot = () => {
   const [mensagemBot, setMensagemBot] = useState<string>("");
