@@ -1,8 +1,6 @@
 "use client";
 
 // Imports
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
 import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // para redirecionar
@@ -15,9 +13,8 @@ import { MdError } from "react-icons/md";
 
 import { Banner, Button, Input } from "@/components";
 import DatePicker from "@/components/ui/DatePicker/date-picker";
-import { auth } from "@/lib/services";
-import { db } from "@/lib/services";
-import { Toast } from "@/lib/utils";
+import { auth, handleCadastro } from "@/lib/services";
+import { verificarForcaSenha } from "@/lib/utils";
 
 // página Cadastro
 const CadastroPage = () => {
@@ -38,78 +35,8 @@ const CadastroPage = () => {
     }
   }, [user, loading, router]);
 
-  // verifica se a senha sugerida pelo usuário é forte
-  const verificarForcaSenha = (senha: string): string => {
-    const temMinuscula = /[a-z]/.test(senha);
-    const temMaiuscula = /[A-Z]/.test(senha);
-    const temNumero = /[0-9]/.test(senha);
-    const temEspecial = /[^A-Za-z0-9]/.test(senha);
-
-    const requisitos = [
-      temMinuscula,
-      temMaiuscula,
-      temNumero,
-      temEspecial,
-    ].filter(Boolean).length;
-
-    if (senha.length < 6) {
-      return "Fraca";
-    }
-    if (requisitos === 2 || requisitos === 3) {
-      return "Média";
-    }
-    if (requisitos === 4) {
-      return "Forte";
-    }
-    return "Fraca";
-  };
-
   // chama a const verificar de força da senha, colocando password como seu parametro
   const forcaSenha = verificarForcaSenha(password);
-
-  const handleCadastro = async () => {
-    if (password !== confirmpassword) {
-      Toast.fire({
-        icon: "warning",
-        title: "As senhas não coincidem.",
-      });
-      return;
-    }
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-      const user = userCredential.user;
-
-      // Salvar dados adicionais no Firestore
-      await setDoc(doc(db, "usuarios", user.uid), {
-        uid: user.uid,
-        nome,
-        email,
-        dataNascimento,
-        usos: 0,
-        ultimaGeracao: new Date().toISOString(),
-        criadoEm: new Date(),
-      });
-      // Redirecionar para dashboard
-      router.push("/FAQ");
-
-      Toast.fire({
-        title: "Cadastro realizado com sucesso!",
-        icon: "success",
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error("Erro ao cadastrar:", error);
-      Toast.fire({
-        title: error.message,
-        icon: "success",
-      });
-    }
-  };
 
   return (
     <div className="relative mx-auto flex h-[calc(100vh-6em)] w-screen max-w-[2000px] justify-between overflow-y-hidden">
@@ -243,7 +170,16 @@ const CadastroPage = () => {
             <Button
               variant="default"
               className="w-full"
-              onClick={handleCadastro}
+              onClick={() =>
+                handleCadastro({
+                  nome,
+                  email,
+                  password,
+                  confirmpassword,
+                  dataNascimento,
+                  router,
+                })
+              }
             >
               Cadastrar-se
             </Button>
