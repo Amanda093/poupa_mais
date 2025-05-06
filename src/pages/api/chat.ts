@@ -76,7 +76,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     console.log("gastos recebidos:", mensagem?.gastos);
 
     const gastosFormat = mensagem.gastos
-      .map((g) => `${g.nome}, que custa R$ ${g.valor}, da categoria ${g.categoria}`)
+      .map(
+        (g) =>
+          `${g.nome}, que custa R$ ${g.valor}, da categoria ${g.categoria}`,
+      )
       .join("\n");
 
     const systemprompt = `Você é um consultor financeiro que ajuda brasileiros com educação financeira. Alguns dados do cenário econômico da região estão aqui:
@@ -97,7 +100,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               - Metas de curto, médio e longo prazo
               - Dicas de investimento compatíveis com o cenário brasileiro atual
 
-              ⚠️ Além do plano acima, retorne EXATAMENTE essa estrutura JSON, exatamente abaixo do texto gerado acima, para que eu possa fazer spit mais tarde:
+              O plano deve ser dividido em tópicos e conter formatação em Markdown, como listas e negrito, para facilitar a leitura, use titulos para cada tópico ditos anteriormente.
+              Você deve escrever como se estivesse falando diretamente com o usuário.
+
+              ⚠️ Além do plano acima, retorne EXATAMENTE essa estrutura JSON, exatamente abaixo do texto gerado acima, para que eu possa fazer split mais tarde:
               {
                 "economia_mensal_estimada": número,
                 "gastos_sugeridos_para_corte": [{ "categoria": string, "valor_sugerido": número }],
@@ -134,7 +140,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const mensagemBot = out.choices[0].message.content;
     if (!mensagemBot) {
       return res.status(500).json({ error: "Mensagem da LLM não recebida" });
-    } else{
+    } else {
       console.log(mensagemBot);
     }
 

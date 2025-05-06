@@ -400,7 +400,11 @@ const HistoricoPage = () => {
               <Button className="" onClick={handleSalvar}>
                 Salvar
               </Button>
-              <Button variant="delete" className="" onClick={handleLogout}>
+              <Button
+                variant="delete"
+                className="rounded-[0.75em] py-[0.35em] outline-offset-[-0.15em]"
+                onClick={handleLogout}
+              >
                 Sair
               </Button>
             </div>
@@ -413,15 +417,21 @@ const HistoricoPage = () => {
         <Title mainTitle="Histórico de" subTitle="Planejamentos" />
 
         {planejamentos.length > 0 ? (
-          planejamentos.map((p) => (
-            <Historico
-              key={p.id}
-              geradoEm={p.geradoEm.toLocaleString()}
-              renda={p.custeio.renda}
-              despesas={p.custeio.gastos}
-              respostaIA={p.mensagemBot}
-            />
-          ))
+          [...planejamentos]
+            .sort((a, b) => {
+              const dateA = new Date(a.geradoEm.toString()).getTime();
+              const dateB = new Date(b.geradoEm.toString()).getTime();
+              return dateB - dateA; // ordem decrescente
+            })
+            .map((p) => (
+              <Historico
+                key={p.id}
+                geradoEm={p.geradoEm.toString()}
+                renda={p.custeio.renda}
+                despesas={p.custeio.gastos}
+                respostaIA={p.mensagemBot}
+              />
+            ))
         ) : (
           <p className="text-light text-center text-gray-500">
             Nenhum planejamento encontrado.

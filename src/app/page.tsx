@@ -6,9 +6,6 @@
   TODO: Comentar o código Amanda e NI
   TODO: Organizar o código Miguel
   TODO: Customizar mensagens de erro default do firebase  nos sweetalert NI e Miguel
-  TODO: Adicionar bloqueio de gerar planejamento sem colocar os inputs antes Sak
-  TODO: Adicionar loading enquanto a prompt é gerada miguel e amanda
-  TODO: Dar Scroll para o começo da resposta quando ela for gerada Ni
   */
 }
 
@@ -21,10 +18,10 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
-} from "firebase/firestore";  
+} from "firebase/firestore";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Fade } from "react-awesome-reveal";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { HiSparkles } from "react-icons/hi2";
@@ -45,18 +42,18 @@ import {
   Textarea,
   Title,
 } from "@/components";
+import { Spinner } from "@/components/ui/Spinner";
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
 import { Custeio, Gasto } from "@/interface";
 import { db } from "@/lib/clientApp";
 import { auth } from "@/lib/clientApp";
 import { Popup } from "@/lib/sweetalert";
-import { Spinner } from "@/components/ui/Spinner";
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);
   console.log("Loading: ", loading, "|", "Current user: ", user?.email);
-  const [ignored, setIgnored] = useState(false);
+  const [anteriores, setAnteriores] = useState(true);
   const [limitado, setLimitado] = useState(false);
   const [gerando, setGerando] = useState(false);
   const planejamentoRef = useRef<HTMLDivElement>(null);
@@ -157,99 +154,108 @@ export default function Home() {
     setCusteio({ ...custeio, obs: e.target.value });
   };
 
-  const isFormularioValido = () => {
-  const rendaValida = !isNaN(Number(custeio.renda)) && Number(custeio.renda) > 0;
-  const estadoValido = !isNaN(Number(custeio.estado));
-  const temDespesaValida = custeio.gastos.some(
-    (gasto: Gasto) =>
-      gasto.nome.trim() !== "" &&
-      !isNaN(Number(gasto.valor)) &&
-      Number(gasto.valor) > 0
-  );
+  const parseValorMonetario = (valor: string): number => {
+    return Number(
+      valor
+        .replace(/\s/g, "") // remove espaços
+        .replace("R$", "") // remove R$
+        .replace(/\./g, "") // remove pontos de milhar
+        .replace(",", "."), // troca vírgula por ponto
+    );
+  };
 
-  return rendaValida && estadoValido && temDespesaValida;
-};  
+  const isFormularioValido = () => {
+    const rendaValida =
+      !isNaN(parseValorMonetario(custeio.renda)) &&
+      parseValorMonetario(custeio.renda) > 0;
+
+    const estadoValido = !isNaN(Number(custeio.estado));
+
+    const temDespesaValida = custeio.gastos.some(
+      (gasto: Gasto) =>
+        gasto.nome.trim() !== "" &&
+        !isNaN(parseValorMonetario(gasto.valor)) &&
+        parseValorMonetario(gasto.valor) > 0,
+    );
+
+    return rendaValida && estadoValido && temDespesaValida;
+  };
 
   const { mensagemBot, sendMensagem } = useChatbot();
 
   const handleSend = () => {
-
     if (!isFormularioValido()) {
-  Popup.fire({
-    icon: "warning",
-    title: "Campos incompletos",
-    text: "Preencha todos os campos obrigatórios antes de continuar.",
-  });
-  return;
-}
+      Popup.fire({
+        icon: "warning",
+        title: "Campos incompletos",
+        text: "Preencha todos os campos obrigatórios antes de continuar.",
+      });
+      return;
+    }
 
-  Popup.fire({
-    html: `<div><h3>Confirmar envio?</h3></div>`,
-    icon: "question",
-    focusConfirm: false,
-    showDenyButton: true,
-    confirmButtonText: "Sim",
-    confirmButtonColor: "#00BC7D",
-    denyButtonText: "Não",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      setGerando(true); // Começa o loading
-      try {
-        const envio: Custeio = custeio;
-        const respostaIA = await sendMensagem(envio);
+    Popup.fire({
+      html: `<div><h3>Confirmar envio?</h3></div>`,
+      icon: "question",
+      focusConfirm: false,
+      showDenyButton: true,
+      confirmButtonText: "Sim",
+      confirmButtonColor: "#00BC7D",
+      denyButtonText: "Não",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setGerando(true); // Começa o loading
+        try {
+          const envio: Custeio = custeio;
+          const respostaIA = await sendMensagem(envio);
 
-        console.log("Resposta IA:", respostaIA);
+          console.log("Resposta IA:", respostaIA);
 
-        if (!user) {
-          localStorage.setItem("usouGeracao", "true");
-          return;
-        }
-
-        if (!respostaIA || !respostaIA.json) {
-          console.error("Resposta JSON nula. Não será salva no Firestore.");
-          return;
-        }
-
-        const userDocRef = doc(db, "usuarios", user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists()) {
-          const usosAtual = userDoc.data().usos ?? 0;
-
-          if (usosAtual + 1 >= 3) {
-            setLimitado(true);
+          if (!user) {
+            localStorage.setItem("usouGeracao", "true");
+            return;
           }
 
-          await updateDoc(userDocRef, {
-            usos: usosAtual + 1,
-          });
+          if (!respostaIA || !respostaIA.json) {
+            console.error("Resposta JSON nula. Não será salva no Firestore.");
+            return;
+          }
 
-          const planejamentosRef = collection(userDocRef, "planejamentos");
+          const userDocRef = doc(db, "usuarios", user.uid);
+          const userDoc = await getDoc(userDocRef);
 
-          await addDoc(planejamentosRef, {
-            ignorado: ignored,
-            mensagemJSON: respostaIA.json,
-            mensagemBot: respostaIA.texto ?? "Resposta não gerada",
-            custeio,
-            geradoEm: serverTimestamp(),
-          });
+          if (userDoc.exists()) {
+            const usosAtual = userDoc.data().usos ?? 0;
 
-          console.log("Dados enviados para o Firestore com sucesso!");
-        } else {
-          console.error("Usuário não encontrado no Firestore.");
-        }
-      } catch (error) {
-        console.error("Erro ao gerar planejamento:", error);
-      } finally {
-        setGerando(false); // Finaliza o loading
+            await updateDoc(userDocRef, {
+              usos: usosAtual + 1,
+            });
 
-        setTimeout(() => {
-            planejamentoRef.current?.scrollIntoView({ behavior: 'smooth' });
+            const planejamentosRef = collection(userDocRef, "planejamentos");
+
+            await addDoc(planejamentosRef, {
+              usarAnteriores: anteriores,
+              mensagemJSON: respostaIA.json,
+              mensagemBot: respostaIA.texto ?? "Resposta não gerada",
+              custeio,
+              geradoEm: serverTimestamp(),
+            });
+
+            console.log("Dados enviados para o Firestore com sucesso!");
+          } else {
+            console.error("Usuário não encontrado no Firestore.");
+          }
+        } catch (error) {
+          console.error("Erro ao gerar planejamento:", error);
+        } finally {
+          setGerando(false); // Finaliza o loading
+
+          setTimeout(() => {
+            planejamentoRef.current?.scrollIntoView({ behavior: "smooth" });
           }, 100);
+        }
       }
-    }
-  });
-};
+    });
+  };
 
   return (
     <div className="pb-[5em]">
@@ -309,7 +315,7 @@ export default function Home() {
 
       {/* Formulário - Parte 02 */}
       <div className="relative container mx-auto xl:!max-w-[1300px]">
-        {limitado && (
+        {limitado && !mensagemBot && (
           <div className="text-bold form-shadow absolute top-[50%] left-0 z-10 flex w-full translate-y-[-50%] flex-col justify-center gap-[0.25em] rounded-[1em] bg-white py-[1.5em] text-center">
             {user ? (
               <>
@@ -341,7 +347,7 @@ export default function Home() {
           </div>
         )}
         <div
-          className={`form-shadow flex w-full flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em] transition-[height] ${limitado && "pointer-events-none relative z-1 blur-xs select-none"}`}
+          className={`form-shadow flex w-full flex-col gap-[35px] rounded-[1em] !px-[1.2em] py-[1.5em] transition-[height] ${limitado && !mensagemBot && "pointer-events-none relative z-1 blur-xs select-none"}`}
         >
           <div>
             <p>Quais são suas despesas?</p>
@@ -443,8 +449,8 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="remember"
-                  checked={ignored}
-                  onCheckedChange={(val) => setIgnored(!!val)}
+                  checked={anteriores}
+                  onCheckedChange={(val) => setAnteriores(!!val)}
                 />
                 <label htmlFor="remember" className="">
                   Usar planejamentos anteriores como base para o novo
@@ -481,14 +487,16 @@ export default function Home() {
           </>
         ) : (
           <>
-
             <Fade
               delay={200} // Wait before starting
               duration={1000} // Animation duration
               fraction={0.5} // Trigger when 50% visible
               triggerOnce // Animate only once
             >
-              <div ref={planejamentoRef} className="container flex flex-col items-center gap-[1em] py-[2.5em] xl:!max-w-[1270px]">
+              <div
+                ref={planejamentoRef}
+                className="container flex flex-col items-center gap-[1em] py-[2.5em] xl:!max-w-[1270px]"
+              >
                 <h2 className="flex w-full items-center gap-[0.25em] text-emerald-500">
                   <HiSparkles />
                   Planejamento
