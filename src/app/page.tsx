@@ -1,7 +1,7 @@
 "use client";
 
 /*TODO: Comentar o código Miguel
-  TODO: Organizar o código Amanda Ni - organizamos o cadastro e login
+  TODO: Organizar o código Amanda Ni - organizamos o cadastro e login, inicial, faq
   */
 
 import { CheckedState } from "@radix-ui/react-checkbox";
@@ -53,10 +53,7 @@ import {
   handleChangeUtilizavel,
 } from "@/lib/handlers";
 import { Custeio } from "@/types";
-import {
-  verificarLimite,
-  verificarSePlanejamentoAnterior,
-} from "@/lib/utils/verify";
+import { verificarLimite, verificarSePlanejamentoAnterior } from "@/lib/utils";
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);

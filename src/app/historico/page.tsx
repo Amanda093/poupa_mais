@@ -1,20 +1,5 @@
 "use client";
 
-import {
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  signOut,
-  updateEmail,
-  updatePassword,
-  updateProfile,
-} from "firebase/auth";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
 import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,10 +11,14 @@ import { Button, Historico, Input, Title } from "@/components";
 import placeholderFoto from "@/components/assets/FotoPerfilPlaceHolder.png";
 import iconFoto from "@/components/assets/MudarFoto.png";
 import DatePicker from "@/components/ui/DatePicker/date-picker";
-import { db } from "@/lib/services/clientApp";
 import { auth } from "@/lib/services/clientApp";
-import { Popup, Toast } from "@/lib/utils";
+import {
+  fetchPlanejamentos,
+  fetchUserData,
+  verificarForcaSenha,
+} from "@/lib/utils";
 import { Planejamento } from "@/types";
+import { handleFileChange, handleSalvar, handleLogout } from "@/lib/handlers";
 
 //Const que armazena todo o código da página de histórico
 const HistoricoPage = () => {
@@ -54,6 +43,8 @@ const HistoricoPage = () => {
   //Const de router
   const router = useRouter();
 
+  const forcaSenha = verificarForcaSenha(novaSenha);
+
   //Expulsa o usuario da página caso ele não estja logado
   useEffect(() => {
     if (!loading && user === null) {
@@ -63,69 +54,13 @@ const HistoricoPage = () => {
 
   // Carregar a foto de perfil do Firebase ou localStorage sempre que o componente for montado
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!user) return;
-
-      const userRef = doc(db, "usuarios", user.uid);
-      const userSnap = await getDoc(userRef);
-
-      if (userSnap.exists()) {
-        const data = userSnap.data();
-        setNome(data.nome || "");
-        setEmail(data.email || "");
-        setDataNascimento(data.dataNascimento?.toDate?.() || undefined);
-      }
-
-      const storedPhotoURL = localStorage.getItem("photoURL");
-      if (storedPhotoURL) {
-        setPhotoURL(storedPhotoURL); // do localStorage
-      } else if (user.photoURL) {
-        setPhotoURL(user.photoURL); // do Firebase Auth
-      }
-    };
-
-    fetchUserData();
+    fetchUserData(user, setNome, setEmail, setDataNascimento, setPhotoURL);
   }, [user]);
 
   //Busca os planejamentos do usuário no banco de dados
   useEffect(
     () => {
-      const fetchPlanejamentos = async () => {
-        if (!user) return; //Caso o usuário não esteja logado a função termina
-
-        const planejamentosRef = collection(
-          //Acessa o banco e pega os planejamentos
-          db,
-          "usuarios",
-          user.uid,
-          "planejamentos",
-        );
-        const snapshot = await getDocs(planejamentosRef);
-
-        //Mapeira todos os planejamentos retornados e converte eles em objetos
-        const data: Planejamento[] = snapshot.docs.map((doc) => {
-          const raw = doc.data();
-
-          //objeto
-          return {
-            id: doc.id,
-            custeio: {
-              estado: raw.custeio.estado,
-              gastos: raw.custeio.gastos,
-              obs: raw.custeio.obs,
-              renda: raw.custeio.renda,
-              utilizavel: raw.custeio.utilizavel,
-            },
-            geradoEm: raw.geradoEm.toDate(),
-            mensagemBot: raw.mensagemBot,
-            mensagemJSON: raw.mensagemJSON,
-          };
-        });
-
-        setPlanejamentos(data); //Armazena os planejamentos no useState de planejamentos
-      };
-
-      fetchPlanejamentos();
+      fetchPlanejamentos(user, setPlanejamentos);
     },
     [user] /*Com que o useEffect seja executado sempre que o compnente for*/,
   );
@@ -133,137 +68,6 @@ const HistoricoPage = () => {
   const handleChangePhotoClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
-    }
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-
-    // 1. Deleta imagem antiga (caso exista)
-    const oldPublicId = localStorage.getItem("photoPublicId");
-    if (oldPublicId) {
-      await fetch("/api/deleteImage", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ public_id: oldPublicId }),
-      });
-      localStorage.removeItem("photoPublicId"); // Limpa o antigo
-    }
-
-    // 2. Faz upload da nova imagem
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "your_upload_preset");
-
-    const response = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
-    console.log("Nova imagem enviada:", data);
-
-    // 3. Atualiza o Firebase, o localStorage e o estado
-    if (response.ok) {
-      await updateProfile(auth.currentUser!, {
-        photoURL: data.secure_url,
-      });
-
-      setPhotoURL(data.secure_url);
-      localStorage.setItem("photoURL", data.secure_url);
-      localStorage.setItem("photoPublicId", data.public_id); // Salva o novo public_id
-    }
-
-    setUploading(false);
-
-    router.refresh();
-
-    Toast.fire({
-      title: "Foto atualizada com sucesso!",
-      icon: "success",
-    });
-  };
-
-  const handleSalvar = async () => {
-    if (!user) return;
-
-    try {
-      // Reautenticação antes de mudanças sensíveis
-      if (novaSenha || email !== user.email) {
-        if (!senhaAtual) {
-          Popup.fire({
-            html: `<div><p>Você precisa fornecer a senha atual para alterar email ou senha.</p></div> `,
-            icon: "warning",
-          });
-          return;
-        }
-
-        const credential = EmailAuthProvider.credential(
-          user.email!,
-          senhaAtual,
-        );
-        await reauthenticateWithCredential(user, credential);
-
-        if (email !== user.email) {
-          await updateEmail(user, email);
-        }
-
-        if (novaSenha) {
-          await updatePassword(user, novaSenha);
-        }
-      }
-
-      // Atualiza nome e foto
-      await updateProfile(user, {
-        displayName: nome,
-        photoURL: user.photoURL || undefined,
-      });
-
-      // Atualiza Firestore
-      const userRef = doc(db, "usuarios", user.uid);
-      await updateDoc(userRef, {
-        nome,
-        email,
-        dataNascimento,
-      });
-
-      Toast.fire({
-        title: "Dados atualizados com sucesso!",
-        icon: "success",
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Erro ao salvar dados:", error);
-        Popup.fire({
-          html: `<div><p>Erro ao salvar:</p><b>${error.message}<b/></div> `,
-          icon: "error",
-        });
-      } else {
-        console.error("Erro desconhecido:", error);
-        Popup.fire({
-          html: `<div><p>Erro desconhecido ao salvar dados.</p></div> `,
-          icon: "error",
-        });
-      }
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      localStorage.removeItem("photoURL"); // Remove a foto ao deslogar
-
-      // Redirecionar para dashboard
-      router.push("/");
-      Toast.fire({
-        title: "Logout realizado com sucesso!",
-        icon: "success",
-      });
-    } catch (error) {
-      console.error("Erro ao sair da conta:", error);
     }
   };
 
@@ -295,7 +99,9 @@ const HistoricoPage = () => {
             accept="image/*"
             className="hidden"
             ref={fileInputRef}
-            onChange={handleFileChange}
+            onChange={(e) => {
+              handleFileChange(e, setUploading, setPhotoURL, router);
+            }}
           />
         </div>
 
@@ -391,13 +197,28 @@ const HistoricoPage = () => {
               />
             </div>
             <div className="flex h-[3.5em] items-end gap-[1em]">
-              <Button className="" onClick={handleSalvar}>
+              <Button
+                className=""
+                onClick={() => {
+                  handleSalvar(
+                    user,
+                    novaSenha,
+                    senhaAtual,
+                    nome,
+                    email,
+                    forcaSenha,
+                    dataNascimento,
+                  );
+                }}
+              >
                 Salvar
               </Button>
               <Button
                 variant="delete"
                 className="rounded-[0.75em] py-[0.35em] outline-offset-[-0.15em]"
-                onClick={handleLogout}
+                onClick={() => {
+                  handleLogout(router);
+                }}
               >
                 Sair
               </Button>
