@@ -7,10 +7,11 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { Banner, Button, Checkbox, Input } from "@/components";
-import { handleLogin } from "@/lib/services";
+import { handleLogin } from "@/lib/handlers";
 import { auth } from "@/lib/services/clientApp";
 
 const LoginPage = () => {
+  //declara os estados dos inputs utilizados no código
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [showSenha, setShowSenha] = useState(false);
@@ -19,6 +20,7 @@ const LoginPage = () => {
 
   const [user, loading] = useAuthState(auth);
 
+  //se o usuário estiver certo e logado, manda ele pra página de histórico
   useEffect(() => {
     if (!loading && user !== null) {
       router.push("/historico");
@@ -95,6 +97,7 @@ const LoginPage = () => {
               variant="default"
               className="w-full"
               onClick={() =>
+                //chama o handleLogin para logar o usuário
                 handleLogin({
                   email,
                   senha,

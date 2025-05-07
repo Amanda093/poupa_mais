@@ -13,11 +13,12 @@ import { MdError } from "react-icons/md";
 
 import { Banner, Button, Input } from "@/components";
 import DatePicker from "@/components/ui/DatePicker/date-picker";
-import { auth, handleCadastro } from "@/lib/services";
+import { auth } from "@/lib/services";
+import { handleCadastro } from "@/lib/handlers"; // função que faz o cadastro do usuário
 import { verificarForcaSenha } from "@/lib/utils";
 
-// página de cadastro
 const CadastroPage = () => {
+  //declara os estados utilizados nos inputs do código
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
@@ -29,6 +30,7 @@ const CadastroPage = () => {
 
   const [user, loading] = useAuthState(auth);
 
+  //se o usuário se cadastrar com sucesso, manda pro histórico
   useEffect(() => {
     if (!loading && user !== null) {
       router.push("/historico");
@@ -171,6 +173,7 @@ const CadastroPage = () => {
               variant="default"
               className="w-full"
               onClick={() =>
+                //chama a função handleCadastro e manda os valores
                 handleCadastro({
                   nome,
                   email,

@@ -7,26 +7,37 @@ import { codigosEstadosIBGE } from "@/context/global";
 import { db } from "@/lib/services";
 import { Custeio, DadoBCB, DadoJson, DadoIBGE, Planejamento } from "@/types";
 
+// este código tem vários res.status() para retornar debugs no terminal serverSide se algo der errado, útil para perceber se o limite de tokens do admin que o estado está inválido foi atingido, por exemplo
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  // se o método de requerimento do useChatbot.ts não for post, bloqueia o código de continuae
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método não permitido" });
   }
 
+  // inicializa a mensagem com req.body (utilizado pois o clientside (useChatbot.ts) está se comunicando com um serverside privado (chat.ts)) como um tipo Custeio, axenado com um uid, se houver
   const mensagem = req.body as Custeio & { uid?: string };
   const uid = mensagem.uid;
 
+  //se não houver uid, retorna que o usuário não está autenticado
   if (!uid) {
     return res.status(401).json({ error: "Usuário não autenticado" });
   }
 
+  //inicializa o planejamentoAnterior antes de pegá-lo, garantindo que comece null caso não haja necessidade de requeri-lo (para mais informações, ver na página inicial o checbox do custeio.utilizavel)
   let planejamentoAnterior: Planejamento | null = null;
 
+  /*
+    tenta cavar no banco de dados o penúltimo planejamento do usuário.
+    é necessário pegar o penúltimo pois a função handler do chat.ts está sendo utilizada simultaneamente com a função de enviar o custeio da página inicial, e o Firestore encara como se o último planejamento fosse o que o usuário está enviando no momento
+  */
   try {
     const planejamentosRef = collection(db, "usuarios", uid, "planejamentos");
 
+    //query que pega os dois últimos planejamentos ordenando pelo campo geradoEm decrescente (pega as datas mais recentes)
     const q = query(planejamentosRef, orderBy("geradoEm", "desc"), limit(2));
     const snapshot = await getDocs(q);
 
+    //se realmente houverem mais do que dois planejamentos, ele define doc como sendo o penúltimo planejamento (sendo snapshot um array que contém [planejamento1, planejamento 2] como valores [index 0, index 1])
     if (snapshot.docs.length >= 2) {
       const doc = snapshot.docs[1]; // Penúltimo planejamento
       const raw = doc.data();
@@ -48,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   } catch (err) {
     console.error("Erro ao buscar planejamentos anteriores:", err);
   }
-  // Validação do estado
+  //se o estado estiver correto, coloca o valor numeral do estado selecionado para a sigla dela (utilizando a variável codigosEstadosIBGE do context/global.ts). Se não, retorna para o admin que o estado está inválido
   let siglaEstado = "";
   if (mensagem.estado) {
     siglaEstado = codigosEstadosIBGE[mensagem.estado];
@@ -56,15 +67,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: "Estado inválido ou não informado" });
   }
 
+  //se houver observação, coloca elas no prompt; se não, deixa vazio
   const observacao = mensagem.obs
     ? "Observações do usuário: " + mensagem.obs
     : "";
 
+  //adiciona na prompt este texto, que pega a data que o planejamentoAnterior foi gerada e seu JSON armazenado no firestore, apenas se mensagem.utilizavel for true e houver planejamentoAnterior
   const utilizacao =
     mensagem.utilizavel && planejamentoAnterior
       ? `Saiba que você já deu um planejamento anterior a esse, na data ${planejamentoAnterior.geradoEm} e seu planejamento gerado em JSON foi esse: ${planejamentoAnterior.mensagemJSON}. Baseie-se nesse planejamento anterior para fazer o seu novo planejamento, além de dizer ao usuário se ele está caminhando no caminho certo ou errado.`
       : "";
 
+  //essa função busca alguns dados da economia brasileira baseado na API SIDRA do IBGE e do BCB, filtrado por estado
   async function buscarDadosEconomia(codigoEstado: number) {
     try {
       const codigosEspeciais = new Set([5208707, 5300108]);
@@ -74,6 +88,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const respostaIBGE = await fetch(url);
       const dadosIBGE = (await respostaIBGE.json()) as DadoIBGE;
 
+      //mapeia todos os dados do IBGE retornados e armazena cada um deles numa string separada, que vai ser utilizada no prompt da IA
       const formatadoIBGE = dadosIBGE
         .map((item) => {
           const nome = item.variavel;
@@ -109,8 +124,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
+    //busca os dados econômicos baseado no mensagem.estado declarado pelo usuário
     const economia = await buscarDadosEconomia(mensagem.estado);
 
+    //para cada despesa declarada em mensagem.gastos pelo usuário, gastosFormat gera uma string utilizando os valores declarados para utilizar no prompt da IA
     const gastosFormat = mensagem.gastos
       .map(
         (g) =>
@@ -118,10 +135,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       )
       .join("\n");
 
+    //essa primeira prompt vai ser mandada como administrador do sistema da IA, para que ela receba um cargo de consultor financeiro e receba os dados econômicos
     const systemprompt = `Você é um consultor financeiro que ajuda brasileiros com educação financeira. Alguns dados do cenário econômico da região estão aqui:
 - Taxa Selic: ${economia.taxaSelic}% (dados de ${economia.dataReferencia})
 - Dados do IPCA15 do IBGE: ${economia.dadoIBGE}`;
 
+    //essa é a prompt que a IA recebe como prompt do usuário, incluindo ou não os valores declarados anteriormente (observacao, utilizacao)
     const prompt = `
 O usuário tem uma **renda mensal de R$ ${mensagem.renda}** e mora no estado de **${siglaEstado}**, Brasil.
 
@@ -155,8 +174,10 @@ ${utilizacao}
 ⚠️ O JSON deve vir abaixo do plano, em um **bloco separado e bem formatado** para que eu possa fazer parsing automático. Não explique o JSON, apenas mostre-o. Não utilize markdown.
 `;
 
+    //chama a dependência do InferenceClient (API da Hugging Face, uma provedora de IA pública que pode ser acessada na web https://huggingface.co/) com a API KEY do admin
     const hf = new InferenceClient(process.env.HUGGINGFACE_API_KEY!);
 
+    //chama a IA llama do meta, mandando para ela o systemprompt com cargo de sistema e depois o prompt com cargo de usuário
     const out = await hf.chatCompletion({
       provider: "cerebras",
       model: "meta-llama/Llama-3.3-70B-Instruct",
@@ -168,29 +189,33 @@ ${utilizacao}
       temperature: 0.7,
     });
 
+    //pega a mensagem e armazena a primeira resposta dela (se ela gerar mais que uma) e transforma em dados
     const mensagemBot = out.choices?.[0]?.message?.content;
 
     if (!mensagemBot) {
       return res.status(500).json({ error: "Mensagem da LLM não recebida" });
     }
 
+    //esse código abaixo separa a resposta do bot entre a mensagemString (mensagem de texto gerada pela IA) e a mensagem JSON (mensagem em JSON gerada pela IA)
     const inicioJSON = mensagemBot.indexOf("{");
     const fimJSON = mensagemBot.lastIndexOf("}") + 1;
     const jsonString = mensagemBot.slice(inicioJSON, fimJSON);
     const mensagemString = mensagemBot.slice(0, inicioJSON).trim();
 
-    let dadosParaGraficos: DadoJson | null = null;
+    let dadosJson: DadoJson | null = null;
     try {
-      dadosParaGraficos = JSON.parse(jsonString) as DadoJson;
+      dadosJson = JSON.parse(jsonString) as DadoJson;
     } catch (e) {
       console.error("Erro ao converter JSON retornado pela LLM:", e);
     }
 
+    //retorna a mensagemString e os dadosJson para o useChatbot.ts
     return res.status(200).json({
       message: mensagemString,
-      dadosGraficos: dadosParaGraficos,
+      dadosJson: dadosJson,
     });
   } catch (error) {
+    //se houver qualquer outro erro não especificado, retorna o erro 500
     console.error("Erro geral:", error);
     return res
       .status(500)

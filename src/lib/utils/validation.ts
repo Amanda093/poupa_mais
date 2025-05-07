@@ -1,3 +1,5 @@
+import { Gasto } from "@/types";
+
 // verifica se a senha sugerida pelo usuário é forte
 export const verificarForcaSenha = (senha: string): string => {
   const temMinuscula = /[a-z]/.test(senha);
@@ -22,4 +24,35 @@ export const verificarForcaSenha = (senha: string): string => {
     return "Forte";
   }
   return "Fraca";
+};
+
+const parseValorMonetario = (valor: string): number => {
+  return Number(
+    valor
+      .replace(/\s/g, "") // remove espaços
+      .replace("R$", "") // remove R$
+      .replace(/\./g, "") // remove pontos de milhar
+      .replace(",", "."), // troca vírgula por ponto
+  );
+};
+
+export const isFormularioValido = (custeio: {
+  renda: any;
+  estado: any;
+  gastos: Gasto[];
+}) => {
+  const rendaValida =
+    !isNaN(parseValorMonetario(custeio.renda)) &&
+    parseValorMonetario(custeio.renda) > 0;
+
+  const estadoValido = !isNaN(Number(custeio.estado));
+
+  const temDespesaValida = custeio.gastos.some(
+    (gasto: Gasto) =>
+      gasto.nome.trim() !== "" &&
+      !isNaN(parseValorMonetario(gasto.valor)) &&
+      parseValorMonetario(gasto.valor) > 0,
+  );
+
+  return rendaValida && estadoValido && temDespesaValida;
 };
