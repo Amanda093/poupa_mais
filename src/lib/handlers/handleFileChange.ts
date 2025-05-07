@@ -37,7 +37,6 @@ export const handleFileChange = async (
   });
 
   const data = await response.json();
-  console.log("Nova imagem enviada:", data);
 
   // 3. Atualiza o Firebase, o localStorage e o estado
   if (response.ok) {

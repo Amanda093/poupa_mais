@@ -10,11 +10,14 @@ export const fetchUserData = async (
   setDataNascimento: Function,
   setPhotoURL: Function,
 ) => {
+  //se não houver usuário logado, retorna
   if (!user) return;
 
+  //pega os dados do usuário no banco
   const userRef = doc(db, "usuarios", user.uid);
   const userSnap = await getDoc(userRef);
 
+  //pega os dados do usuário e coloca-os nos inputs do historico/page.tsx
   if (userSnap.exists()) {
     const data = userSnap.data();
     setNome(data.nome || "");
@@ -22,6 +25,7 @@ export const fetchUserData = async (
     setDataNascimento(data.dataNascimento?.toDate?.() || undefined);
   }
 
+  //pega a foto do cloudinary e utiliza-a no historico
   const storedPhotoURL = localStorage.getItem("photoURL");
   if (storedPhotoURL) {
     setPhotoURL(storedPhotoURL); // do localStorage

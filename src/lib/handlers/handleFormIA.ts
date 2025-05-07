@@ -1,4 +1,3 @@
-// lib/utils/handleSend.ts
 import {
   addDoc,
   collection,
@@ -13,6 +12,7 @@ import { Custeio } from "@/types";
 import { User } from "firebase/auth";
 import { db } from "@/lib/services/clientApp";
 
+//interface para lidar com o form da IA
 interface HandleFormIAParams {
   custeio: Custeio;
   user: User | null | undefined;
@@ -28,6 +28,7 @@ export async function handleFormIA({
   setGerando,
   planejamentoRef,
 }: HandleFormIAParams) {
+  //se o formulário não for válido, retorna um popup de campos incompletossss
   if (!isFormularioValido(custeio)) {
     Popup.fire({
       icon: "warning",
@@ -37,6 +38,7 @@ export async function handleFormIA({
     return;
   }
 
+  //popup que pede para o usuário confirmar o envio
   const confirm = await Popup.fire({
     html: `<div><h3>Confirmar envio?</h3></div>`,
     icon: "question",
@@ -51,9 +53,9 @@ export async function handleFormIA({
 
   setGerando(true);
 
+  //essa função manda a mensagem de custeio para a IA e aguarda a resposta
   try {
     const respostaIA = await sendMensagem(custeio);
-    console.log("Resposta IA:", respostaIA);
 
     if (!user) {
       localStorage.setItem("usouGeracao", "true");
@@ -65,16 +67,19 @@ export async function handleFormIA({
       return;
     }
 
-    const userDocRef = doc(db, "usuarios", user.uid); // db deve estar disponível globalmente ou importado aqui
+    //aqui, o código pega no firesotre os dados do usuário
+    const userDocRef = doc(db, "usuarios", user.uid);
     const userDoc = await getDoc(userDocRef);
 
     if (userDoc.exists()) {
       const usosAtual = userDoc.data().usos ?? 0;
 
+      //quando esse script for utilizado, aumenta os usos em 1
       await updateDoc(userDocRef, {
         usos: usosAtual + 1,
       });
 
+      //aqui, o código chama a coleção de planejamentos do usuário e adiciona mais um planejamento baseado nos inputs
       const planejamentosRef = collection(userDocRef, "planejamentos");
 
       await addDoc(planejamentosRef, {
@@ -84,14 +89,13 @@ export async function handleFormIA({
         custeio,
         geradoEm: serverTimestamp(),
       });
-
-      console.log("Dados enviados para o Firestore com sucesso!");
     } else {
       console.error("Usuário não encontrado no Firestore.");
     }
   } catch (error) {
     console.error("Erro ao gerar planejamento:", error);
   } finally {
+    //termina o script e faz o site scrollar até a <div id="planejamentoRef"> na página
     setGerando(false);
     setTimeout(() => {
       planejamentoRef.current?.scrollIntoView({ behavior: "smooth" });

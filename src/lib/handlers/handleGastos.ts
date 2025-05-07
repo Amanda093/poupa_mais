@@ -1,6 +1,7 @@
 import { Custeio } from "@/types";
 import { CheckedState } from "@radix-ui/react-checkbox";
 
+//todas as funções com handleChange utiizam o input para atualizar o custeio com as novas informações
 export const handleChangeRenda = (renda: string, setCusteio: Function) => {
   setCusteio((prev: Custeio) => ({ ...prev, renda: renda }));
 };
@@ -38,6 +39,7 @@ export const handleChangeGastos = (
   });
 };
 
+//as funções addGasto e removeGasto adicionam ou retiram um gasto do custeios
 export const addGasto = (setCusteio: Function) => {
   setCusteio((prev: Custeio) => ({
     ...prev,

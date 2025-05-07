@@ -31,7 +31,6 @@ export const handleLogin = async ({
 
     // função que loga o usuário com email e senha
     const userCredential = await signInWithEmailAndPassword(auth, email, senha);
-    console.log("Usuário logado:", userCredential.user);
 
     // quando o usuário logar, é redirecionado a página historico
     router.push("/historico");

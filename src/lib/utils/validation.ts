@@ -36,6 +36,7 @@ const parseValorMonetario = (valor: string): number => {
   );
 };
 
+//verifica se a renda está correta, se o estado está correto e se as despesas estão corretas; se sim, retorna as validações
 export const isFormularioValido = (custeio: {
   renda: any;
   estado: any;

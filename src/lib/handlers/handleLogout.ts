@@ -5,16 +5,18 @@ import { Toast } from "../utils";
 
 export const handleLogout = async (router: AppRouterInstance) => {
   try {
+    //desloga o usuário do site
     await signOut(auth);
     localStorage.removeItem("photoURL"); // Remove a foto ao deslogar
 
-    // Redirecionar para dashboard
+    // Redireciona para a dashboard
     router.push("/");
     Toast.fire({
       title: "Logout realizado com sucesso!",
       icon: "success",
     });
   } catch (error) {
+    //se não der certo, retorna no console
     console.error("Erro ao sair da conta:", error);
   }
 };

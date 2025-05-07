@@ -42,7 +42,6 @@ export default async function handler(
     //verifica o parseForm e pega o arquivo enviado pelo usuário
     const { files } = await parseForm(req);
     const uploadedFile = files.file;
-    console.log("files:", files);
 
     //se não houver arquivo, retorna
     if (!uploadedFile) {

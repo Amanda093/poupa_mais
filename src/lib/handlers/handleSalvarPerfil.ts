@@ -22,6 +22,7 @@ export const handleSalvar = async (
   if (!user) return;
 
   try {
+    //se não houver nome, retorna
     if (!nome) {
       Toast.fire({
         icon: "warning",
@@ -30,6 +31,7 @@ export const handleSalvar = async (
       return;
     }
 
+    //se não houver data de nascimento, retorna
     if (dataNascimento == undefined) {
       Toast.fire({
         icon: "warning",
@@ -57,6 +59,7 @@ export const handleSalvar = async (
       return;
     }
 
+    //se a força da senha não for == Forte, retorna
     if (forcaSenha !== "Forte") {
       Toast.fire({
         title: "A senha deve ser forte!",
@@ -74,14 +77,16 @@ export const handleSalvar = async (
       return;
     }
 
+    //reautentica o usuário para mudanças sensíveis na conta
     const credential = EmailAuthProvider.credential(user.email!, senhaAtual);
     await reauthenticateWithCredential(user, credential);
 
     if (novaSenha) {
+      //atualiza a senha se houver input de novaSenha do usuário
       await updatePassword(user, novaSenha);
     }
 
-    // Atualiza nome e foto
+    // Atualiza nome e foto quando utilizado
     await updateProfile(user, {
       displayName: nome,
       photoURL: user.photoURL || undefined,

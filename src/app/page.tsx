@@ -44,7 +44,6 @@ import { verificarLimite, verificarSePlanejamentoAnterior } from "@/lib/utils";
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);
-  console.log("Loading: ", loading, "|", "Current user: ", user?.email);
   const [limitado, setLimitado] = useState(false);
   const [gerando, setGerando] = useState(false);
   const [mostrarCheck, setMostrarCheck] = useState(false);
