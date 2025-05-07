@@ -29,19 +29,59 @@ type DadoIBGE = Array<{
   }>;
 }>;
 
-interface GastoSugerido {
-  categoria: string;
-  valor_sugerido: number;
-}
 interface DadoJson {
-  economia_mensal_estimada: number;
-  gastos_sugeridos_para_corte: GastoSugerido[];
+  economia_mensal_estimada: number,
+  gastos_sugeridos_para_corte: [
+    {
+      categoria: string,
+      valor_sugerido: number,
+      percentual_da_renda: number,
+      justificativa: string
+    },
+  ],
+  distribuicao_percentual_dos_gastos: [
+    {
+      categoria: string,
+      valor: number,
+      percentual_da_renda: number
+    },
+  ],
+  avaliacao_gastos_em_relacao_a_media: [
+    {
+      categoria: string,
+      percentual_da_renda: number,
+      limite_recomendado: number,
+      comentario: "Acima do recomendado" | "dentro do esperado" | "abaixo do ideal"
+    },
+  ],
   metas: {
-    curto_prazo: string;
-    medio_prazo: string;
-    longo_prazo: string;
-  };
-  investimentos_sugeridos: string[];
+    curto_prazo: {
+      descricao: string,
+      prazo_estimado_meses: number,
+      valor_estimado: number
+    },
+    medio_prazo: {
+      descricao: string,
+      prazo_estimado_meses: number,
+      valor_estimado: number
+    },
+    longo_prazo: {
+      descricao: string,
+      prazo_estimado_anos: number,
+      valor_estimado: number
+    }
+  },
+  perfil_de_investidor_sugerido: "conservador" | "moderado" | "arrojado",
+  investimentos_sugeridos: [
+    {
+      nome: string,
+      tipo: string,
+      indicacao_para: "conservador" | "moderado" | "arrojado",
+      link: string
+    },
+  ],
+  ferramentas_de_organizacao_sugeridas: [string],
+  observacoes_gerais: [string]
 }
 
 export type { DadoBCB, DadoIBGE, DadoJson };

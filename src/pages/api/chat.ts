@@ -72,10 +72,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     ? "Observações do usuário: " + mensagem.obs
     : "";
 
-  //adiciona na prompt este texto, que pega a data que o planejamentoAnterior foi gerada e seu JSON armazenado no firestore, apenas se mensagem.utilizavel for true e houver planejamentoAnterior
+  //adiciona na prompt este texto, que pega a data que o planejamentoAnterior foi gerado e seu JSON armazenado no firestore, apenas se mensagem.utilizavel for true e houver planejamentoAnterior
   const utilizacao =
     mensagem.utilizavel && planejamentoAnterior
-      ? `Saiba que você já deu um planejamento anterior a esse, na data ${planejamentoAnterior.geradoEm} e seu planejamento gerado em JSON foi esse: ${planejamentoAnterior.mensagemJSON}. Baseie-se nesse planejamento anterior para fazer o seu novo planejamento, além de dizer ao usuário se ele está caminhando no caminho certo ou errado.`
+      ? `Além disso, você já deu um planejamento anterior a esse, na data ${planejamentoAnterior.geradoEm} e seu planejamento gerado em JSON foi esse: ${planejamentoAnterior.mensagemJSON}. Baseie-se nesse planejamento para fazer um novo item:
+      7. Avaliação baseado em planejamento anterior
+       - diga ao usuário se ele está conseguindo caminhar bem em seu planejamento ou não
+       - se não, diga o que está faltando em seu planejamento para que seja melhor`
       : "";
 
   //essa função busca alguns dados da economia brasileira baseado na API SIDRA do IBGE e do BCB, filtrado por estado
@@ -142,36 +145,102 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     //essa é a prompt que a IA recebe como prompt do usuário, incluindo ou não os valores declarados anteriormente (observacao, utilizacao)
     const prompt = `
-O usuário tem uma **renda mensal de R$ ${mensagem.renda}** e mora no estado de **${siglaEstado}**, Brasil.
+    O usuário tem uma **renda mensal de R$ ${mensagem.renda}** e mora no estado de **${siglaEstado}**, Brasil.
+    Gastos mensais informados: ${gastosFormat}
+    ${observacao}
 
-Gastos mensais informados:
-${gastosFormat}
-
-${observacao}
-
-Com base nisso, elabore um plano de economia para o usuário, incluindo:
-- Estimativa de economia mensal
-- Sugestões de corte de gastos
-- Metas de curto, médio e longo prazo
-- Dicas de investimento compatíveis com o cenário brasileiro atual
-
-O plano deve ser dividido em tópicos e conter formatação em Markdown, como listas e negrito, para facilitar a leitura.
-
-${utilizacao}
-
-⚠️ Além do plano acima, retorne EXATAMENTE essa estrutura JSON, exatamente abaixo do texto gerado acima:
-{
-  "economia_mensal_estimada": número,
-  "gastos_sugeridos_para_corte": [{ "categoria": string, "valor_sugerido": número }],
-  "metas": {
-    "curto_prazo": string,
-    "medio_prazo": string,
-    "longo_prazo": string
+    Com base nessas informações, elabore um plano financeiro detalhado para o usuário. O plano deve considerar o contexto econômico brasileiro atual e conter os seguintes tópicos:
+    
+    ## 🧾 1. Diagnóstico Financeiro
+    - Análise percentual dos gastos por categoria
+    - Comparação com padrões recomendados (ex: moradia até 30%, transporte até 15%, etc.)
+    - Comentários sobre desequilíbrios ou excessos
+    
+    ## 💰 2. Estimativa de Economia Mensal
+    - Valor sugerido para economizar mensalmente
+    - Justificativa com base na renda e nos gastos
+    
+    ## ✂️ 3. Sugestões de Corte de Gastos
+    - Liste categorias onde é possível reduzir gastos
+    - Para cada item, sugira um valor ideal e explique o motivo
+    
+    ## 🎯 4. Metas Financeiras
+    - **Curto prazo (até 6 meses):** objetivo rápido, como quitar dívidas ou montar reserva de emergência
+    - **Médio prazo (6 meses a 2 anos):** exemplo: compra de bens, viagens, cursos
+    - **Longo prazo (acima de 2 anos):** como aposentadoria, imóvel próprio, investimentos sólidos
+    
+    ## 📈 5. Dicas de Investimento
+    - Sugestões de investimentos **seguros e acessíveis no Brasil em ${new Date().getFullYear()}**
+    - Separar por perfil: conservador, moderado e arrojado
+    - Incluir links de referência se possível (como sites do Tesouro Direto, Nubank, etc.)
+    
+    ## 📝 6. Observações Finais
+    - Dicas práticas de organização (planilhas, apps, hábitos)
+    - Aviso sobre procurar ajuda de um consultor financeiro para decisões mais complexas
+    
+        ${utilizacao}
+    >
+    
+    ---
+    
+    ⚠️ **Além do plano acima, retorne EXATAMENTE esta estrutura JSON abaixo:**
+    
+    {
+  economia_mensal_estimada: number,
+  gastos_sugeridos_para_corte: [
+    {
+      categoria: string,
+      valor_sugerido: number,
+      percentual_da_renda: number,
+      justificativa: string
+    },
+  ],
+  distribuicao_percentual_dos_gastos: [
+    {
+      categoria: string,
+      valor: number,
+      percentual_da_renda: number
+    },
+  ],
+  avaliacao_gastos_em_relacao_a_media: [
+    {
+      categoria: string,
+      percentual_da_renda: number,
+      limite_recomendado: number,
+      comentario: "Acima do recomendado" | "dentro do esperado" | "abaixo do ideal"
+    },
+  ],
+  metas: {
+    curto_prazo: {
+      descricao: string,
+      prazo_estimado_meses: number,
+      valor_estimado: number
+    },
+    medio_prazo: {
+      descricao: string,
+      prazo_estimado_meses: number,
+      valor_estimado: number
+    },
+    longo_prazo: {
+      descricao: string,
+      prazo_estimado_anos: number,
+      valor_estimado: number
+    }
   },
-  "investimentos_sugeridos": [string]
+  perfil_de_investidor_sugerido: "conservador" | "moderado" | "arrojado",
+  investimentos_sugeridos: [
+    {
+      nome: string,
+      tipo: string,
+      indicacao_para: "conservador" | "moderado" | "arrojado",
+      link: string
+    },
+  ],
+  ferramentas_de_organizacao_sugeridas: [string],
+  observacoes_gerais: [string]
 }
 
-⚠️ O JSON deve vir abaixo do plano, em um **bloco separado e bem formatado** para que eu possa fazer parsing automático. Não explique o JSON, apenas mostre-o. Não utilize markdown.
+⚠️ O JSON deve vir abaixo do plano, em um **bloco separado e bem formatado** para que eu possa fazer parsing automático. Não explique o JSON, apenas mostre-o. Não utilize markdown no JSON.
 `;
 
     //chama a dependência do InferenceClient (API da Hugging Face, uma provedora de IA pública que pode ser acessada na web https://huggingface.co/) com a API KEY do admin
@@ -185,8 +254,6 @@ ${utilizacao}
         { role: "system", content: systemprompt },
         { role: "user", content: prompt },
       ],
-      max_tokens: 1000,
-      temperature: 0.7,
     });
 
     //pega a mensagem e armazena a primeira resposta dela (se ela gerar mais que uma) e transforma em dados
@@ -195,6 +262,8 @@ ${utilizacao}
     if (!mensagemBot) {
       return res.status(500).json({ error: "Mensagem da LLM não recebida" });
     }
+
+    console.log(mensagemBot)
 
     //esse código abaixo separa a resposta do bot entre a mensagemString (mensagem de texto gerada pela IA) e a mensagem JSON (mensagem em JSON gerada pela IA)
     const inicioJSON = mensagemBot.indexOf("{");
