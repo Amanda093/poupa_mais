@@ -2,6 +2,8 @@ import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+//este código inicializa o Firebase no server se ainda não foi iniciado, exportando as funções de db (Firestore) e auth (Authentication) incluídas no Firebase.
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
@@ -11,7 +13,6 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
-// Inicializa o app Firebase apenas se ainda não foi iniciado
 const firebase = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 export const auth = getAuth(firebase);

@@ -41,7 +41,6 @@ const Historico = (props: HistoricoProps) => {
       parseFloat(despesa.valor.replace(/\D/g, "")) / 100;
     return total + despesaValorNumerico;
   }, 0);
-  console.log(rendaNumerica);
   const valorRestante = rendaNumerica - valorTotalDespesas;
   const getCategoriaCor = (categoria: string): string => {
     switch (categoria.toLowerCase()) {

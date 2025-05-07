@@ -1,3 +1,5 @@
+//armazenando alguns objetos que serão usados em várias partes do código, reciclando o código
+
 const codigosEstadosIBGE: Record<number, string> = {
   1501: "Belém (PA)",
   2301: "Fortaleza (CE)",

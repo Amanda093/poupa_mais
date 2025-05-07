@@ -5,7 +5,7 @@ import { CalendarIcon } from "lucide-react";
 import * as React from "react";
 
 import { Calendar } from "@/components/ui/Calendar/calendar";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/helpers/utils";
 
 import { Button } from "../Button";
 import { Popover, PopoverContent, PopoverTrigger } from "../Popover";

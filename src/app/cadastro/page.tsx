@@ -1,6 +1,6 @@
 "use client";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+
+// Imports
 import { LucideEye, LucideEyeClosed } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // para redirecionar
@@ -13,11 +13,12 @@ import { MdError } from "react-icons/md";
 
 import { Banner, Button, Input } from "@/components";
 import DatePicker from "@/components/ui/DatePicker/date-picker";
-import { auth } from "@/lib/clientApp";
-import { db } from "@/lib/clientApp";
-import { Toast } from "@/lib/sweetalert";
+import { handleCadastro } from "@/lib/handlers"; // função que faz o cadastro do usuário
+import { auth } from "@/lib/services";
+import { verificarForcaSenha } from "@/lib/utils";
 
 const CadastroPage = () => {
+  //declara os estados utilizados nos inputs do código
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
@@ -29,84 +30,15 @@ const CadastroPage = () => {
 
   const [user, loading] = useAuthState(auth);
 
+  //se o usuário se cadastrar com sucesso, manda pro histórico
   useEffect(() => {
     if (!loading && user !== null) {
       router.push("/historico");
     }
   }, [user, loading, router]);
 
-  // verifica se a senha sugerida pelo usuário é forte
-  const verificarForcaSenha = (senha: string): string => {
-    const temMinuscula = /[a-z]/.test(senha);
-    const temMaiuscula = /[A-Z]/.test(senha);
-    const temNumero = /[0-9]/.test(senha);
-    const temEspecial = /[^A-Za-z0-9]/.test(senha);
-
-    const requisitos = [
-      temMinuscula,
-      temMaiuscula,
-      temNumero,
-      temEspecial,
-    ].filter(Boolean).length;
-
-    if (senha.length < 6) {
-      return "Fraca";
-    }
-    if (requisitos === 2 || requisitos === 3) {
-      return "Média";
-    }
-    if (requisitos === 4) {
-      return "Forte";
-    }
-    return "Fraca";
-  };
-
   // chama a const verificar de força da senha, colocando password como seu parametro
   const forcaSenha = verificarForcaSenha(password);
-
-  const handleCadastro = async () => {
-    if (password !== confirmpassword) {
-      Toast.fire({
-        icon: "warning",
-        title: "As senhas não coincidem.",
-      });
-      return;
-    }
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-      const user = userCredential.user;
-
-      // Salvar dados adicionais no Firestore
-      await setDoc(doc(db, "usuarios", user.uid), {
-        uid: user.uid,
-        nome,
-        email,
-        dataNascimento,
-        usos: 0,
-        ultimaGeracao: new Date().toISOString(),
-        criadoEm: new Date(),
-      });
-      // Redirecionar para dashboard
-      router.push("/FAQ");
-
-      Toast.fire({
-        title: "Cadastro realizado com sucesso!",
-        icon: "success",
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error("Erro ao cadastrar:", error);
-      Toast.fire({
-        title: error.message,
-        icon: "success",
-      });
-    }
-  };
 
   return (
     <div className="relative mx-auto flex h-[calc(100vh-6em)] w-screen max-w-[2000px] justify-between overflow-y-hidden">
@@ -240,7 +172,18 @@ const CadastroPage = () => {
             <Button
               variant="default"
               className="w-full"
-              onClick={handleCadastro}
+              onClick={() =>
+                //chama a função handleCadastro e manda os valores
+                handleCadastro({
+                  nome,
+                  email,
+                  password,
+                  confirmpassword,
+                  dataNascimento,
+                  forcaSenha,
+                  router,
+                })
+              }
             >
               Cadastrar-se
             </Button>

@@ -1,28 +1,50 @@
 import axios from "axios";
 import { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-import { Custeio, DadoGrafico } from "@/interface";
+import { auth } from "@/lib/services";
+import { Custeio, DadoJson } from "@/types";
 
 const useChatbot = () => {
+  //primeiro, declaramos as váriaveis que serão utilizadas no código
   const [mensagemBot, setMensagemBot] = useState<string>("");
-  const [respostaJson, setRespostaJson] = useState<DadoGrafico | null>(null);
+  const [respostaJson, setRespostaJson] = useState<DadoJson | null>(null);
+  const [user, loading] = useAuthState(auth);
 
+  //função sendMensagem irá mandar a mensagem de tipo Custeio, avaliando se o usuário está logado para caso for necessário pegar dados do Firestore.
   const sendMensagem = async (
     mensagem: Custeio,
-  ): Promise<{ texto: string; json: DadoGrafico | null } | undefined> => {
+  ): Promise<{ texto: string; json: DadoJson | null } | undefined> => {
+    if (loading) {
+      console.warn("Esperando carregar o usuário...");
+      return;
+    }
+
+    if (!user) {
+      console.error("Usuário não autenticado. A mensagem não será enviada.");
+      return { texto: "Erro: usuário não autenticado.", json: null };
+    }
+
+    //aqui, a variável resposta dá um post em pages/api/chat, enviando a mensagem e o uid do usuário se houver.
     try {
-      const resposta = await axios.post("/api/chat", mensagem);
+      const resposta = await axios.post("/api/chat", {
+        ...mensagem,
+        uid: user.uid, // Adicionando o uid no corpo
+      });
+
+      //formata a resposta da em  IA em texto para um string (mensagemTexto) e a resposta em JSON para um tipo dadosJson (dados), para depois armazenar as duas respostas
       const mensagemTexto =
         resposta.data.message ?? "Erro: resposta vazia do bot.";
-      const dados = resposta.data.dadosGraficos ?? null;
+      const dados = resposta.data.dadosJson ?? null;
 
       setMensagemBot(mensagemTexto);
       setRespostaJson(dados);
+
       if (!dados) {
         console.error("Resposta JSON nula, não será salva no Firestore.");
-        return;
       }
 
+      //se o try der certo, retorna mensagemTexto e dados(JSON)
       return { texto: mensagemTexto, json: dados };
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -35,6 +57,7 @@ const useChatbot = () => {
     }
   };
 
+  //ao verificar que tudo deu certo, useChatBot retorna mensagemBot, respostaJson e a função sendMensagem
   return { mensagemBot, respostaJson, sendMensagem };
 };
 

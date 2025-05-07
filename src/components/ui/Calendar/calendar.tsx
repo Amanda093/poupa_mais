@@ -12,23 +12,25 @@ import {
   useDayPicker,
 } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/helpers/utils";
 
 import { Button, buttonVariants } from "../Button";
 
+//Define a props do clendar como o conjunto de props do "DayPicker" e algumas props adicionais
 export type CalendarProps = DayPickerProps & {
   /**
-   * In the year view, the number of years to display at once.
-   * @default 12
+   *
+   * @default 12 //Valor padrão do "yearRange" é definido como 12
    */
-  yearRange?: number;
+  yearRange?: number; //Prop que define quantas opções de ano serão mostradas quando se vai escolher um ano
 
   /**
-   * Wether to show the year switcher in the caption.
-   * @default true
+   *
+   * @default true //Valor padrão do "showyearSwitcher" é definido como true
    */
-  showYearSwitcher?: boolean;
+  showYearSwitcher?: boolean; //Prop que define se o menu de escolha de anos está sendo mostrado ou não
 
+  //Outras props de customização do calendar
   monthsClassName?: string;
   monthCaptionClassName?: string;
   weekdaysClassName?: string;
@@ -53,29 +55,35 @@ export type CalendarProps = DayPickerProps & {
   hiddenClassName?: string;
 };
 
-type NavView = "days" | "years";
+type NavView = "days" | "years"; //Declara um tipo de variavel chamado NavView que aceita somente os valores days ou years
 
 /**
- * A custom calendar component built on top of react-day-picker.
- * @param props The props for the calendar.
+ * Comentário de documentação (JSDoc), que descreve o componente calendar e ajuda a IDE a mostrar dicas de uso.
+ * @param props
  * @default yearRange 12
  * @returns
  */
-function Calendar({
-  className,
-  showOutsideDays = true,
-  showYearSwitcher = true,
-  yearRange = 12,
-  numberOfMonths,
-  components,
-  ...props
-}: CalendarProps) {
-  const [navView, setNavView] = React.useState<NavView>("days");
+
+//Função que retorna o componente de calendar
+function Calendar(
+  {
+    className,
+    showOutsideDays = true,
+    showYearSwitcher = true,
+    yearRange = 12,
+    numberOfMonths,
+    components,
+    ...props
+  }: CalendarProps /*Props do calendar pros*/,
+) {
+  const [navView, setNavView] = React.useState<NavView>("days"); //useState usado para definir se o calendar estará sendo mostrado o menu de dias ou de anos
   const [displayYears, setDisplayYears] = React.useState<{
+    //useState que armazena o intervalo de anos que será mostrado
     from: number;
     to: number;
   }>(
     React.useMemo(() => {
+      //Calcula os anos que serão mostrados sempre que o year range muda
       const currentYear = new Date().getFullYear();
       return {
         from: currentYear - Math.floor(yearRange / 2 - 1),

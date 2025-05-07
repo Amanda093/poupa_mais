@@ -1,24 +1,5 @@
 "use client";
 
-{
-  /*TODO: Checar se todos os requisitos estão sendo cumpridos - todos
-  TODO: Certificar responsividade geral
-  TODO: Comentar o código Amanda e NI
-  TODO: Organizar o código Miguel
-  TODO: Customizar mensagens de erro default do firebase  nos sweetalert NI e Miguel
-  */
-}
-
-import { differenceInDays } from "date-fns";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
@@ -39,68 +20,33 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Spinner,
   Textarea,
   Title,
 } from "@/components";
-import { Spinner } from "@/components/ui/Spinner";
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
-import { Custeio, Gasto } from "@/interface";
-import { db } from "@/lib/clientApp";
-import { auth } from "@/lib/clientApp";
-import { Popup } from "@/lib/sweetalert";
+import {
+  addGasto,
+  handleChangeEstado,
+  handleChangeGastos,
+  handleChangeObs,
+  handleChangeRenda,
+  handleChangeUtilizavel,
+  handleFormIA,
+  removeGasto,
+} from "@/lib/handlers";
+import { auth } from "@/lib/services";
+import { verificarLimite, verificarSePlanejamentoAnterior } from "@/lib/utils";
+import { Custeio } from "@/types";
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);
-  console.log("Loading: ", loading, "|", "Current user: ", user?.email);
-  const [anteriores, setAnteriores] = useState(true);
   const [limitado, setLimitado] = useState(false);
   const [gerando, setGerando] = useState(false);
+  const [mostrarCheck, setMostrarCheck] = useState(false);
   const planejamentoRef = useRef<HTMLDivElement>(null);
-
-  // verifica se o usuário anônimo já usou o serviço anteriormente e limita novo uso
-  useEffect(() => {
-    if (!user && !loading) {
-      const usado = localStorage.getItem("usouGeracao");
-      if (usado === "true") {
-        setLimitado(true);
-      }
-    }
-  }, [loading, user]);
-
-  // limita usuários autenticados a 3 usos por semana, resetando após 7 dias
-  useEffect(() => {
-    const verificarLimite = async () => {
-      if (user) {
-        const userDocRef = doc(db, "usuarios", user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        const hoje = new Date();
-
-        if (!userDoc.exists()) {
-          await setDoc(userDocRef, {
-            usos: 0,
-            ultimaGeracao: hoje.toISOString(),
-          });
-        } else {
-          const data = userDoc.data();
-          const ultima = new Date(data.ultimaGeracao);
-          const dias = differenceInDays(hoje, ultima);
-
-          if (dias >= 7) {
-            await updateDoc(userDocRef, {
-              usos: 0,
-              ultimaGeracao: hoje.toISOString(),
-            });
-          } else if (data.usos >= 3) {
-            setLimitado(true);
-          }
-        }
-      }
-    };
-
-    verificarLimite();
-  }, [user]);
+  const { mensagemBot, sendMensagem } = useChatbot();
 
   const estadosOrdenados = Object.entries(codigosEstadosIBGE).sort((a, b) =>
     a[1].localeCompare(b[1]),
@@ -115,147 +61,28 @@ export default function Home() {
     gastos: [{ nome: "", valor: "", categoria: "" }],
     estado: Number(estadosOrdenados[0][0]),
     obs: "",
+    utilizavel: false,
   });
 
-  const handleChangeGastos = (
-    index: number,
-    campo: "nome" | "valor" | "categoria",
-    value: string,
-  ) => {
-    const novosGastos = [...custeio.gastos];
-    novosGastos[index][campo] = value;
-    setCusteio({ ...custeio, gastos: novosGastos });
-  };
-
-  const addGastos = () => {
-    setCusteio({
-      ...custeio,
-      gastos: [...custeio.gastos, { nome: "", valor: "", categoria: "" }],
-    });
-  };
-
-  const removeGasto = (index: number) => {
-    setCusteio({
-      ...custeio,
-      gastos: custeio.gastos.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleChangeRenda = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCusteio({ ...custeio, renda: e.target.value });
-  };
-
-  const handleChangeEstado = (value: string) => {
-    setEstadoSelecionado(value);
-    setCusteio({ ...custeio, estado: Number(value) });
-  };
-
-  const handleChangeObs = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCusteio({ ...custeio, obs: e.target.value });
-  };
-
-  const parseValorMonetario = (valor: string): number => {
-    return Number(
-      valor
-        .replace(/\s/g, "") // remove espaços
-        .replace("R$", "") // remove R$
-        .replace(/\./g, "") // remove pontos de milhar
-        .replace(",", "."), // troca vírgula por ponto
-    );
-  };
-
-  const isFormularioValido = () => {
-    const rendaValida =
-      !isNaN(parseValorMonetario(custeio.renda)) &&
-      parseValorMonetario(custeio.renda) > 0;
-
-    const estadoValido = !isNaN(Number(custeio.estado));
-
-    const temDespesaValida = custeio.gastos.some(
-      (gasto: Gasto) =>
-        gasto.nome.trim() !== "" &&
-        !isNaN(parseValorMonetario(gasto.valor)) &&
-        parseValorMonetario(gasto.valor) > 0,
-    );
-
-    return rendaValida && estadoValido && temDespesaValida;
-  };
-
-  const { mensagemBot, sendMensagem } = useChatbot();
-
-  const handleSend = () => {
-    if (!isFormularioValido()) {
-      Popup.fire({
-        icon: "warning",
-        title: "Campos incompletos",
-        text: "Preencha todos os campos obrigatórios antes de continuar.",
-      });
-      return;
-    }
-
-    Popup.fire({
-      html: `<div><h3>Confirmar envio?</h3></div>`,
-      icon: "question",
-      focusConfirm: false,
-      showDenyButton: true,
-      confirmButtonText: "Sim",
-      confirmButtonColor: "#00BC7D",
-      denyButtonText: "Não",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        setGerando(true); // Começa o loading
-        try {
-          const envio: Custeio = custeio;
-          const respostaIA = await sendMensagem(envio);
-
-          console.log("Resposta IA:", respostaIA);
-
-          if (!user) {
-            localStorage.setItem("usouGeracao", "true");
-            return;
-          }
-
-          if (!respostaIA || !respostaIA.json) {
-            console.error("Resposta JSON nula. Não será salva no Firestore.");
-            return;
-          }
-
-          const userDocRef = doc(db, "usuarios", user.uid);
-          const userDoc = await getDoc(userDocRef);
-
-          if (userDoc.exists()) {
-            const usosAtual = userDoc.data().usos ?? 0;
-
-            await updateDoc(userDocRef, {
-              usos: usosAtual + 1,
-            });
-
-            const planejamentosRef = collection(userDocRef, "planejamentos");
-
-            await addDoc(planejamentosRef, {
-              usarAnteriores: anteriores,
-              mensagemJSON: respostaIA.json,
-              mensagemBot: respostaIA.texto ?? "Resposta não gerada",
-              custeio,
-              geradoEm: serverTimestamp(),
-            });
-
-            console.log("Dados enviados para o Firestore com sucesso!");
-          } else {
-            console.error("Usuário não encontrado no Firestore.");
-          }
-        } catch (error) {
-          console.error("Erro ao gerar planejamento:", error);
-        } finally {
-          setGerando(false); // Finaliza o loading
-
-          setTimeout(() => {
-            planejamentoRef.current?.scrollIntoView({ behavior: "smooth" });
-          }, 100);
-        }
+  // verifica se o usuário anônimo já usou o serviço anteriormente e limita novo uso
+  useEffect(() => {
+    if (!user && !loading) {
+      const usado = localStorage.getItem("usouGeracao");
+      if (usado === "true") {
+        setLimitado(true);
       }
-    });
-  };
+    }
+  }, [loading, user]);
+
+  // limita usuários autenticados a 3 usos por semana, resetando após 7 dias
+  useEffect(() => {
+    verificarLimite(user, setLimitado);
+  }, [user]);
+
+  // Verifica se o usuário já possui um planejamento anterior e exibe a checkbox
+  useEffect(() => {
+    verificarSePlanejamentoAnterior(user, setMostrarCheck);
+  }, [user]);
 
   return (
     <div className="pb-[5em]">
@@ -278,7 +105,7 @@ export default function Home() {
               placeholder="R$ 0,00"
               variant="background"
               value={custeio.renda}
-              onChange={handleChangeRenda}
+              onChange={(e) => handleChangeRenda(e.target.value, setCusteio)}
             />
 
             <p className="text-light">
@@ -293,7 +120,9 @@ export default function Home() {
             </label>
             <Select
               value={estadoSelecionado}
-              onValueChange={(value) => handleChangeEstado(value)}
+              onValueChange={(value) =>
+                handleChangeEstado(value, setEstadoSelecionado, setCusteio)
+              }
             >
               <SelectTrigger className="flex" variant="background">
                 <SelectValue placeholder="" />
@@ -376,7 +205,12 @@ export default function Home() {
                     placeholder={`Gasto ${index + 1}`}
                     variant="default"
                     onChange={(e) => {
-                      handleChangeGastos(index, "nome", e.target.value);
+                      handleChangeGastos(
+                        index,
+                        "nome",
+                        e.target.value,
+                        setCusteio,
+                      );
                     }}
                   />
                 </div>
@@ -388,7 +222,12 @@ export default function Home() {
                     placeholder="R$ 0,00"
                     variant="default"
                     onChange={(e) => {
-                      handleChangeGastos(index, "valor", e.target.value);
+                      handleChangeGastos(
+                        index,
+                        "valor",
+                        e.target.value,
+                        setCusteio,
+                      );
                     }}
                   />
                 </div>
@@ -397,7 +236,7 @@ export default function Home() {
                   <Select
                     value={gasto.categoria}
                     onValueChange={(value) =>
-                      handleChangeGastos(index, "categoria", value)
+                      handleChangeGastos(index, "categoria", value, setCusteio)
                     }
                   >
                     <SelectTrigger className="flex" variant="default">
@@ -415,7 +254,7 @@ export default function Home() {
                 </div>
                 <div className="max-sm:mt-2">
                   <Button
-                    onClick={() => removeGasto(index)}
+                    onClick={() => removeGasto(index, setCusteio)}
                     className="aspect-square w-[2em] !p-0 max-sm:h-[2em] max-sm:w-[6em]"
                     variant="delete"
                   >
@@ -427,7 +266,7 @@ export default function Home() {
           </AnimatePresence>
 
           <Button
-            onClick={addGastos}
+            onClick={() => addGasto(setCusteio)}
             variant="outline"
             className="mx-auto w-fit"
           >
@@ -441,16 +280,20 @@ export default function Home() {
               placeholder="Ex: Quero guardar dinheiro para viajar, tenho dívidas, ou preciso de ajuda com prioridades..."
               className="min-h-[8em]"
               value={custeio.obs}
-              onChange={handleChangeObs}
+              onChange={(e) => {
+                handleChangeObs(e.target.value, setCusteio);
+              }}
             />
           </div>
-          {user && (
+          {user && mostrarCheck && (
             <>
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="remember"
-                  checked={anteriores}
-                  onCheckedChange={(val) => setAnteriores(!!val)}
+                  checked={custeio.utilizavel}
+                  onCheckedChange={(val) =>
+                    handleChangeUtilizavel(val, setCusteio)
+                  }
                 />
                 <label htmlFor="remember" className="">
                   Usar planejamentos anteriores como base para o novo
@@ -468,14 +311,25 @@ export default function Home() {
                 <h2>Terminou?</h2>
                 <p>Agora nós entramos em ação!</p>
               </div>
-              <div className="mt-[2em] flex justify-center">
+              <div className="flex justify-center">
                 {gerando ? (
                   <Button disabled variant="default">
                     <Spinner />
                     Gerando planejamento...
                   </Button>
                 ) : (
-                  <Button className="w-fit px-[0.75em]" onClick={handleSend}>
+                  <Button
+                    className="w-fit px-[0.75em]"
+                    onClick={() =>
+                      handleFormIA({
+                        custeio,
+                        user,
+                        sendMensagem,
+                        setGerando,
+                        planejamentoRef,
+                      })
+                    }
+                  >
                     <HiSparkles />
                     Gerar Planejamento
                   </Button>

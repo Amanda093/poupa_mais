@@ -55,6 +55,12 @@ p {
   box-shadow: 0px 0px 35px 0px rgba(3, 226, 152, 0.4);
 }
 
+@utility amber-glow {
+  -webkit-box-shadow: 0px 0px 35px 0px rgba(255, 167, 36, 0.4);
+  -moz-box-shadow: 0px 0px 35px 0px rgba(255, 167, 36, 0.4);
+  box-shadow: 0px 0px 35px 0px rgba(255, 167, 36, 0.4);
+}
+
 @utility rose-glow {
   -webkit-box-shadow: 0px 0px 35px 0px rgba(255, 36, 83, 0.4);
   -moz-box-shadow: 0px 0px 35px 0px rgba(255, 36, 83, 0.4);
@@ -65,7 +71,8 @@ p {
   font-weight: 600;
 }
 
-.text-ia h3 {
+.text-ia h3,
+.text-ia h4 {
   color: var(--color-emerald-500);
   font-weight: 550;
   margin-top: 0.75em;
@@ -120,7 +127,9 @@ p {
   padding-block: 1em;
   font-size: inherit;
 }
-
+.swal2-title {
+  text-align: center !important;
+}
 .container-custom .swal2-title {
   text-align: left;
   padding: 0;
@@ -167,6 +176,10 @@ p {
   border-radius: 1em;
 }
 
+.colored-toast .swal2-title {
+  text-align: left !important;
+}
+
 .swal2-success,
 .swal2-success-fix,
 .swal2-success-line-long,
@@ -183,16 +196,10 @@ p {
 
 .swal2-error {
   color: var(--color-red-500) !important;
-  border-color: var(--color-red-500) !important;
 }
 
 .colored-toast.swal2-icon-error {
   background-color: var(--color-red-500) !important;
-}
-
-.swal2-warning {
-  color: var(--color-amber-500) !important;
-  border-color: var(--color-amber-500) !important;
 }
 
 .colored-toast.swal2-icon-warning {
@@ -281,6 +288,32 @@ p {
 
 label {
   cursor: text;
+}
+
+kbd {
+  background-color: var(--color-white);
+  color: var(--color-emerald-500);
+  border-radius: 0.35rem;
+  border: 1px solid var(--color-emerald-500);
+  box-shadow: 0 2px 0 1px var(--color-emerald-500);
+  cursor: default;
+  font-family: var(--font-family-sans-serif);
+  font-size: 0.85em;
+  font-weight: 600;
+  line-height: 1;
+  min-width: 0.75rem;
+  display: inline-block;
+  text-align: center;
+  padding: 2px 5px;
+  margin-inline: 0.25em;
+
+  position: relative;
+  top: -1px;
+
+  &:hover {
+    box-shadow: 0 1px 0 0.5px var(--color-emerald-500);
+    top: 1px;
+  }
 }
 
 @keyframes float {

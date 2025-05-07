@@ -1,3 +1,5 @@
+// este código configura os cookies do site e a configuração de usuário do Firebase
+
 export const serverConfig = {
   cookieName: process.env.AUTH_COOKIE_NAME!,
   cookieSignatureKeys: [

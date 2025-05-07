@@ -1,5 +1,7 @@
 "use client";
 
+// configuração dos PopUps apresentados no site
+
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -31,11 +33,3 @@ export const Toast = withReactContent(Swal).mixin({
   timer: 6500,
   timerProgressBar: true,
 });
-
-/*
-Exemplo:
-Toast.fire({
-    title: "Cadastro realizado com sucesso!",
-    icon: "success",
-});
-*/
