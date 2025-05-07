@@ -13,7 +13,7 @@
   - [Dependências](#dependências-)
 - [📁 Como executar o projeto](#-Como-executar-o-projeto)
 - [📷 Demonstração](#-demonstração)
-- [❤️ Contribuidores](#-contribuidores)
+- [💸 Contribuidores](#-contribuidores)
 
 ## ✨ Sobre o projeto
 
@@ -52,17 +52,6 @@ A proposta do Poupa+ é oferecer um **sistema de auxílio financeiro** no qual o
 ![REACTICONS](https://img.shields.io/badge/ICONS-0088CC?&style=for-the-badge&logo=react&logoColor=white)
 ![REACTMARKDOWN](https://img.shields.io/badge/REACT_MARKDOWN-000000?&style=for-the-badge&logo=markdown&logoColor=white)
 ![REACTMARKDOWN](https://img.shields.io/badge/Sweet_alert_2-F7DF1E?&style=for-the-badge&logo=javascript&logoColor=black)
-
-## 📷 Demonstração
-
-**1.** Página Inicial
-![Tela inicial](./public/screenshot-principal.png)
-
-**2.** Página de Cadastro
-![Tela de cadastro](./public/screenshot-cadastro.png)
-
-**3.** Página de Login
-![Tela de login](./public/screenshot-login.png)
 
 ## 📁 Como executar o projeto localmente
 
@@ -123,7 +112,18 @@ bun dev
 
 **5.** Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
 
-## ❤️ Contribuidores
+## 📷 Demonstração
+
+**1.** Página Inicial
+![Tela-inicial](public/screenshot-principal.png)
+
+**2.** Página de Cadastro
+![Tela-de-cadastro](public/screenshot-cadastro.png)
+
+**3.** Página de Login
+![Tela-de-login](public/screenshot-login.png)
+
+## 💸 Contribuidores
 
 <div align=center>
   <table>
