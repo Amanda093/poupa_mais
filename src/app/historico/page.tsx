@@ -155,7 +155,7 @@ const HistoricoPage = () => {
                 onChange={(e) => setNovaSenha(e.target.value)}
                 placeholder="Nova Senha"
                 variant="default"
-                className="w-75"
+                className={`w-75 ${forcaSenha === "Fraca" ? "focus:!rose-glow focus:outline-rose-500" : forcaSenha === "Média" ? "focus:!amber-glow focus:outline-amber-500" : ""}`}
                 icon={
                   showNovaSenha ? (
                     <LucideEye
@@ -180,7 +180,7 @@ const HistoricoPage = () => {
                 onChange={(e) => setSenhaAtual(e.target.value)}
                 placeholder="Senha Atual"
                 variant="default"
-                className="w-75"
+                className={`w-75 ${forcaSenha === "Fraca" ? "focus:!rose-glow focus:outline-rose-500" : forcaSenha === "Média" ? "focus:!amber-glow focus:outline-amber-500" : ""}`}
                 icon={
                   showSenhaAtual ? (
                     <LucideEye

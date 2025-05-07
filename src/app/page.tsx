@@ -1,20 +1,7 @@
 "use client";
 
-/*TODO: Comentar o código Miguel
-  TODO: Organizar o código Amanda Ni - organizamos o cadastro e login, inicial, faq
-  */
+/*TODO: Comentar o código Miguel*/
 
-import { CheckedState } from "@radix-ui/react-checkbox";
-import { differenceInDays, set } from "date-fns";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
@@ -41,7 +28,7 @@ import {
 } from "@/components";
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
-import { db, auth } from "@/lib/services";
+import { auth } from "@/lib/services";
 import {
   addGasto,
   handleChangeGastos,

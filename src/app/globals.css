@@ -55,6 +55,12 @@ p {
   box-shadow: 0px 0px 35px 0px rgba(3, 226, 152, 0.4);
 }
 
+@utility amber-glow {
+  -webkit-box-shadow: 0px 0px 35px 0px rgba(255, 167, 36, 0.4);
+  -moz-box-shadow: 0px 0px 35px 0px rgba(255, 167, 36, 0.4);
+  box-shadow: 0px 0px 35px 0px rgba(255, 167, 36, 0.4);
+}
+
 @utility rose-glow {
   -webkit-box-shadow: 0px 0px 35px 0px rgba(255, 36, 83, 0.4);
   -moz-box-shadow: 0px 0px 35px 0px rgba(255, 36, 83, 0.4);
