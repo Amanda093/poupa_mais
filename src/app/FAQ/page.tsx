@@ -34,9 +34,8 @@ const FAQPage = () => {
             vive e suas principais despesas. Para cada uma das suas despesas, é
             necessário informar o nome da despesa, seu valor e a qual categoria
             ela pertence. Caso deseje adicionar outra despesa, basta clicar no
-            botão <b className="text-emerald-500">Adicionar despesa</b>. Se
-            quiser incluir alguma informação extra, escreva-a na área de
-            observações.
+            botão <kbd>Adicionar despesa</kbd>. Se quiser incluir alguma
+            informação extra, escreva-a na área de observações.
           </p>
 
           <Image
@@ -47,9 +46,8 @@ const FAQPage = () => {
 
           <p className="text-light">
             Depois de adicionar todas as informações desejadas, clique no botão{" "}
-            <b className="text-emerald-500">Gerar planejamento</b> para que
-            nosso sistema gere uma sugestão de gestão financeira personalizada
-            para você.
+            <kbd>Gerar planejamento</kbd> para que nosso sistema gere uma
+            sugestão de gestão financeira personalizada para você.
           </p>
 
           <Image
@@ -63,11 +61,10 @@ const FAQPage = () => {
           </h2>
 
           <p className="text-light">
-            Para criar uma conta, clique no botão{" "}
-            <b className="text-emerald-500">Login</b> na parte superior direita
-            do site. Após isso, você será redirecionado para a página de
-            registro, onde deverá preencher os campos obrigatórios: nome, email,
-            data de nascimento, e senha.
+            Para criar uma conta, clique no botão <kbd>Login</kbd> na parte
+            superior direita do site. Após isso, você será redirecionado para a
+            página de cadastro, onde deverá preencher os campos obrigatórios:
+            nome, email, data de nascimento, e senha.
           </p>
 
           <Image
@@ -99,7 +96,10 @@ const FAQPage = () => {
           </p>
           <p className="text-light">
             A seção de <b className="text-emerald-500">perfil</b>, onde são
-            exibidas as informações da sua conta.
+            exibidas as informações da sua conta, aqui você pode editar
+            informações como nome, email, data de nascimento, senha e depois
+            clicar no botão <kbd>Salvar</kbd>. Além disso, você trocar sua foto
+            de perfil pelo botão <kbd>Trocar foto</kbd>.
           </p>
           <Image
             src={perfil}
@@ -167,9 +167,15 @@ const FAQPage = () => {
             </AccordionTrigger>
             <AccordionContent>
               Com certeza! Você pode abrir uma <i>issue</i> no repositório do
-              <a href="https://github.com/Amanda093/poupa_mais"> GitHub</a> ou
-              entrar em contato com um dos contribuidores listados no final da
-              página.
+              <a
+                className="text-bold text-emerald-500 hover:underline"
+                href="https://github.com/Amanda093/poupa_mais"
+              >
+                {" "}
+                GitHub
+              </a>{" "}
+              ou entrar em contato com um dos contribuidores listados no final
+              da página.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
