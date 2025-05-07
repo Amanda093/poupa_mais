@@ -1,6 +1,7 @@
 import { signOut } from "firebase/auth";
-import { auth } from "../services";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+
+import { auth } from "../services";
 import { Toast } from "../utils";
 
 export const handleLogout = async (router: AppRouterInstance) => {

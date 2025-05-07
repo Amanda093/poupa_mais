@@ -1,14 +1,14 @@
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
-  updateEmail,
   updatePassword,
   updateProfile,
   User,
 } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
-import { Popup, Toast } from "../utils";
+
 import { db } from "../services";
+import { Popup, Toast } from "../utils";
 
 export const handleSalvar = async (
   user: User | null | undefined,

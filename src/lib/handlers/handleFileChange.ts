@@ -1,13 +1,13 @@
 import { updateProfile } from "firebase/auth";
-import { auth } from "../services";
-import { useRouter } from "next/navigation";
-import { Toast } from "../utils";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+
+import { auth } from "../services";
+import { Toast } from "../utils";
 
 export const handleFileChange = async (
   e: React.ChangeEvent<HTMLInputElement>,
-  setUploading: Function,
-  setPhotoURL: Function,
+  setUploading: React.Dispatch<React.SetStateAction<boolean>>,
+  setPhotoURL: React.Dispatch<React.SetStateAction<string>>,
   router: AppRouterInstance, // tipagem recomendada
 ) => {
   const file = e.target.files?.[0];

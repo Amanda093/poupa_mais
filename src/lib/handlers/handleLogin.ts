@@ -33,12 +33,15 @@ export const handleLogin = async ({
     const userCredential = await signInWithEmailAndPassword(auth, email, senha);
 
     // quando o usuário logar, é redirecionado a página historico
-    router.push("/historico");
 
-    Toast.fire({
-      title: "Login realizado com sucesso!",
-      icon: "success",
-    });
+    if (userCredential) {
+      router.push("/historico");
+
+      Toast.fire({
+        title: "Login realizado com sucesso!",
+        icon: "success",
+      });
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Erro no login:", error);

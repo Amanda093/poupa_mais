@@ -1,3 +1,4 @@
+import { User } from "firebase/auth";
 import {
   addDoc,
   collection,
@@ -6,16 +7,17 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { Popup } from "@/lib/utils/sweetalert";
-import { isFormularioValido } from "@/lib/utils";
-import { Custeio } from "@/types";
-import { User } from "firebase/auth";
+
 import { db } from "@/lib/services/clientApp";
+import { isFormularioValido } from "@/lib/utils";
+import { Popup } from "@/lib/utils/sweetalert";
+import { Custeio } from "@/types";
 
 //interface para lidar com o form da IA
 interface HandleFormIAParams {
   custeio: Custeio;
   user: User | null | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sendMensagem: (envio: Custeio) => Promise<any>;
   setGerando: (value: boolean) => void;
   planejamentoRef: React.RefObject<HTMLDivElement | null>;

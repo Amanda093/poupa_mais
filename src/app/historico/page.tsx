@@ -11,6 +11,7 @@ import { Button, Historico, Input, Title } from "@/components";
 import placeholderFoto from "@/components/assets/FotoPerfilPlaceHolder.png";
 import iconFoto from "@/components/assets/MudarFoto.png";
 import DatePicker from "@/components/ui/DatePicker/date-picker";
+import { handleFileChange, handleLogout, handleSalvar } from "@/lib/handlers";
 import { auth } from "@/lib/services/clientApp";
 import {
   fetchPlanejamentos,
@@ -18,7 +19,6 @@ import {
   verificarForcaSenha,
 } from "@/lib/utils";
 import { Planejamento } from "@/types";
-import { handleFileChange, handleSalvar, handleLogout } from "@/lib/handlers";
 
 //Const que armazena todo o código da página de histórico
 const HistoricoPage = () => {

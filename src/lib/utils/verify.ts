@@ -1,3 +1,5 @@
+import { differenceInDays } from "date-fns";
+import { User } from "firebase/auth";
 import {
   collection,
   doc,
@@ -7,13 +9,12 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+
 import { db } from "../services";
-import { differenceInDays } from "date-fns";
-import { User } from "firebase/auth";
 
 export const verificarLimite = async (
   user: User | null | undefined,
-  setLimitado: Function,
+  setLimitado: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   //se o usuário estiver logado, pega os dados dele do banco baseado em seu token
   if (user) {
@@ -51,7 +52,7 @@ export const verificarLimite = async (
 //essa função verifica se há algum planejamento anterior ao que o usuário está fazendo agora, pegando do Firestore os dados da coleção
 export const verificarSePlanejamentoAnterior = async (
   user: User | null | undefined,
-  setMostrarCheck: Function,
+  setMostrarCheck: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   if (user) {
     const userDocRef = doc(db, "usuarios", user.uid);

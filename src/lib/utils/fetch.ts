@@ -1,14 +1,16 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { db } from "../services";
 import { User } from "firebase/auth";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+
 import { Planejamento } from "@/types";
+
+import { db } from "../services";
 
 export const fetchUserData = async (
   user: User | null | undefined,
-  setNome: Function,
-  setEmail: Function,
-  setDataNascimento: Function,
-  setPhotoURL: Function,
+  setNome: React.Dispatch<React.SetStateAction<string>>,
+  setEmail: React.Dispatch<React.SetStateAction<string>>,
+  setDataNascimento: React.Dispatch<React.SetStateAction<Date | undefined>>,
+  setPhotoURL: React.Dispatch<React.SetStateAction<string>>,
 ) => {
   //se não houver usuário logado, retorna
   if (!user) return;
@@ -36,7 +38,7 @@ export const fetchUserData = async (
 
 export const fetchPlanejamentos = async (
   user: User | null | undefined,
-  setPlanejamentos: Function,
+  setPlanejamentos: React.Dispatch<React.SetStateAction<Planejamento[]>>,
 ) => {
   if (!user) return; //Caso o usuário não esteja logado a função termina
 

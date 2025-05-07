@@ -13,8 +13,8 @@ import { MdError } from "react-icons/md";
 
 import { Banner, Button, Input } from "@/components";
 import DatePicker from "@/components/ui/DatePicker/date-picker";
-import { auth } from "@/lib/services";
 import { handleCadastro } from "@/lib/handlers"; // função que faz o cadastro do usuário
+import { auth } from "@/lib/services";
 import { verificarForcaSenha } from "@/lib/utils";
 
 const CadastroPage = () => {

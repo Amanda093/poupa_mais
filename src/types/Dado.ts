@@ -44,4 +44,4 @@ interface DadoJson {
   investimentos_sugeridos: string[];
 }
 
-export type { DadoBCB, DadoJson, DadoIBGE };
+export type { DadoBCB, DadoIBGE, DadoJson };

@@ -22,25 +22,25 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Spinner,
   Textarea,
   Title,
-  Spinner,
 } from "@/components";
 import { categorias, codigosEstadosIBGE } from "@/context";
 import { useChatbot } from "@/hooks";
-import { auth } from "@/lib/services";
 import {
   addGasto,
-  handleChangeGastos,
-  handleFormIA,
-  handleChangeRenda,
-  removeGasto,
   handleChangeEstado,
+  handleChangeGastos,
   handleChangeObs,
+  handleChangeRenda,
   handleChangeUtilizavel,
+  handleFormIA,
+  removeGasto,
 } from "@/lib/handlers";
-import { Custeio } from "@/types";
+import { auth } from "@/lib/services";
 import { verificarLimite, verificarSePlanejamentoAnterior } from "@/lib/utils";
+import { Custeio } from "@/types";
 
 export default function Home() {
   const [user, loading] = useAuthState(auth);

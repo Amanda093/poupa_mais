@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 
 import { codigosEstadosIBGE } from "@/context/global";
 import { db } from "@/lib/services";
-import { Custeio, DadoBCB, DadoJson, DadoIBGE, Planejamento } from "@/types";
+import { Custeio, DadoBCB, DadoIBGE, DadoJson, Planejamento } from "@/types";
 
 // este código tem vários res.status() para retornar debugs no terminal serverSide se algo der errado, útil para perceber se o limite de tokens do admin que o estado está inválido foi atingido, por exemplo
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
