@@ -9,7 +9,7 @@
   - [Front-end](#front-end)
   - [Back-end](#back-end)
   - [Libraries](#libraries)
-  - [Frameworks](#framework)
+  - [Frameworks](#frameworks)
   - [Dependências](#dependências)
 - [📁 Como executar o projeto](#-Como-executar-o-projeto)
 - [📷 Demonstração](#-demonstração)
