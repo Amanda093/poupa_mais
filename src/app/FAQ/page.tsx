@@ -7,7 +7,9 @@ import {
   AccordionTrigger,
   Title,
 } from "@/components";
+import ateriores from "@/components/assets/Anteriores.png";
 import botao from "@/components/assets/Botao.png";
+import cadastro from "@/components/assets/Cadastro.png";
 import campos from "@/components/assets/Campos.png";
 import perfil from "@/components/assets/DadosPerfil.png";
 import historico from "@/components/assets/historico.png";
@@ -19,11 +21,11 @@ const FAQPage = () => {
     <div className="pb-[5em]">
       <div className="container mx-auto py-[60px] xl:!max-w-[1270px]">
         {/*Div que contem a explicação sobre o site*/}
-        <div className="pb-[2em] max-lg:text-center">
-          <h1>
+        <div className="pb-[2em]">
+          <h1 className="max-lg:text-center">
             O que é <b className="text-emerald-500">Poupa +</b>
           </h1>
-          <h2 className="pt-[0.5em] text-emerald-500">
+          <h2 className="pt-[0.5em] text-emerald-500 max-lg:text-center">
             Como utilizar nosso sistema
           </h2>
           <p className="text-light">
@@ -56,7 +58,39 @@ const FAQPage = () => {
             className="mx-auto my-[1.5em] w-[15em] rounded-[1em] border-[0.15em] border-emerald-500 px-[0.2em]"
           />
 
-          <h2 className="pt-[0.5em] text-emerald-500">
+          <h2 className="pt-[0.5em] text-emerald-500 max-lg:text-center">
+            Criando uma conta
+          </h2>
+
+          <p className="text-light">
+            Para criar uma conta, clique no botão{" "}
+            <b className="text-emerald-500">Login</b> na parte superior direita
+            do site. Após isso, você será redirecionado para a página de
+            registro, onde deverá preencher os campos obrigatórios: nome, email,
+            data de nascimento, e senha.
+          </p>
+
+          <Image
+            src={cadastro}
+            alt="Cadastro do site"
+            className="mx-auto my-[1.5em] w-[40em] rounded-[1em] border-[0.15em] border-emerald-500 px-[0.2em]"
+          />
+
+          <p className="text-light">
+            Após criar uma conta, você poderá criar até{" "}
+            <b className="text-emerald-500">três planejamentos</b> por semana, e
+            salva-los em sua conta. Além disso, você poderá utilizar
+            planejamentos anteriores para criar novos planejamentos, te ajudando
+            a entender melhor o que funciona para você e o que não funciona.
+          </p>
+
+          <Image
+            src={ateriores}
+            alt="Cadastro do site"
+            className="mx-auto my-[1.5em] w-[25em] rounded-[1em] border-[0.15em] border-emerald-500 px-[0.2em]"
+          />
+
+          <h2 className="pt-[0.5em] text-emerald-500 max-lg:text-center">
             Como ver suas informações
           </h2>
           <p className="text-light">
@@ -93,7 +127,7 @@ const FAQPage = () => {
         <Accordion
           type="single"
           collapsible
-          className="text-body flex w-full flex-col gap-[35px] rounded-[1em] py-[1.5em] transition-[height]"
+          className="text-body flex w-full flex-col gap-[35px] rounded-[1em] pb-[1.5em] transition-[height]"
         >
           {/* pergunta 01 */}
           <AccordionItem value="item-1">

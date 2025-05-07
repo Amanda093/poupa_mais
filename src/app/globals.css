@@ -127,7 +127,9 @@ p {
   padding-block: 1em;
   font-size: inherit;
 }
-
+.swal2-title {
+  text-align: center !important;
+}
 .container-custom .swal2-title {
   text-align: left;
   padding: 0;
@@ -174,6 +176,10 @@ p {
   border-radius: 1em;
 }
 
+.colored-toast .swal2-title {
+  text-align: left !important;
+}
+
 .swal2-success,
 .swal2-success-fix,
 .swal2-success-line-long,
@@ -190,16 +196,10 @@ p {
 
 .swal2-error {
   color: var(--color-red-500) !important;
-  border-color: var(--color-red-500) !important;
 }
 
 .colored-toast.swal2-icon-error {
   background-color: var(--color-red-500) !important;
-}
-
-.swal2-warning {
-  color: var(--color-amber-500) !important;
-  border-color: var(--color-amber-500) !important;
 }
 
 .colored-toast.swal2-icon-warning {

@@ -1,7 +1,5 @@
 "use client";
 
-/*TODO: Comentar o código Miguel*/
-
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
