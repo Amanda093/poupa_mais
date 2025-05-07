@@ -135,6 +135,9 @@ bun dev
             <b>Amanda</b>
           </sub> <br>
         </a>
+        <sub>
+            amanda.rocha116@etec.sp.gov.br
+          </sub>
       </td>
       </td>
       <td align="center">
@@ -144,6 +147,9 @@ bun dev
               <b>Carlos</b>
             </sub> <br>
         </a>
+        <sub>
+            carlos.barile@etec.sp.gov.br
+          </sub>
       </td>
       <td align="center">
         <a href="https://github.com/Underkyu">
@@ -152,6 +158,9 @@ bun dev
               <b>Miguel</b>
             </sub> <br>
         </a>
+        <sub>
+            miguel.baba@etec.sp.gov.br
+          </sub>
       </td>
       <td align="center">
         <a href="https://github.com/osakirii">
@@ -160,6 +169,9 @@ bun dev
               <b>Sakiri</b>
             </sub> <br>
         </a>
+        <sub>
+            sakiri.cestari@etec.sp.gov.br
+          </sub>
       </td>
     </tr>
   </table>
