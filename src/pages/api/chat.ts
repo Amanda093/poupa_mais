@@ -1,4 +1,4 @@
-import { InferenceClient } from "@huggingface/inference";
+seimport { InferenceClient } from "@huggingface/inference";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import type { NextApiRequest, NextApiResponse } from "next";
 import fetch from "node-fetch";
@@ -271,7 +271,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const mensagemString = mensagemBot.slice(0, inicioJSON).trim();
 
     let dadosJson: DadoJson | null = null;
-    dadosJson = JSON.parse(jsonString) as DadoJson | null;
+    dadosJson = JSON.parse(jsonString || '{}') as DadoJson;
 
 
     //retorna a mensagemString e os dadosJson para o useChatbot.ts
