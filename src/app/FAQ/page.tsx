@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect } from "react";
 
 import {
   Accordion,
@@ -13,9 +16,14 @@ import cadastro from "@/components/assets/Cadastro.png";
 import campos from "@/components/assets/Campos.png";
 import perfil from "@/components/assets/DadosPerfil.png";
 import historico from "@/components/assets/historico.png";
+import { setTitle } from "@/lib/utils/setTitle";
 
 //Const que contem o codigo da página de FAQ
 const FAQPage = () => {
+  useEffect(() => {
+    setTitle("FAQ");
+  });
+
   return (
     //Divs que contem toda a página
     <div className="pb-[5em]">

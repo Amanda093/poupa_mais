@@ -59,46 +59,46 @@ export async function handleFormIA({
   try {
     const respostaIA = await sendMensagem(custeio);
 
-    if (!user) {
-      localStorage.setItem("usouGeracao", "true");
-      return;
-    }
-
     if (!respostaIA || !respostaIA.json) {
       console.error("Resposta JSON nula. Não será salva no Firestore.");
       return;
     }
 
-    //aqui, o código pega no firesotre os dados do usuário
-    const userDocRef = doc(db, "usuarios", user.uid);
-    const userDoc = await getDoc(userDocRef);
+    if (user) {
+      //aqui, o código pega no firestore os dados do usuário
+      const userDocRef = doc(db, "usuarios", user.uid);
+      const userDoc = await getDoc(userDocRef);
 
-    if (userDoc.exists()) {
-      const usosAtual = userDoc.data().usos ?? 0;
+      if (userDoc.exists()) {
+        const usosAtual = userDoc.data().usos ?? 0;
 
-      //quando esse script for utilizado, aumenta os usos em 1
-      await updateDoc(userDocRef, {
-        usos: usosAtual + 1,
-      });
+        //quando esse script for utilizado, aumenta os usos em 1
+        await updateDoc(userDocRef, {
+          usos: usosAtual + 1,
+        });
 
-      //aqui, o código chama a coleção de planejamentos do usuário e adiciona mais um planejamento baseado nos inputs
-      const planejamentosRef = collection(userDocRef, "planejamentos");
+        //aqui, o código chama a coleção de planejamentos do usuário e adiciona mais um planejamento baseado nos inputs
+        const planejamentosRef = collection(userDocRef, "planejamentos");
 
-      await addDoc(planejamentosRef, {
-        usarAnteriores: custeio.utilizavel,
-        mensagemJSON: respostaIA.json,
-        mensagemBot: respostaIA.texto ?? "Resposta não gerada",
-        custeio,
-        geradoEm: serverTimestamp(),
-      });
-    } else {
-      console.error("Usuário não encontrado no Firestore.");
+        await addDoc(planejamentosRef, {
+          usarAnteriores: custeio.utilizavel,
+          mensagemJSON: respostaIA.json,
+          mensagemBot: respostaIA.texto ?? "Resposta não gerada",
+          custeio,
+          geradoEm: serverTimestamp(),
+        });
+      } else {
+        console.error("Usuário não encontrado no Firestore.");
+      }
     }
   } catch (error) {
     console.error("Erro ao gerar planejamento:", error);
   } finally {
     //termina o script e faz o site scrollar até a <div id="planejamentoRef"> na página
     setGerando(false);
+    if (!user) {
+      localStorage.setItem("usouGeracao", "true");
+    }
     setTimeout(() => {
       planejamentoRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);

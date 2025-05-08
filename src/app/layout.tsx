@@ -22,7 +22,6 @@ const fontSource_Sans_3 = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "Poupa+",
   description: "Veja seus dados de economia e controle financeiro.",
 };
 

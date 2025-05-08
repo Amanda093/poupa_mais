@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -20,17 +20,20 @@ const useChatbot = () => {
       return;
     }
 
-    if (!user) {
-      console.error("Usuário não autenticado. A mensagem não será enviada.");
-      return { texto: "Erro: usuário não autenticado.", json: null };
-    }
-
     //aqui, a variável resposta dá um post em pages/api/chat, enviando a mensagem e o uid do usuário se houver.
     try {
-      const resposta = await axios.post("/api/chat", {
-        ...mensagem,
-        uid: user.uid, // Adicionando o uid no corpo
-      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let resposta: AxiosResponse<any, any>;
+      if (user) {
+        resposta = await axios.post("/api/chat", {
+          ...mensagem,
+          uid: user.uid, // Adicionando o uid no corpo
+        });
+      } else {
+        resposta = await axios.post("/api/chat", {
+          ...mensagem,
+        });
+      }
 
       //formata a resposta da em  IA em texto para um string (mensagemTexto) e a resposta em JSON para um tipo dadosJson (dados), para depois armazenar as duas respostas
       const mensagemTexto =

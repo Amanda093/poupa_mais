@@ -18,10 +18,14 @@ import {
   fetchUserData,
   verificarForcaSenha,
 } from "@/lib/utils";
+import { setTitle } from "@/lib/utils/setTitle";
 import { Planejamento } from "@/types";
 
 //Const que armazena todo o código da página de histórico
 const HistoricoPage = () => {
+  useEffect(() => {
+    setTitle("Histórico");
+  });
   //Hook para um elemento nulo ou input de html
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 

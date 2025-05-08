@@ -38,9 +38,14 @@ import {
 } from "@/lib/handlers";
 import { auth } from "@/lib/services";
 import { verificarLimite, verificarSePlanejamentoAnterior } from "@/lib/utils";
+import { setTitle } from "@/lib/utils/setTitle";
 import { Custeio } from "@/types";
 
 export default function Home() {
+  useEffect(() => {
+    setTitle(null);
+  });
+
   const [user, loading] = useAuthState(auth);
   const [limitado, setLimitado] = useState(false);
   const [gerando, setGerando] = useState(false);
@@ -361,15 +366,11 @@ export default function Home() {
 
                 {loading ? null : user ? (
                   <>
-                    {/*Fazer funcionalidade de salvar planejamento */}
                     <div className="flex justify-center gap-[1em]">
                       <Button variant="default" asChild>
                         <Link href="/historico" className="">
                           Histórico de planejamentos
                         </Link>
-                      </Button>
-                      <Button variant="outline" asChild>
-                        Novo planejamento
                       </Button>
                     </div>
                   </>

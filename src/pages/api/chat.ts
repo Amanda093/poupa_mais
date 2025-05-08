@@ -15,13 +15,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // inicializa a mensagem com req.body (utilizado pois o clientside (useChatbot.ts) está se comunicando com um serverside privado (chat.ts)) como um tipo Custeio, axenado com um uid, se houver
-  const mensagem = req.body as Custeio & { uid?: string };
+  const mensagem = req.body as Custeio & { uid: string | null | undefined };
   const uid = mensagem.uid;
-
-  //se não houver uid, retorna que o usuário não está autenticado
-  if (!uid) {
-    return res.status(401).json({ error: "Usuário não autenticado" });
-  }
 
   //inicializa o planejamentoAnterior antes de pegá-lo, garantindo que comece null caso não haja necessidade de requeri-lo (para mais informações, ver na página inicial o checbox do custeio.utilizavel)
   let planejamentoAnterior: Planejamento | null = null;
@@ -30,34 +25,36 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     tenta cavar no banco de dados o penúltimo planejamento do usuário.
     é necessário pegar o penúltimo pois a função handler do chat.ts está sendo utilizada simultaneamente com a função de enviar o custeio da página inicial, e o Firestore encara como se o último planejamento fosse o que o usuário está enviando no momento
   */
-  try {
-    const planejamentosRef = collection(db, "usuarios", uid, "planejamentos");
+  if (uid) {
+    try {
+      const planejamentosRef = collection(db, "usuarios", uid, "planejamentos");
 
-    //query que pega os dois últimos planejamentos ordenando pelo campo geradoEm decrescente (pega as datas mais recentes)
-    const q = query(planejamentosRef, orderBy("geradoEm", "desc"), limit(2));
-    const snapshot = await getDocs(q);
+      //query que pega os dois últimos planejamentos ordenando pelo campo geradoEm decrescente (pega as datas mais recentes)
+      const q = query(planejamentosRef, orderBy("geradoEm", "desc"), limit(2));
+      const snapshot = await getDocs(q);
 
-    //se realmente houverem mais do que dois planejamentos, ele define doc como sendo o penúltimo planejamento (sendo snapshot um array que contém [planejamento1, planejamento 2] como valores [index 0, index 1])
-    if (snapshot.docs.length >= 2) {
-      const doc = snapshot.docs[1]; // Penúltimo planejamento
-      const raw = doc.data();
+      //se realmente houverem mais do que dois planejamentos, ele define doc como sendo o penúltimo planejamento (sendo snapshot um array que contém [planejamento1, planejamento 2] como valores [index 0, index 1])
+      if (snapshot.docs.length >= 2) {
+        const doc = snapshot.docs[1]; // Penúltimo planejamento
+        const raw = doc.data();
 
-      planejamentoAnterior = {
-        id: doc.id,
-        custeio: {
-          estado: raw.custeio.estado,
-          gastos: raw.custeio.gastos,
-          obs: raw.custeio.obs,
-          renda: raw.custeio.renda,
-          utilizavel: raw.custeio.utilizavel,
-        },
-        geradoEm: raw.geradoEm,
-        mensagemBot: raw.mensagemBot,
-        mensagemJSON: raw.mensagemJSON,
-      };
+        planejamentoAnterior = {
+          id: doc.id,
+          custeio: {
+            estado: raw.custeio.estado,
+            gastos: raw.custeio.gastos,
+            obs: raw.custeio.obs,
+            renda: raw.custeio.renda,
+            utilizavel: raw.custeio.utilizavel,
+          },
+          geradoEm: raw.geradoEm,
+          mensagemBot: raw.mensagemBot,
+          mensagemJSON: raw.mensagemJSON,
+        };
+      }
+    } catch (err) {
+      console.error("Erro ao buscar planejamentos anteriores:", err);
     }
-  } catch (err) {
-    console.error("Erro ao buscar planejamentos anteriores:", err);
   }
   //se o estado estiver correto, coloca o valor numeral do estado selecionado para a sigla dela (utilizando a variável codigosEstadosIBGE do context/global.ts). Se não, retorna para o admin que o estado está inválido
   let siglaEstado = "";
@@ -73,13 +70,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     : "";
 
   //adiciona na prompt este texto, que pega a data que o planejamentoAnterior foi gerado e seu JSON armazenado no firestore, apenas se mensagem.utilizavel for true e houver planejamentoAnterior
-  const utilizacao =
-    mensagem.utilizavel && planejamentoAnterior
-      ? `Além disso, você já deu um planejamento anterior a esse, na data ${planejamentoAnterior.geradoEm} e seu planejamento gerado em JSON foi esse: ${planejamentoAnterior.mensagemJSON}. Baseie-se nesse planejamento para fazer um novo item:
-      7. Avaliação baseado em planejamento anterior
-       - diga ao usuário se ele está conseguindo caminhar bem em seu planejamento ou não
-       - se não, diga o que está faltando em seu planejamento para que seja melhor`
-      : "";
+  let utilizacao = "";
+
+  if (planejamentoAnterior) {
+    utilizacao = `Além disso, você já deu um planejamento anterior a esse, na data ${planejamentoAnterior.geradoEm.toDate()} e seu planejamento gerado em JSON foi esse: ${planejamentoAnterior.mensagemJSON}. 
+    Baseie-se nesse planejamento para fazer um novo item:
+    Avaliação baseado em planejamento anterior
+     - diga ao usuário se ele está conseguindo caminhar bem em seu planejamento ou não
+     - se não, diga o que está faltando em seu planejamento para que seja melhor`;
+  }
 
   //essa função busca alguns dados da economia brasileira baseado na API SIDRA do IBGE e do BCB, filtrado por estado
   async function buscarDadosEconomia(codigoEstado: number) {
@@ -151,30 +150,30 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     Com base nessas informações, elabore um plano financeiro detalhado para o usuário. O plano deve considerar o contexto econômico brasileiro atual e conter os seguintes tópicos:
     
-    ## 🧾 1. Diagnóstico Financeiro
+    ## Diagnóstico Financeiro
     - Análise percentual dos gastos por categoria
     - Comparação com padrões recomendados (ex: moradia até 30%, transporte até 15%, etc.)
     - Comentários sobre desequilíbrios ou excessos
     
-    ## 💰 2. Estimativa de Economia Mensal
+    ## Estimativa de Economia Mensal
     - Valor sugerido para economizar mensalmente
     - Justificativa com base na renda e nos gastos
     
-    ## ✂️ 3. Sugestões de Corte de Gastos
+    ## Sugestões de Corte de Gastos
     - Liste categorias onde é possível reduzir gastos
     - Para cada item, sugira um valor ideal e explique o motivo
     
-    ## 🎯 4. Metas Financeiras
+    ## Metas Financeiras
     - **Curto prazo (até 6 meses):** objetivo rápido, como quitar dívidas ou montar reserva de emergência
     - **Médio prazo (6 meses a 2 anos):** exemplo: compra de bens, viagens, cursos
     - **Longo prazo (acima de 2 anos):** como aposentadoria, imóvel próprio, investimentos sólidos
     
-    ## 📈 5. Dicas de Investimento
+    ## Dicas de Investimento
     - Sugestões de investimentos **seguros e acessíveis no Brasil em ${new Date().getFullYear()}**
     - Separar por perfil: conservador, moderado e arrojado
     - Incluir links de referência se possível (como sites do Tesouro Direto, Nubank, etc.)
     
-    ## 📝 6. Observações Finais
+    ## Observações Finais
     - Dicas práticas de organização (planilhas, apps, hábitos)
     - Aviso sobre procurar ajuda de um consultor financeiro para decisões mais complexas
     
@@ -263,7 +262,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(500).json({ error: "Mensagem da LLM não recebida" });
     }
 
-    console.log(mensagemBot)
+    console.log(mensagemBot);
 
     //esse código abaixo separa a resposta do bot entre a mensagemString (mensagem de texto gerada pela IA) e a mensagem JSON (mensagem em JSON gerada pela IA)
     const inicioJSON = mensagemBot.indexOf("{");

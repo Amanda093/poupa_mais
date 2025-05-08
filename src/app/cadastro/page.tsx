@@ -16,8 +16,12 @@ import DatePicker from "@/components/ui/DatePicker/date-picker";
 import { handleCadastro } from "@/lib/handlers"; // função que faz o cadastro do usuário
 import { auth } from "@/lib/services";
 import { verificarForcaSenha } from "@/lib/utils";
+import { setTitle } from "@/lib/utils/setTitle";
 
 const CadastroPage = () => {
+  useEffect(() => {
+    setTitle("Cadastro");
+  });
   //declara os estados utilizados nos inputs do código
   const router = useRouter();
   const [password, setPassword] = useState("");

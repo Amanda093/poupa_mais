@@ -9,8 +9,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { Banner, Button, Checkbox, Input } from "@/components";
 import { handleLogin } from "@/lib/handlers";
 import { auth } from "@/lib/services/clientApp";
+import { setTitle } from "@/lib/utils/setTitle";
 
 const LoginPage = () => {
+  useEffect(() => {
+    setTitle("Login");
+  });
+
   //declara os estados dos inputs utilizados no código
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
