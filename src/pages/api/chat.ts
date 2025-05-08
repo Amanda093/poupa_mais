@@ -271,11 +271,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const mensagemString = mensagemBot.slice(0, inicioJSON).trim();
 
     let dadosJson: DadoJson | null = null;
-    try {
-      dadosJson = JSON.parse(jsonString) as DadoJson;
-    } catch (e) {
-      console.error("Erro ao converter JSON retornado pela LLM:", e);
-    }
+    dadosJson = JSON.parse(jsonString) as DadoJson | null;
+
 
     //retorna a mensagemString e os dadosJson para o useChatbot.ts
     return res.status(200).json({
