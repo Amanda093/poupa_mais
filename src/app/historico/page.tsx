@@ -37,7 +37,9 @@ const HistoricoPage = () => {
   const [uploading, setUploading] = useState(false);
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [dataNascimento, setDataNascimento] = React.useState<Date>();
+  const [dataNascimento, setDataNascimento] = React.useState<Date | undefined>(
+    undefined,
+  );
   const [novaSenha, setNovaSenha] = useState("");
   const [showNovaSenha, setShowNovaSenha] = useState(false);
   const [senhaAtual, setSenhaAtual] = useState("");
@@ -58,7 +60,7 @@ const HistoricoPage = () => {
 
   // Carregar a foto de perfil do Firebase ou localStorage sempre que o componente for montado
   useEffect(() => {
-    fetchUserData(user, setNome, setEmail, setDataNascimento, setPhotoURL);
+    fetchUserData(user, setNome, setEmail, setPhotoURL);
   }, [user]);
 
   //Busca os planejamentos do usuário no banco de dados
@@ -209,7 +211,6 @@ const HistoricoPage = () => {
                     novaSenha,
                     senhaAtual,
                     nome,
-                    email,
                     forcaSenha,
                     dataNascimento,
                   );

@@ -9,7 +9,6 @@ export const fetchUserData = async (
   user: User | null | undefined,
   setNome: React.Dispatch<React.SetStateAction<string>>,
   setEmail: React.Dispatch<React.SetStateAction<string>>,
-  setDataNascimento: React.Dispatch<React.SetStateAction<Date | undefined>>,
   setPhotoURL: React.Dispatch<React.SetStateAction<string>>,
 ) => {
   //se não houver usuário logado, retorna
@@ -24,7 +23,6 @@ export const fetchUserData = async (
     const data = userSnap.data();
     setNome(data.nome || "");
     setEmail(data.email || "");
-    setDataNascimento(data.dataNascimento?.toDate?.() || undefined);
   }
 
   //pega a foto do cloudinary e utiliza-a no historico

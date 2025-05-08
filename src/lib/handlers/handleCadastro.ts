@@ -116,10 +116,18 @@ export const handleCadastro = async ({
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("Erro ao cadastrar:", error);
-    Toast.fire({
-      title: error.message,
-      icon: "error",
-    });
+    const errorCode = error.code;
+    if (errorCode === "auth/invalid-email") {
+      Toast.fire({
+        title: "Email Inválido",
+        icon: "warning",
+      });
+    } else {
+      console.error("Erro ao cadastrar:", error);
+      Toast.fire({
+        title: error.message,
+        icon: "error",
+      });
+    }
   }
 };
