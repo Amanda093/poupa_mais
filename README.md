@@ -155,7 +155,7 @@ bun dev
           </sub>
       </td>
       <td align="center">
-        <a href="https://github.com/Underkyu">
+        <a href="https://github.com/Miguel-Yudi">
           <img src="https://avatars.githubusercontent.com/u/125403398?v=4" width="100px;" alt="Miguel - Github"/><br>
           <sub>
               <b>Miguel</b>
